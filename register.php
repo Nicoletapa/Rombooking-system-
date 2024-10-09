@@ -1,22 +1,29 @@
 <?php
-include('config.php');
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
+include('config.php');
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = mysqli_real_escape_string($conn, $_POST['username']);
-    $email = mysqli_real_escape_string($conn, $_POST['email']);
+    $firstname = mysqli_real_escape_string($conn, $_POST['firstname']);
+    $lastname = mysqli_real_escape_string($conn, $_POST['lastname']);
+    $phone = mysqli_real_escape_string($conn, $_POST['phone']);
     $password = mysqli_real_escape_string($conn, $_POST['password']);
     $hashed_password = password_hash($password, PASSWORD_BCRYPT);
+    $rolle_id = mysqli_real_escape_string($conn, $_POST['role']); // Assuming this is passed from the form
 
     // Check if the user already exists
-    $check_user = "SELECT * FROM users WHERE email='$email' OR username='$username'";
+    $check_user = "SELECT * FROM Bruker WHERE UserName='$username'";
     $result = mysqli_query($conn, $check_user);
 
     if (mysqli_num_rows($result) > 0) {
         echo "User already exists!";
     } else {
         // Insert new user
-        $query = "INSERT INTO users (username, email, password) VALUES ('$username', '$email', '$hashed_password')";
+        $query = "INSERT INTO Bruker (UserName, Navn, Etternavn, TlfNr, Password, RolleID) 
+                  VALUES ('$username', '$firstname', '$lastname', '$phone', '$hashed_password', '$rolle_id')";
         if (mysqli_query($conn, $query)) {
             echo "Registration successful! <a href='login.php'>Login here</a>";
         } else {
@@ -29,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Register</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <div class="flex h-screen justify-center items-center">
@@ -42,8 +49,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 style="background-color: inherit; width: 100%; margin-bottom: 10px;"
                 class="border-2 rounded-md px-2 py-1"><br>
 
-            <label for="email" class="px-2 mb-2 font-semibold">Email</label>
-            <input type="email" id="email" name="email" placeholder="Email" required
+            <label for="firstname" class="px-2 mb-2 font-semibold">First Name</label>
+            <input type="text" id="firstname" name="firstname" placeholder="First Name" required
+                style="background-color: inherit; width: 100%; margin-bottom: 10px;"
+                class="border-2 rounded-md px-2 py-1"><br>
+
+            <label for="lastname" class="px-2 mb-2 font-semibold">Last Name</label>
+            <input type="text" id="lastname" name="lastname" placeholder="Last Name" required
+                style="background-color: inherit; width: 100%; margin-bottom: 10px;"
+                class="border-2 rounded-md px-2 py-1"><br>
+
+            <label for="phone" class="px-2 mb-2 font-semibold">Phone Number</label>
+            <input type="text" id="phone" name="phone" placeholder="Phone Number" required
                 style="background-color: inherit; width: 100%; margin-bottom: 10px;"
                 class="border-2 rounded-md px-2 py-1"><br>
 
@@ -51,6 +68,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <input type="password" id="password" name="password" placeholder="Password" required
                 style="background-color: inherit; width: 100%; margin-bottom: 10px;"
                 class="border-2 rounded-md px-2 py-1"><br>
+
+            <label for="role" class="px-2 mb-2 font-semibold">Role</label>
+            <select id="role" name="role" required style="background-color: inherit; width: 100%; margin-bottom: 10px;"
+                class="border-2 rounded-md px-2 py-1">
+                <option value="1">Customer</option>
+                <option value="2">Admin</option>
+            </select><br>
+
             <button type="submit" class="p-2 w-full rounded-md bg-black text-white mt-2">Register</button>
         </form>
     </div>
