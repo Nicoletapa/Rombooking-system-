@@ -10,7 +10,7 @@
 
 <body>
     <!-- Søk seksjon -->
-    <?php include('./Layout/Navbar.php'); ?>
+    <?php include('../Rombooking-system-/Includes/Layout/Navbar.php'); ?>
     <div class="h-[85vh]">
         <div class="h-1/2 bg-[#B7B2B2]">
             <div class="container mx-auto flex gap-8 flex justify-center items-center h-full px-6">

@@ -1,6 +1,6 @@
 <?php
 session_start(); // Start the session
-include('config.php');
+include('Includes/config.php'); // Include the database configuration file
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = mysqli_real_escape_string($conn, $_POST['username']);
@@ -19,6 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_SESSION['loggedin'] = true;
             $_SESSION['RolleID'] = $user['RolleID'];
             $_SESSION['UserName'] = $user['UserName'];
+            $_SESSION['BrukerID'] = $user['BrukerID'];
             echo "Login successful! Welcome " . $user['UserName'];
 
             // Redirect to a protected page
