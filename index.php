@@ -9,27 +9,13 @@
 </head>
 
 <body>
+
     <!-- Søk seksjon -->
-    <?php include('../Rombooking-system-/Includes/Layout/Navbar.php'); ?>
+    <?php include('./Includes/Layout/Navbar.php'); ?>
     <div class="h-[85vh]">
         <div class="h-1/2 bg-[#B7B2B2]">
-            <div class="container mx-auto flex gap-8 flex justify-center items-center h-full px-6">
-                <div class="w-1/3 bg-gray-300 p-4 rounded-md">
-                    <h1 class="text-xl">Innsjekking - utsjekking</h1>
-                </div>
-                <div class="w-1/3 bg-gray-300 text-xl p-4 rounded-md">
-                    <select class="w-full bg-transparent h-full">
-                        <option>2 Voksne - 0 Barn</option>
-                    </select>
-                </div>
-                <div class="w-1/3 bg-gray-300 text-xl p-4 rounded-md">
-                    <select class="w-full bg-transparent h-full">
-                        <option>Typerom</option>
-                    </select>
-                </div>
-                <div class="w-36 p-4 text-xl rounded-md bg-[#563635]">
-                    <button class="w-full h-full text-white">Søk</button>
-                </div>
+            <div class="container mx-auto flex gap-8 flex justify-center items-center h-full px-4">
+                <?php include('Oversikt.php') ?>
             </div>
         </div>
         <!-- 3 Typer rom seksjon -->
@@ -57,3 +43,8 @@
 </body>
 
 </html>
+
+<?php
+// Close the database connection
+$conn->close();
+?>
