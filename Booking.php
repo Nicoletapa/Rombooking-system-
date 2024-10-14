@@ -59,7 +59,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <body>
     <h2>Lag en reservasjon</h2>
-    <form method="POST" action="">
+    <form method="POST" action="Booking.php">
         <label for="romID">Rom ID:</label><br>
         <input type="number" id="romID" name="romID" required><br><br>
 

@@ -1,8 +1,7 @@
 <?php
 include 'Includes/config.php'; // Inkluder databasekonfigurasjonen
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+
+// Sjekk om forespørselen er POST-metode
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Hent innsjekk- og utsjekksdatoer fra skjemaet
     $innsjekk = $_POST['innsjekk'];
@@ -17,7 +16,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $_SESSION['voksne'] = isset($_POST['voksne']) ? (int)$_POST['voksne'] : 1;
     $_SESSION['barn'] = isset($_POST['barn']) ? (int)$_POST['barn'] : 1;
 
-    // SQL for å finne ledige rom med logikk for kapasitet og romtype
+    // SQL-spørring for å finne ledige rom
+    // Velger RomID og RomTypeID fra RomID_RomType som ikke er reservert i den angitte perioden
+    // Sammenligner innsjekk- og utsjekksdatoene med eksisterende reservasjoner
     $sql = "SELECT RomID, RomTypeID 
             FROM RomID_RomType 
             WHERE RomID NOT IN (
@@ -32,17 +33,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 FROM Romtype 
                 WHERE RomKapsitet >= $antallPersoner
             )";
-
+    // Utfør SQL-spørringen
     $result = $conn->query($sql);
 
     $output = '';
-
+    // Sjekk om det er ledige rom i resultatet
     if ($result->num_rows > 0) {
+        // Oppretter en liste over ledige rom med romID og romtype, inkludert en booking-knapp for hvert rom
         $output .= "<h2 class='text-xl font-semibold my-4'>Ledige rom fra $innsjekk til $utsjekk for $antallPersoner personer:</h2>";
         $output .= "<ul class='list-disc pl-6'>";
         while ($row = $result->fetch_assoc()) {
-            echo "Current Directory: " . __DIR__;
-
+            // Viser hvert ledige rom med en booking-knapp
             $output .= "<li class='text-lg'>RomID: " . $row["RomID"] . " - RomTypeID: " . $row["RomTypeID"] .
                 " <form method='POST' action='Booking.php' style='display:inline;'>
                       <input type='hidden' name='romID' value='" . $row["RomID"] . "'>
@@ -53,11 +54,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
         $output .= "</ul>";
     } else {
+        // Hvis ingen rom er tilgjengelige, vis en melding til brukeren
         $output .= "<p class='text-red-500 my-4'>Ingen rom er tilgjengelige for dette antall personer i dette tidsrommet.</p>";
     }
 
 
-    // Lukk forbindelsen
+    // Lukk forbindelsen til databasen
     $conn->close();
 
     // Setter standardverdiene for inputfeltene

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: 09. Okt, 2024 21:07 PM
+-- Generation Time: 14. Okt, 2024 12:34 PM
 -- Tjener-versjon: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -39,6 +39,13 @@ CREATE TABLE `Bruker` (
   `RolleID` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dataark for tabell `Bruker`
+--
+
+INSERT INTO `Bruker` (`BrukerID`, `Navn`, `Etternavn`, `TlfNr`, `Password`, `UserName`, `RolleID`) VALUES
+(8, 'thevi', 'thach', '12341234', '$2y$10$U1cxgUYWc2D4ojbcVbu5f.SW1Tr9kazsxqnt/JWpS0YEWyrJ1vwB6', 'Admin', 2);
+
 -- --------------------------------------------------------
 
 --
@@ -52,6 +59,19 @@ CREATE TABLE `Reservasjon` (
   `Innsjekk` datetime NOT NULL,
   `Utsjekk` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dataark for tabell `Reservasjon`
+--
+
+INSERT INTO `Reservasjon` (`ReservasjonID`, `RomID`, `BrukerID`, `Innsjekk`, `Utsjekk`) VALUES
+(1, 3, 8, '2024-10-15 07:30:00', '2024-10-17 12:00:00'),
+(2, 3, 8, '2024-10-15 07:30:00', '2024-10-17 12:00:00'),
+(3, 2, 8, '2024-10-13 17:00:00', '2024-10-16 14:00:00'),
+(4, 1, 8, '2024-10-27 00:00:00', '2024-10-30 00:00:00'),
+(5, 1, 8, '2024-10-23 00:00:00', '2024-10-26 00:00:00'),
+(6, 3, 8, '2024-10-30 00:00:00', '2024-10-31 00:00:00'),
+(7, 2, 8, '2024-10-28 00:00:00', '2024-10-31 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -83,6 +103,15 @@ CREATE TABLE `RomID_RomType` (
   `RomTypeID` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dataark for tabell `RomID_RomType`
+--
+
+INSERT INTO `RomID_RomType` (`RomID`, `RomTypeID`) VALUES
+(1, 1),
+(2, 2),
+(3, 3);
+
 -- --------------------------------------------------------
 
 --
@@ -95,6 +124,15 @@ CREATE TABLE `Romtype` (
   `RomKapsitet` int(11) NOT NULL,
   `Beskrivelse` varchar(1000) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dataark for tabell `Romtype`
+--
+
+INSERT INTO `Romtype` (`RomtypeID`, `RomTypeNavn`, `RomKapsitet`, `Beskrivelse`) VALUES
+(1, 'Enkeltrom', 1, 'Et komfortabelt rom for en person'),
+(2, 'Dobbeltrom', 2, 'Et rom for to personer med dobbeltseng'),
+(3, 'Junior Suite', 3, 'En luksuriøs suite med plass til tre personer');
 
 --
 -- Indexes for dumped tables
@@ -142,13 +180,13 @@ ALTER TABLE `Romtype`
 -- AUTO_INCREMENT for table `Bruker`
 --
 ALTER TABLE `Bruker`
-  MODIFY `BrukerID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `BrukerID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `Reservasjon`
 --
 ALTER TABLE `Reservasjon`
-  MODIFY `ReservasjonID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ReservasjonID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `Roller`
@@ -160,13 +198,13 @@ ALTER TABLE `Roller`
 -- AUTO_INCREMENT for table `RomID_RomType`
 --
 ALTER TABLE `RomID_RomType`
-  MODIFY `RomID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `RomID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `Romtype`
 --
 ALTER TABLE `Romtype`
-  MODIFY `RomtypeID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `RomtypeID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Begrensninger for dumpede tabeller
