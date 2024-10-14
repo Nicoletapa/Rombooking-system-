@@ -1,10 +1,8 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
+// Include the configuration file for database connection
 include('./Includes/config.php');
 
+// Check if the form is submitted
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = mysqli_real_escape_string($conn, $_POST['username']);
     $firstname = mysqli_real_escape_string($conn, $_POST['firstname']);
@@ -12,21 +10,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $phone = mysqli_real_escape_string($conn, $_POST['phone']);
     $password = mysqli_real_escape_string($conn, $_POST['password']);
     $hashed_password = password_hash($password, PASSWORD_BCRYPT);
-    $rolle_id = mysqli_real_escape_string($conn, $_POST['role']); // Assuming this is passed from the form
+    $rolle_id = mysqli_real_escape_string($conn, $_POST['role']);
 
     // Check if the user already exists
     $check_user = "SELECT * FROM Bruker WHERE UserName='$username'";
     $result = mysqli_query($conn, $check_user);
 
     if (mysqli_num_rows($result) > 0) {
+        // User already exists
         echo "User already exists!";
     } else {
         // Insert new user
         $query = "INSERT INTO Bruker (UserName, Navn, Etternavn, TlfNr, Password, RolleID) 
                   VALUES ('$username', '$firstname', '$lastname', '$phone', '$hashed_password', '$rolle_id')";
         if (mysqli_query($conn, $query)) {
+            // Registration successful
+
             echo "Registration successful! <a href='login.php'>Login here</a>";
         } else {
+            // Error inserting user
             echo "Error: " . $query . "<br>" . mysqli_error($conn);
         }
     }

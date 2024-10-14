@@ -1,6 +1,6 @@
 <?php
-session_start();
-session_unset();
-session_destroy();
-header('Location: index.php'); // Redirect to the homepage or login page
-exit();
+session_start(); // Start en ny eller fortsett en eksisterende økt
+session_unset(); // Fjern alle øktvariabler, nullstiller øktdataen
+session_destroy(); // Avslutt økten helt, og slett øktdataen
+header('Location: index.php'); // Omadresser brukeren til startsiden eller en innloggingsside
+exit(); // Sørg for at skriptet stopper etter omdirigeringen, for å unngå at videre kode blir kjørt
