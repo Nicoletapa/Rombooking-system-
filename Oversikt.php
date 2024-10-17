@@ -40,7 +40,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         while ($row = $result->fetch_assoc()) {
             // Viser hvert ledige rom med en booking-knapp
             $output .= "<li class='text-lg'>RomID: " . $row["RomID"] . " - RomTypeID: " . $row["RomTypeID"] .
-                " <form method='POST' action='Booking.php' style='display:inline;'>
+                " <form method='POST' action='./Bookings/Booking.php' style='display:inline;'>
                       <input type='hidden' name='romID' value='" . $row["RomID"] . "'>
                       <input type='hidden' name='innsjekk' value='" . $innsjekk . "'>
                       <input type='hidden' name='utsjekk' value='" . $utsjekk . "'>
