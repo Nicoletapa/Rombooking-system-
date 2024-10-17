@@ -9,7 +9,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Hent valgt antall personer og romtype
     $romtype = $_POST['romtype'];
-    $antallPersoner = $_POST['antallPersoner'];
+    $antallPersoner = $_SESSION['voksne'] + $_SESSION['barn'];
+    //$antallPersoner = $_POST['antallPersoner'];
+
+    // Hent antall voksne og barn fra inputfeltene
+    $_SESSION['voksne'] = isset($_POST['voksne']) ? (int)$_POST['voksne'] : 1;
+    $_SESSION['barn'] = isset($_POST['barn']) ? (int)$_POST['barn'] : 1;
 
     // SQL-spørring for å finne ledige rom
     // Velger RomID og RomTypeID fra RomID_RomType som ikke er reservert i den angitte perioden
@@ -56,6 +61,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Lukk forbindelsen til databasen
     $conn->close();
+
+    // Setter standardverdiene for inputfeltene
+    if (!isset($_SESSION['voksne'])) {
+        $_SESSION['voksne'] = 1;
+    }
+    if (!isset($_SESSION['barn'])) {
+        $_SESSION['barn'] = 0;
+    }
 }
 ?>
 
@@ -91,14 +104,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <input type="date" id="utsjekk" name="utsjekk" required class="relative bg-transparent text-lg">
                 </div>
             </div>
-            <div class="w-1/4 bg-gray-300 text-xl p-4 rounded-md">
-                <select name="antallPersoner" class="w-full bg-transparent h-full">
-                    <option value="1">1 Person</option>
-                    <option value="2">2 Personer</option>
-                    <option value="3">3 Personer</option>
-                    <option value="4">4 Personer</option>
-                    <!-- Legg til flere / andre alternativer etterhvert..-->
-                </select>
+            <div class="relative w-1/4">
+                <label for="personer" class="absolute -top-6 left-1 font-semibold">Personer:</label>
+                <div class="bg-gray-300 flex flex-col p-4 rounded-md">
+                        <!-- VOKSNE -->
+                         <div class="flex items-center justify-between mb-4">
+                            <span class="flex items-center text-sm md:text-base lg:text-lg">Voksne:</span>
+                            <input type="number" id="voksne" name="voksne" value="<?php echo $_SESSION['voksne']; ?>" min="1" class="w-14 md:w-20 text-center mx-2 bg-white rounded-sm" required>
+                         </div>
+
+                         <!-- BARN -->
+                         <div class="flex items-center justify-between">
+                            <span class="text-sm md:text-base lg:text-lg">Barn:</span>
+                            <input type="number" id="barn" name="barn" value="<?php echo $_SESSION['barn']; ?>"min="0" class="w-14 md:w-20 text-center mx-2 bg-white rounded-sm">
+                         </div>
+                </div>
             </div>
             <div class="w-1/4 bg-gray-300 text-xl p-4 rounded-md">
                 <select name="romtype" class="w-full bg-transparent h-full">
