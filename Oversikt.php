@@ -1,74 +1,11 @@
-<?php
-include 'Includes/config.php'; // Inkluder databasekonfigurasjonen
-
-// Sjekk om forespørselen er POST-metode
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Hent innsjekk- og utsjekksdatoer fra skjemaet
-    $innsjekk = $_POST['innsjekk'];
-    $utsjekk = $_POST['utsjekk'];
-
-    // Hent valgt antall personer og romtype
-    $romtype = $_POST['romtype'];
-    $antallPersoner = $_POST['antallPersoner'];
-
-    // SQL-spørring for å finne ledige rom
-    // Velger RomID og RomTypeID fra RomID_RomType som ikke er reservert i den angitte perioden
-    // Sammenligner innsjekk- og utsjekksdatoene med eksisterende reservasjoner
-    $sql = "SELECT RomID, RomTypeID 
-            FROM RomID_RomType 
-            WHERE RomID NOT IN (
-                SELECT RomID 
-                FROM Reservasjon 
-                WHERE ('$innsjekk' BETWEEN Innsjekk AND Utsjekk) 
-                OR ('$utsjekk' BETWEEN Innsjekk AND Utsjekk)
-                OR (Innsjekk BETWEEN '$innsjekk' AND '$utsjekk')
-            )
-            AND RomTypeID IN (
-                SELECT RomtypeID 
-                FROM Romtype 
-                WHERE RomKapsitet >= $antallPersoner
-            )";
-    // Utfør SQL-spørringen
-    $result = $conn->query($sql);
-
-    $output = '';
-    // Sjekk om det er ledige rom i resultatet
-    if ($result->num_rows > 0) {
-        // Oppretter en liste over ledige rom med romID og romtype, inkludert en booking-knapp for hvert rom
-        $output .= "<h2 class='text-xl font-semibold my-4'>Ledige rom fra $innsjekk til $utsjekk for $antallPersoner personer:</h2>";
-        $output .= "<ul class='list-disc pl-6'>";
-        while ($row = $result->fetch_assoc()) {
-            // Viser hvert ledige rom med en booking-knapp
-            $output .= "<li class='text-lg'>RomID: " . $row["RomID"] . " - RomTypeID: " . $row["RomTypeID"] .
-                " <form method='POST' action='./Bookings/Booking.php' style='display:inline;'>
-                      <input type='hidden' name='romID' value='" . $row["RomID"] . "'>
-                      <input type='hidden' name='innsjekk' value='" . $innsjekk . "'>
-                      <input type='hidden' name='utsjekk' value='" . $utsjekk . "'>
-                      <button type='submit' class='bg-green-500 text-white px-4 py-2 ml-4 rounded'>Book</button>
-                      </form></li>";
-        }
-        $output .= "</ul>";
-    } else {
-        // Hvis ingen rom er tilgjengelige, vis en melding til brukeren
-        $output .= "<p class='text-red-500 my-4'>Ingen rom er tilgjengelige for dette antall personer i dette tidsrommet.</p>";
-    }
-
-
-    // Lukk forbindelsen til databasen
-    $conn->close();
-}
-?>
-
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Room Search</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-
 <body>
     <?php
     include 'Includes/config.php'; // Include the database connection
@@ -77,7 +14,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $resultRomType = $conn->query($sql);
     ?>
     <div class="w-full min-h-max">
-        <form method="POST" action="" class="flex flex-row gap-4 items-center">
+        <form method="POST" action="reservasjon.php" class="flex flex-row gap-4 items-center">
 
             <div class="relative w-1/6">
                 <label for="innsjekk" class="absolute -top-6 left-1 font-semibold">Innsjekk dato:</label>
@@ -97,7 +34,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <option value="2">2 Personer</option>
                     <option value="3">3 Personer</option>
                     <option value="4">4 Personer</option>
-                    <!-- Legg til flere / andre alternativer etterhvert..-->
                 </select>
             </div>
             <div class="w-1/4 bg-gray-300 text-xl p-4 rounded-md">
@@ -105,7 +41,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <option>Typerom</option>
                     <?php
                     if ($resultRomType->num_rows > 0) {
-                        // Output data of each row
                         while ($row = $resultRomType->fetch_assoc()) {
                             echo "<option value='" . $row['RomtypeID'] . "'>" . $row['RomTypeNavn'] . "</option>";
                         }
@@ -120,16 +55,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <button type="submit" value="Sjekk tilgjengelige rom" class="w-full h-full text-white">Søk</button>
             </div>
         </form>
-        <!-- Søk resultater -->
-        <div class="mt-6">
-            <?php
-            // Viser resultatet av søket
-            if (isset($output)) {
-                echo $output;
-            }
-            ?>
-        </div>
     </div>
 </body>
-
 </html>
