@@ -1,6 +1,6 @@
 <?php
 session_start(); // Start the session
-include('Includes/config.php'); // Include the database configuration file
+include('../../Includes/config.php'); // Include the database configuration file
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = mysqli_real_escape_string($conn, $_POST['username']);
@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             echo "Login successful! Welcome " . $user['UserName'];
 
             // Redirect to a protected page
-            header('Location: index.php');
+            header('Location: ../../Index.php');
             echo '<pre>';
             print_r($_SESSION);
             echo '</pre>';
@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <div class="border-2 p-4 pb-0 rounded-md min-h-min shadow-md">
         <h2 class="text-2xl px-2 font-semibold">Login</h2>
         <p class="px-2 pb-2 py-1 text-gray-400 text-sm">Enter your username below to login to your account.</p>
-        <form action="login.php" method="POST" style="background-color: inherit;">
+        <form action="Login.php" method="POST" style="background-color: inherit;">
             <label for="username" class="px-2 mb-2 font-semibold">Username</label>
             <input type="text" id="username" name="username" placeholder="Username" required
                 style="background-color: inherit; width: 100%; margin-bottom: 10px;"

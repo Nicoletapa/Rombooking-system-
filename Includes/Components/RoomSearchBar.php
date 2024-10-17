@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Room Search</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
+
 <body>
     <?php
     include 'Includes/config.php'; // Include the database connection
@@ -14,7 +16,8 @@
     $resultRomType = $conn->query($sql);
     ?>
     <div class="w-full min-h-max">
-        <form method="POST" action="reservasjon.php" class="flex flex-row gap-4 items-center">
+        <form method="POST" action="./Views/Bookings/AvailableReservations.php"
+            class="flex flex-row gap-4 items-center">
 
             <div class="relative w-1/6">
                 <label for="innsjekk" class="absolute -top-6 left-1 font-semibold">Innsjekk dato:</label>
@@ -57,4 +60,5 @@
         </form>
     </div>
 </body>
+
 </html>

@@ -1,7 +1,7 @@
 <?php
 session_start(); // Start session for å få tilgang til $_SESSION
 
-include 'Includes/config.php'; // Inkluder databasekonfigurasjonen
+include '../../Includes/config.php'; // Inkluder databasekonfigurasjonen
 
 // Sjekk om brukeren er logget inn
 if (!isset($_SESSION['BrukerID'])) {

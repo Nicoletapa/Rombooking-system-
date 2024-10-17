@@ -22,25 +22,25 @@
 
             <div class="flex gap-4 items-center">
                 <?php if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true): ?>
-                <span class="text-xl"> Hei,
-                    <?php echo ucfirst($_SESSION['UserName'])
+                    <span class="text-xl"> Hei,
+                        <?php echo ucfirst($_SESSION['UserName'])
                         ?>
-                    <?php
+                        <?php
 
                         if ($_SESSION['RolleID'] == 2) {
                             echo "(Admin)";
                         };
                         ?>
-                </span> <a href="Logout.php" class="bg-[#563635] text-white p-2 px-4 rounded-md">
-                    Logg ut
-                </a>
+                    </span> <a href="./Views/Users/Logout.php" class="bg-[#563635] text-white p-2 px-4 rounded-md">
+                        Logg ut
+                    </a>
                 <?php else: ?>
-                <a href="login.php" class="bg-[#563635] text-white p-2 px-4 rounded-md">
-                    Logg inn
-                </a>
-                <a href="register.php" class="bg-[#563635] text-white p-2 px-4 rounded-md">
-                    Registrer
-                </a>
+                    <a href="./Views/Users/Login.php" class="bg-[#563635] text-white p-2 px-4 rounded-md">
+                        Logg inn
+                    </a>
+                    <a href="./Views/Users/Register.php" class="bg-[#563635] text-white p-2 px-4 rounded-md">
+                        Registrer
+                    </a>
                 <?php endif; ?>
             </div>
         </div>

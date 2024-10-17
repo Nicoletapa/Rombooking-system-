@@ -1,6 +1,6 @@
 <?php
 // Include the configuration file for database connection
-include('./Includes/config.php');
+include('../../Includes/config.php');
 
 // Check if the form is submitted
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <div class="border-2 p-4 pb-0 rounded-md min-h-min">
         <h2 class="text-2xl px-2 font-semibold">Register</h2>
         <p class="px-2 pb-2 py-1 text-gray-400">Please fill in this form to create an account.</p>
-        <form action="register.php" method="POST" style="background-color: inherit;">
+        <form action="Register.php" method="POST" style="background-color: inherit;">
             <label for="username" class="px-2 mb-2 font-semibold">Username</label>
             <input type="text" id="username" name="username" placeholder="Username" required
                 style="background-color: inherit; width: 100%; margin-bottom: 10px;"
