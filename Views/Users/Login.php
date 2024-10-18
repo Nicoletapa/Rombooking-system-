@@ -20,6 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_SESSION['RolleID'] = $user['RolleID'];
             $_SESSION['UserName'] = $user['UserName'];
             $_SESSION['BrukerID'] = $user['BrukerID'];
+            $_SESSION['TlfNr'] = $user['TlfNr'];
             echo "Login successful! Welcome " . $user['UserName'];
 
             // Redirect to a protected page
