@@ -1,5 +1,12 @@
     <!-- Nav -->
 
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script src="https://kit.fontawesome.com/cd774ebe5e.js" crossorigin="anonymous"></script>
+    </head>
     <nav class="bg-[#978c8c]">
         <div class="container mx-auto flex items-center h-16 px-4 justify-between">
             <h1 class="text-3xl">motel.no</h1>
@@ -22,7 +29,7 @@
 
             <div class="flex gap-4 items-center">
                 <?php if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true): ?>
-                    <span class="text-xl"> Hei,
+                    <a href="./Views/Users/UserPanel.php" class="text-xl"> Hei,
                         <?php echo ucfirst($_SESSION['UserName'])
                         ?>
                         <?php
@@ -31,7 +38,7 @@
                             echo "(Admin)";
                         };
                         ?>
-                    </span> <a href="./Views/Users/Logout.php" class="bg-[#563635] text-white p-2 px-4 rounded-md">
+                    </a> <a href="./Views/Users/Logout.php" class="bg-[#563635] text-white p-2 px-4 rounded-md">
                         Logg ut
                     </a>
                 <?php else: ?>
