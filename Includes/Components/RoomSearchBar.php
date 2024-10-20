@@ -9,8 +9,9 @@
 </head>
 
 <body>
-    <?php
-    include 'Includes/config.php'; // Include the database connection
+    <?php 
+include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/config.php');
+    
 
     $sql = "SELECT * FROM Romtype";
     $resultRomType = $conn->query($sql);
