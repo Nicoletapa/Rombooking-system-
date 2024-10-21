@@ -9,15 +9,15 @@
 </head>
 
 <body>
-    <?php 
-include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/config.php');
-    
+    <?php
+    include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/config.php');
+
 
     $sql = "SELECT * FROM Romtype";
     $resultRomType = $conn->query($sql);
     ?>
     <div class="w-full min-h-max">
-        <form method="POST" action="./Views/Bookings/AvailableReservations.php"
+        <form method="POST" action="/Rombooking-system-/Views/Bookings/AvailableReservations.php"
             class="flex flex-row gap-4 items-center">
 
             <div class="relative w-1/6">
