@@ -1,76 +1,78 @@
 <?php
-session_start(); // Start session for å få tilgang til $_SESSION
-
-include '../../Includes/config.php'; // Inkluder databasekonfigurasjonen
-
-// Sjekk om brukeren er logget inn
-if (!isset($_SESSION['BrukerID'])) {
-    // Hvis brukeren ikke er logget inn, omdiriger til innloggingssiden
-    header("Location: login.php");
-    exit();
-}
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Hent RomID, innsjekk, og utsjekk fra skjemaet, BrukerID fra session
-    $romID = $_POST['romID'];
-    $brukerID = $_SESSION['BrukerID']; // BrukerID fra innlogget bruker
-    $innsjekk = $_POST['innsjekk'];
-    $utsjekk = $_POST['utsjekk'];
-
-    // Først: Sjekk om rommet er tilgjengelig i den gitte perioden
-    $sqlCheck = "SELECT * FROM Reservasjon
-                 WHERE RomID = '$romID'
-                 AND (
-                     ('$innsjekk' BETWEEN Innsjekk AND Utsjekk)
-                     OR ('$utsjekk' BETWEEN Innsjekk AND Utsjekk)
-                     OR (Innsjekk BETWEEN '$innsjekk' AND '$utsjekk')
-                 )";
-
-    $result = $conn->query($sqlCheck);
-
-    if ($result->num_rows > 0) {
-        // Rommet er allerede reservert i den gitte perioden
-        echo "Dette rommet er allerede reservert i den valgte perioden. Vennligst velg en annen dato.";
-    } else {
-        // Hvis rommet er ledig, fortsett med å opprette reservasjonen
-        $sql = "INSERT INTO Reservasjon (RomID, BrukerID, Innsjekk, Utsjekk) 
-                VALUES ('$romID', '$brukerID', '$innsjekk', '$utsjekk')";
-
-        if ($conn->query($sql) === TRUE) {
-            echo "Reservasjon ble opprettet!";
-        } else {
-            echo "Feil: " . $sql . "<br>" . $conn->error;
-        }
-    }
-
-    // Lukk forbindelsen
-    $conn->close();
-}
+// Get the posted booking details
+$romID = $_POST['romID'];
+$romNavn = $_POST['romNavn'];
+$innsjekk = $_POST['innsjekk'];
+$utsjekk = $_POST['utsjekk'];
+$antallPersoner = $_POST['antallPersoner'];
 ?>
 
 <!DOCTYPE html>
-<html lang="no">
-
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reservasjon</title>
+    <title>Bekreft Reservasjon</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-
 <body>
-    <h2>Lag en reservasjon</h2>
-    <form method="POST" action="Booking.php">
-        <label for="romID">Rom ID:</label><br>
-        <input type="number" id="romID" name="romID" required><br><br>
+    <div class="container mx-auto py-8">
+        <h2 class="text-2xl font-bold text-center mb-8">Bekreft Reservasjon</h2>
+        <div class="bg-white shadow-md rounded-lg p-6 max-w-lg mx-auto">
+            <!-- Display the booking details without allowing them to be changed -->
+            <p><strong>Romtype:</strong> <?php echo htmlspecialchars($romNavn); ?></p>
+            <p><strong>Innsjekk:</strong> <?php echo htmlspecialchars($innsjekk); ?></p>
+            <p><strong>Utsjekk:</strong> <?php echo htmlspecialchars($utsjekk); ?></p>
+            <p><strong>Antall Personer:</strong> <?php echo htmlspecialchars($antallPersoner); ?></p>
 
-        <label for="innsjekk">Innsjekk dato:</label><br>
-        <input type="datetime-local" id="innsjekk" name="innsjekk" required><br><br>
+            <!-- Hidden form to submit the booking -->
+            <form id="bookingForm" method="POST" action="ConfirmReservation.php">
+                <input type="hidden" name="romID" value="<?php echo htmlspecialchars($romID); ?>">
+                <input type="hidden" name="innsjekk" value="<?php echo htmlspecialchars($innsjekk); ?>">
+                <input type="hidden" name="utsjekk" value="<?php echo htmlspecialchars($utsjekk); ?>">
+                <input type="hidden" name="antallPersoner" value="<?php echo htmlspecialchars($antallPersoner); ?>">
+                
+                <button type="button" id="openModal" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded mt-4">
+                    Bekreft Reservasjon
+                </button>
+            </form>
+        </div>
+    </div>
 
-        <label for="utsjekk">Utsjekk dato:</label><br>
-        <input type="datetime-local" id="utsjekk" name="utsjekk" required><br><br>
+    <!-- Modal -->
+    <div id="confirmationModal" class="hidden fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center">
+        <div class="bg-white p-6 rounded-lg shadow-lg max-w-md mx-auto">
+            <h3 class="text-xl font-semibold mb-4">Er du sikker på at du vil bekrefte denne reservasjonen?</h3>
+            <div class="flex justify-end space-x-4">
+                <button id="confirmButton" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">Ja, Bekreft</button>
+                <button id="cancelButton" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded">Avbryt</button>
+            </div>
+        </div>
+    </div>
 
-        <input type="submit" value="Lagre reservasjon">
-    </form>
+    <!-- JavaScript to handle modal behavior -->
+    <script>
+        // Get modal and buttons
+        const modal = document.getElementById('confirmationModal');
+        const openModalButton = document.getElementById('openModal');
+        const confirmButton = document.getElementById('confirmButton');
+        const cancelButton = document.getElementById('cancelButton');
+        const bookingForm = document.getElementById('bookingForm');
+
+        // Show the modal when clicking the "Bekreft Reservasjon" button
+        openModalButton.addEventListener('click', function() {
+            modal.classList.remove('hidden');
+        });
+
+        // When the user clicks on "Ja, Bekreft", submit the form
+        confirmButton.addEventListener('click', function() {
+            bookingForm.submit();
+        });
+
+        // When the user clicks on "Avbryt", close the modal
+        cancelButton.addEventListener('click', function() {
+            modal.classList.add('hidden');
+        });
+    </script>
 </body>
-
 </html>
