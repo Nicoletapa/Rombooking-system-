@@ -22,18 +22,23 @@
         <div class="h-3/5">
             <div class="container mx-auto px-4 h-full items-center justify-center flex flex-col">
                 <h2 class="text-3xl mb-8">Room Types</h2>
-                <!-- Header added here -->
-                <div class="flex w-full gap-4 h-2/3">
+                <div class="flex w-full gap-4 h-2/3 lg:flex-row flex-col items-center">
                     <div class="flex flex-col h-full w-full text-center">
-                        <div class="bg-gray-500 rounded-3xl h-full"></div>
+                        <div class="bg-gray-500 rounded-3xl h-full aspect-square overflow-hidden">
+                            <img src="Public/Images/Enkeltrom.avif" class="w-full h-full object-cover" alt="test" />
+                        </div>
                         <span class="text-2xl">Enkelt Rom</span>
                     </div>
                     <div class="flex flex-col h-full w-full text-center">
-                        <div class="bg-gray-500 rounded-3xl h-full"></div>
+                        <div class="bg-gray-500 rounded-3xl h-full aspect-square overflow-hidden">
+                            <img src="Public/Images/Dobbeltrom.avif" class="w-full h-full object-cover" alt="test" />
+                        </div>
                         <span class="text-2xl">Dobbeltrom</span>
                     </div>
                     <div class="flex flex-col h-full w-full text-center">
-                        <div class="bg-gray-500 rounded-3xl h-full"></div>
+                        <div class="bg-gray-500 rounded-3xl h-full aspect-square overflow-hidden">
+                            <img src="Public/Images/JuniorSuite.jpg" class="w-full h-full object-cover" alt="test" />
+                        </div>
                         <span class="text-2xl">Junior Suite</span>
                     </div>
                 </div>
