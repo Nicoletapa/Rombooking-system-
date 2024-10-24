@@ -13,7 +13,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Get the selected number of people and room type
     $romtype = $_POST['romtype'];
-    $antallPersoner = $_POST['antallPersoner'];
+    $antallPersoner = $_POST['antallVoksne'] + $_POST['antallBarn'];
 
     // SQL query to find available rooms
     $sql = "SELECT Romtype.RomTypeNavn 
