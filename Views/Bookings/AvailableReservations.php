@@ -16,17 +16,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $antallPersoner = $_POST['antallPersoner'];
 
     // SQL query to find available rooms
-    $sql = "SELECT Romtype.RomTypeNavn 
-            FROM RomID_RomType 
-            JOIN Romtype ON RomID_RomType.RomTypeID = Romtype.RomtypeID
-            WHERE RomID_RomType.RomID NOT IN (
-                SELECT RomID 
-                FROM Reservasjon 
-                WHERE ('$innsjekk' BETWEEN Innsjekk AND Utsjekk) 
-                OR ('$utsjekk' BETWEEN Innsjekk AND Utsjekk)
-                OR (Innsjekk BETWEEN '$innsjekk' AND '$utsjekk')
-            )
-            AND Romtype.RomKapsitet >= $antallPersoner";
+    $sql = "SELECT RomID_RomType.RomID, Romtype.RomTypeNavn, Romtype.RoomTypeImage 
+        FROM RomID_RomType 
+        JOIN Romtype ON RomID_RomType.RomTypeID = Romtype.RomtypeID
+        WHERE RomID_RomType.RomID NOT IN (
+            SELECT RomID 
+            FROM Reservasjon 
+            WHERE ('$innsjekk' BETWEEN Innsjekk AND Utsjekk) 
+            OR ('$utsjekk' BETWEEN Innsjekk AND Utsjekk)
+            OR (Innsjekk BETWEEN '$innsjekk' AND '$utsjekk')
+        )
+        AND Romtype.RomKapsitet >= $antallPersoner";
+
 
     // Execute the SQL query
     $result = $conn->query($sql);
@@ -36,20 +37,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($result->num_rows > 0) {
         // Count available room types
         while ($row = $result->fetch_assoc()) {
+            $roomID = $row["RomID"]; // Get the room ID
             $roomType = $row["RomTypeNavn"];
+            $RoomImage = $row["RoomTypeImage"]; // Get the image path
+            
             if (isset($roomTypeCounts[$roomType])) {
-                $roomTypeCounts[$roomType]++;
+                $roomTypeCounts[$roomType]['count']++;
             } else {
-                $roomTypeCounts[$roomType] = 1;
+                $roomTypeCounts[$roomType] = ['count' => 1, 'RoomTypeImage' => $RoomImage, 'RomID' => $roomID];
             }
         }
 
         // Create a list of available room types with their counts as cards
         $output = "<h2 class='text-xl font-semibold my-4 text-center'>Ledige rom fra $innsjekk til $utsjekk for $antallPersoner personer:</h2>";
         $output .= "<div class='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>";
-        foreach ($roomTypeCounts as $roomType => $count) {
-            $output .= displayRoomCard($roomType, $count, $innsjekk, $utsjekk, $antallPersoner);
+        foreach ($roomTypeCounts as $roomType => $data) {
+            $count = $data['count'];
+            $image = $data['RoomTypeImage'];
+            $roomID = $data['RomID']; // Get the room ID
+            $output .= displayRoomCard($roomID, $roomType, $count, $image, $innsjekk, $utsjekk, $antallPersoner);
         }
+        
+            
+      
         $output .= "</div>";
     } else {
         // If no rooms are available, display a message to the user

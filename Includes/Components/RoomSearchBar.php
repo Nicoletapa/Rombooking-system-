@@ -25,7 +25,7 @@
             <div class="relative w-1/6">
                 <label for="innsjekk" class="absolute -top-6 left-1 font-semibold">Innsjekk dato:</label>
                 <div class="bg-gray-300 rounded-md flex flex-col p-4">
-                    <input type="date" id="innsjekk" name="innsjekk" required class="bg-transparent relative text-lg">
+                    <input type="date" id="innsjekk" name="innsjekk"  required class="bg-transparent relative text-lg">
                 </div>
             </div>
             <div class="relative w-1/6">
