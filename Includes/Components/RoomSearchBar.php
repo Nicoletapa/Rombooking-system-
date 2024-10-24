@@ -17,8 +17,8 @@ include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/config.php');
     $resultRomType = $conn->query($sql);
     ?>
     <div class="w-full min-h-max">
-        <form method="POST" action="./Views/Bookings/AvailableReservations.php"
-            class="flex flex-row gap-4 items-center">
+<form method="POST" action="/Rombooking-system-/Views/Bookings/AvailableReservations.php"
+class="flex flex-row gap-4 items-center">
 
             <div class="relative w-1/6">
                 <label for="innsjekk" class="absolute -top-6 left-1 font-semibold">Innsjekk dato:</label>
