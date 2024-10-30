@@ -1,37 +1,20 @@
 <?php
 // Include the configuration file for database connection
-include('../../Includes/config.php');
+include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/Classes/User.php'); // Include the User class
 
-// Check if the form is submitted
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $username = mysqli_real_escape_string($conn, $_POST['username']);
-    $firstname = mysqli_real_escape_string($conn, $_POST['firstname']);
-    $lastname = mysqli_real_escape_string($conn, $_POST['lastname']);
-    $phone = mysqli_real_escape_string($conn, $_POST['phone']);
-    $password = mysqli_real_escape_string($conn, $_POST['password']);
-    $hashed_password = password_hash($password, PASSWORD_BCRYPT);
-    $rolle_id = mysqli_real_escape_string($conn, $_POST['role']);
+    $username = $_POST['username'];
+    $firstname = $_POST['firstname'];
+    $lastname = $_POST['lastname'];
+    $phone = $_POST['phone'];
+    $password = $_POST['password'];
+    $role = $_POST['role'];
 
-    // Check if the user already exists
-    $check_user = "SELECT * FROM Bruker WHERE UserName='$username'";
-    $result = mysqli_query($conn, $check_user);
+    // Create a new User instance and attempt to register
+    $user = new User($conn, $username, $firstname, $lastname, $phone, $password, $role);
+    $message = $user->register();
 
-    if (mysqli_num_rows($result) > 0) {
-        // User already exists
-        echo "User already exists!";
-    } else {
-        // Insert new user
-        $query = "INSERT INTO Bruker (UserName, Navn, Etternavn, TlfNr, Password, RolleID) 
-                  VALUES ('$username', '$firstname', '$lastname', '$phone', '$hashed_password', '$rolle_id')";
-        if (mysqli_query($conn, $query)) {
-            // Registration successful
-
-            echo "Registration successful! <a href='login.php'>Login here</a>";
-        } else {
-            // Error inserting user
-            echo "Error: " . $query . "<br>" . mysqli_error($conn);
-        }
-    }
+    echo $message;
 }
 ?>
 
