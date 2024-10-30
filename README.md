@@ -1,73 +1,54 @@
-# Rombooking-system-
+# Hotel Booking System
 
-DUMP NEDENFOR ATM:
+Welcome to the Hotel Booking System! This system allows users to search for available rooms, make reservations, and manage their bookings. It also includes an admin panel for managing room availability and user accounts.
 
--- phpMyAdmin SQL Dump
--- version 5.2.1
--- https://www.phpmyadmin.net/
---
--- Host: localhost
--- Generation Time: 28. Sep, 2024 17:51 PM
--- Tjener-versjon: 10.4.28-MariaDB
--- PHP Version: 8.2.4
+## Table of Contents
 
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-START TRANSACTION;
-SET time_zone = "+00:00";
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+- [File Structure](#file-structure)
+- [Database Schema](#database-schema)
+- [Contributing](#contributing)
+- [License](#license)
 
+## Features
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
+- User registration and authentication
+- Search for available rooms based on check-in and check-out dates
+- Make and manage reservations
+- User profile management
+- Admin panel for managing rooms and users
 
---
--- Database: `test`
---
+## Installation
 
--- --------------------------------------------------------
+1. Clone the repository:
+   ```sh
+   git clone https://github.com/Nicoletapa/Rombooking-system-.git
+   ```
+2. Navigate to the project directory:
+   ```sh
+   cd hotel-booking-system
+   ```
+3. Set up the database:
+   - Import the SQL schema from `Roombooking_system_schema.sql` into your MySQL database.
+4. Configure the database connection:
+   - Update the database configuration in `Includes/config.php` with your database credentials.
 
---
--- Tabellstruktur for tabell `users`
---
+## Usage
 
-CREATE TABLE `users` (
-  `id` int(11) NOT NULL,
-  `username` varchar(50) NOT NULL,
-  `email` varchar(100) NOT NULL,
-  `password` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+1. Start your local server (XAMPP)
+2. Open your browser and navigate to the project directory (e.g., `http://localhost/Rombooking-system-`).
+3. Register a new user or log in with an existing account.
+4. Use the navigation bar to access different sections of the system:
+   - **Profile**: View and update your profile information.
+   - **Reservations**: View and manage your reservations.
+   - **Search**: Search for available rooms and make new reservations.
 
---
--- Dataark for tabell `users`
---
+## Database Schema
 
-INSERT INTO `users` (`id`, `username`, `email`, `password`) VALUES
-(1, 'thevi', 'thevithach@gmail.com', '$2y$10$TxRvoZ7XtRrDA8F0opsc3OesngOZocexM9jv3WGHJBOHanMPp/kja');
+The database schema is defined in the `Roombooking_system_schema.sql` file. It includes tables for users, rooms, reservations, and roles.
 
---
--- Indexes for dumped tables
---
+## License
 
---
--- Indexes for table `users`
---
-ALTER TABLE `users`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `username` (`username`),
-  ADD UNIQUE KEY `email` (`email`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `users`
---
-ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-COMMIT;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
