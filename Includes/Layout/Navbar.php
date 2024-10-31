@@ -8,9 +8,9 @@
         <script src="https://kit.fontawesome.com/cd774ebe5e.js" crossorigin="anonymous"></script>
     </head>
     <style>
-        html {
-            overflow-y: scroll;
-        }
+html {
+    overflow-y: scroll;
+}
     </style>
 
     <nav class="bg-[#978c8c] w-full">
@@ -37,25 +37,25 @@
 
             <div class="flex gap-4 items-center">
                 <?php if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true): ?>
-                    <a href="/RomBooking-System-/Views/Users/UserPanel.php" class="text-xl"> Hei,
-                        <?php echo ucfirst($_SESSION['UserName'])
+                <a href="/RomBooking-System-/Views/Users/UserPanel.php" class="text-xl"> Hei,
+                    <?php echo ucfirst($_SESSION['UserName'])
                         ?>
-                        <?php
+                    <?php
 
                         if ($_SESSION['RolleID'] == 2) {
                             echo "(Admin)";
                         };
                         ?>
-                    </a> <a href="./Views/Users/Logout.php" class="bg-[#563635] text-white p-2 px-4 rounded-md">
-                        Logg ut
-                    </a>
+                </a> <a href="./Views/Users/Logout.php" class="bg-[#563635] text-white p-2 px-4 rounded-md">
+                    Logg ut
+                </a>
                 <?php else: ?>
-                    <a href="./Views/Users/Login.php" class="bg-[#563635] text-white p-2 px-4 rounded-md">
-                        Logg inn
-                    </a>
-                    <a href="./Views/Users/Register.php" class="bg-[#563635] text-white p-2 px-4 rounded-md">
-                        Registrer
-                    </a>
+                <a href="./Views/Users/Login.php" class="bg-[#563635] text-white p-2 px-4 rounded-md">
+                    Logg inn
+                </a>
+                <a href="./Views/Users/Register.php" class="bg-[#563635] text-white p-2 px-4 rounded-md">
+                    Registrer
+                </a>
                 <?php endif; ?>
             </div>
         </div>

@@ -73,4 +73,39 @@ class User
             return "User does not exist.";
         }
     }
+    // Password change method
+    public function changePassword($current_password, $new_password)
+    {
+        // Fetch the user from the database
+        $sql = "SELECT * FROM Bruker WHERE UserName = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("s", $this->username);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows === 1) {
+            $user = $result->fetch_assoc();
+
+            // Verify current password
+            if (password_verify($current_password, $user['Password'])) {
+                // Hash the new password
+                $new_password_hashed = password_hash($new_password, PASSWORD_DEFAULT);
+
+                // Update the password in the database
+                $update_sql = "UPDATE Bruker SET Password = ? WHERE UserName = ?";
+                $update_stmt = $this->conn->prepare($update_sql);
+                $update_stmt->bind_param("ss", $new_password_hashed, $this->username);
+
+                if ($update_stmt->execute()) {
+                    return "Password changed successfully!";
+                } else {
+                    return "Error updating password: " . $this->conn->error;
+                }
+            } else {
+                return "Current password is incorrect.";
+            }
+        } else {
+            return "User not found.";
+        }
+    }
 }
