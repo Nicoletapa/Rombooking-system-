@@ -1,8 +1,6 @@
 <?php
-session_start();  // Start the session
-
-// Assuming a connection to the database is already established
-include '../../Includes/config.php';
+session_start();
+include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/Classes/User.php'); // Include the User class
 
 // Initialize message variable
 $message = "";
@@ -10,6 +8,7 @@ $message = "";
 // Retrieve the username from the session
 if (isset($_SESSION['UserName'])) {
     $username = $_SESSION['UserName'];
+    $user = new User($conn, $username); // Instantiate User with the current session username
 } else {
     $message = "No user is logged in.";
 }
@@ -18,42 +17,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && empty($message)) {
     $current_password = $_POST['current_password'];
     $new_password = $_POST['new_password'];
 
-    // Fetch the user from the database
-    $sql = "SELECT * FROM Bruker WHERE UserName = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $username);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    if ($result->num_rows === 1) {
-        $user = $result->fetch_assoc();
-
-        // Verify current password (assuming passwords are hashed)
-        if (password_verify($current_password, $user['Password'])) {
-            // Hash the new password
-            $new_password_hashed = password_hash($new_password, PASSWORD_DEFAULT);
-
-            // Update the password in the database
-            $update_sql = "UPDATE Bruker SET Password = ? WHERE UserName = ?";
-            $update_stmt = $conn->prepare($update_sql);
-            $update_stmt->bind_param("ss", $new_password_hashed, $username);
-
-            if ($update_stmt->execute()) {
-                $message = "Password changed successfully!";
-            } else {
-                $message = "Error updating password: " . $conn->error;
-            }
-        } else {
-            $message = "Current password is incorrect.";
-        }
-    } else {
-        $message = "User not found.";
-    }
+    // Use the changePassword method and capture the message
+    $message = $user->changePassword($current_password, $new_password);
 }
 ?>
 
-
-
+<!-- Include your HTML structure here -->
 <?php include('../../Includes/Layout/Navbar.php'); ?>
 
 <div class="min-h-[85vh] container mx-auto">

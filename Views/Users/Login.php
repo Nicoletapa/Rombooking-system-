@@ -1,42 +1,21 @@
 <?php
-session_start(); // Start the session
-include('../../Includes/config.php'); // Include the database configuration file
+include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/Classes/User.php'); // Include the User class
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $username = mysqli_real_escape_string($conn, $_POST['username']);
-    $password = mysqli_real_escape_string($conn, $_POST['password']);
+    $username = $_POST['username'];
+    $password = $_POST['password'];
 
-    // Check if the user exists
-    $query = "SELECT * FROM Bruker WHERE UserName='$username'";
-    $result = mysqli_query($conn, $query);
+    // Create a User instance for login
+    $user = new User($conn, $username);
+    $message = $user->login($password);
 
-    if (mysqli_num_rows($result) == 1) {
-        $user = mysqli_fetch_assoc($result);
-
-        // Verify password
-        if (password_verify($password, $user['Password'])) {
-            // Set session variables
-            $_SESSION['loggedin'] = true;
-            $_SESSION['RolleID'] = $user['RolleID'];
-            $_SESSION['UserName'] = $user['UserName'];
-            $_SESSION['BrukerID'] = $user['BrukerID'];
-            $_SESSION['TlfNr'] = $user['TlfNr'];
-            echo "Login successful! Welcome " . $user['UserName'];
-
-            // Redirect to a protected page
-            header('Location: ../../Index.php');
-            echo '<pre>';
-            print_r($_SESSION);
-            echo '</pre>';
-            exit();
-        } else {
-            echo "Incorrect password.";
-        }
-    } else {
-        echo "User does not exist.";
+    // Display the message if there is one (for incorrect password or non-existent user)
+    if ($message) {
+        echo $message;
     }
 }
 ?>
+
 
 <head>
     <meta charset="UTF-8" />
