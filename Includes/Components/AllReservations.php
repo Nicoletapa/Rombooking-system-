@@ -6,20 +6,9 @@ ini_set('display_errors', 1);
 // Assuming a connection to the database is already established
 include '../../Includes/config.php';
 
-// Retrieve the BrukerID and RolleID from the session
-if (isset($_SESSION['BrukerID']) && isset($_SESSION['RolleID'])) {
-    $brukerID = $_SESSION['BrukerID'];
-    $rolleID = $_SESSION['RolleID'];
-    
-    // Check if the user is an admin (RolleID == 2)
-    if ($rolleID != 2) {
-        echo "Unauthorized access.";
-        exit;
-    }
-} else {
-    echo "No user is logged in.";
-    exit;
-}
+// Check if the user is an admin
+include '../../Includes/utils/NotAdmin.php';
+include '../../Includes/utils/NoUserLoggedIn.php';
 
 // Fetch the search input if provided
 $search_column = isset($_GET['search_column']) ? $_GET['search_column'] : 'ReservasjonID';

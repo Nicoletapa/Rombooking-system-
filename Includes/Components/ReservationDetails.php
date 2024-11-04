@@ -6,19 +6,8 @@ include '../../Includes/config.php';
 
 
 // Retrieve the BrukerID and RolleID from the session
-if (isset($_SESSION['BrukerID']) && isset($_SESSION['RolleID'])) {
-    $brukerID = $_SESSION['BrukerID'];
-    $rolleID = $_SESSION['RolleID'];
-    
-   //RolleID == 2 er admin
-    if ($rolleID != 2) {
-        echo "Unauthorized access.";
-        exit;
-    }
-} else {
-    echo "No user is logged in.";
-    exit;
-}
+include '../../Includes/utils/NotAdmin.php';
+include '../../Includes/utils/NoUserLoggedIn.php';
 
 // Fetch the ReservasjonID from the query string
 $reservasjonID = isset($_GET['ReservasjonID']) ? $_GET['ReservasjonID'] : '';
