@@ -21,7 +21,7 @@ html {
             <div class="text-xl">
                 <ul class="flex gap-4">
                     <li>
-                        <a href="#">Språk</a>
+                        <a href="/RomBooking-System-/Views/AdminPanel/AdminPanel.php">AdminPanel</a>
                     </li>
                     <li>
                         <a href="#">Valuta</a>
@@ -44,6 +44,7 @@ html {
 
                         if ($_SESSION['RolleID'] == 2) {
                             echo "(Admin)";
+                            //legge til include fil
                         };
                         ?>
                 </a> <a href="/RomBooking-System-/Views/Users/Logout.php"

@@ -1,14 +1,12 @@
 <?php include('../../Includes/Layout/Navbar.php'); ?>
-
 <div class="min-h-[85vh] container mx-auto">
     <div class="flex h-[90%]">
-        <?php include('../../Includes/Layout/SidebarProfileNav.php'); ?>
+        <?php include('../../Includes/Layout/SidebarAdminPanel.php'); ?>
 
         <!-- Content Section -->
         <div class="bg-[#B7B2B2] w-full p-4">
             <!-- Profile Section -->
-            <?php include("../../Includes/Components/MyProfile.php") ?>
+            <?php include("../../Includes/Components/AllReservations.php") ?>
         </div>
     </div>
 </div>
-
