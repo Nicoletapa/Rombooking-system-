@@ -46,14 +46,16 @@ html {
                             echo "(Admin)";
                         };
                         ?>
-                </a> <a href="./Views/Users/Logout.php" class="bg-[#563635] text-white p-2 px-4 rounded-md">
+                </a> <a href="/RomBooking-System-/Views/Users/Logout.php"
+                    class="bg-[#563635] text-white p-2 px-4 rounded-md">
                     Logg ut
                 </a>
                 <?php else: ?>
-                <a href="./Views/Users/Login.php" class="bg-[#563635] text-white p-2 px-4 rounded-md">
+                <a href="/RomBooking-System-/Views/Users/Login.php" class="bg-[#563635] text-white p-2 px-4 rounded-md">
                     Logg inn
                 </a>
-                <a href="./Views/Users/Register.php" class="bg-[#563635] text-white p-2 px-4 rounded-md">
+                <a href="/RomBooking-System-/Views/Users/Register.php"
+                    class="bg-[#563635] text-white p-2 px-4 rounded-md">
                     Registrer
                 </a>
                 <?php endif; ?>
