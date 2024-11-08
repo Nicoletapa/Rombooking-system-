@@ -29,22 +29,28 @@ USE `Gang`;
 --
 
 CREATE TABLE `Bruker` (
-  `BrukerID` int(11) NOT NULL,
+  `BrukerID` int(11) NOT NULL AUTO_INCREMENT,
   `Navn` varchar(255) NOT NULL,
   `Etternavn` varchar(255) NOT NULL,
   `TlfNr` varchar(20) NOT NULL,
+  `Email` varchar(255) NOT NULL,
   `Password` varchar(255) NOT NULL,
-  `UserName` varchar(255) NOT NULL,
-  `RolleID` int(11) NOT NULL
+  `UserName` varchar(255) UNIQUE NOT NULL,
+  `RolleID` int(11) NOT NULL,
+  `FailedLoginAttempts` int(11) NOT NULL DEFAULT 0,
+  `LastFailedLogin` TIMESTAMP NULL DEFAULT NULL,
+  PRIMARY KEY (`BrukerID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 
 --
 -- Dataark for tabell `Bruker`
 --
 
-INSERT INTO `Bruker` (`BrukerID`, `Navn`, `Etternavn`, `TlfNr`, `Password`, `UserName`, `RolleID`) VALUES
-(8, 'thevi', 'thach', '12341234', '$2y$10$U1cxgUYWc2D4ojbcVbu5f.SW1Tr9kazsxqnt/JWpS0YEWyrJ1vwB6', 'Admin', 2),
-(9, 'nicoleta', 'nicoleta', '91121222', '$2y$10$nf7VVykU5E/nBIeqbKOPqO.9j/wCP9M9cSbzFAJZSKB4B6gSaK9Fu', 'nicoleta', 2);
+INSERT INTO `Bruker` (`BrukerID`, `Navn`, `Etternavn`, `TlfNr`, `Email`, `Password`, `UserName`, `RolleID`, `FailedLoginAttempts`, `LastFailedLogin`) VALUES
+(8, 'thevi', 'thach', '12341234', 'thevi@example.com', '$2y$10$U1cxgUYWc2D4ojbcVbu5f.SW1Tr9kazsxqnt/JWpS0YEWyrJ1vwB6', 'Admin', 2, 0, NULL),
+(9, 'nicoleta', 'nicoleta', '91121222', 'nicoleta@example.com', '$2y$10$nf7VVykU5E/nBIeqbKOPqO.9j/wCP9M9cSbzFAJZSKB4B6gSaK9Fu', 'nicoleta', 2, 0, NULL);
+
 
 -- --------------------------------------------------------
 
@@ -168,7 +174,6 @@ INSERT INTO `Romtype` (`RomtypeID`, `RomTypeNavn`, `RomKapsitet`, `Beskrivelse`,
 -- Indexes for table `Bruker`
 --
 ALTER TABLE `Bruker`
-  ADD PRIMARY KEY (`BrukerID`),
   ADD KEY `RolleID` (`RolleID`);
 
 --
