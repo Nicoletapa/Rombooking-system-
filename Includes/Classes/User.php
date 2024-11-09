@@ -1,6 +1,6 @@
 <?php
 session_start(); // Start the session
-include('../../Includes/config.php'); // Include the database configuration file
+include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/config.php'); // Include the database configuration file
 
 class User
 {
@@ -11,67 +11,133 @@ class User
     private $firstname;
     private $lastname;
     private $phone;
+    private $email;
     private $role;
 
     // Constructor for registration
-    public function __construct($conn, $username = null, $password = null, $firstname = null, $lastname = null, $phone = null, $role = null)
+    public function __construct($conn, $username = null, $password = null, $firstname = null, $lastname = null, $phone = null, $email = null, $role = null)
     {
         $this->conn = $conn;
         $this->username = mysqli_real_escape_string($conn, $username);
-        $this->password = $password ? password_hash($password, PASSWORD_BCRYPT) : null; // Hash password only if provided
+        $this->password = $password;
         $this->firstname = mysqli_real_escape_string($conn, $firstname);
         $this->lastname = mysqli_real_escape_string($conn, $lastname);
         $this->phone = mysqli_real_escape_string($conn, $phone);
+        $this->email = $email;
         $this->role = mysqli_real_escape_string($conn, $role);
     }
 
-    // Registration method
     public function register()
     {
-        // Check if the user already exists
-        $check_user = "SELECT * FROM Bruker WHERE UserName='$this->username'";
-        $result = mysqli_query($this->conn, $check_user);
+        $errors = [];
+        // Validate phone number length (assuming the column length is 15)
+        if (strlen($this->phone) > 15) {
+            $errors[] = "Phone number must be at most 15 characters long.";
+        }
+        // Validate email format
+        if (!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
+            $errors[] = "Invalid email format.";
+        }
+        // Check password criteria
+        if (strlen($this->password) < 8) {
+            $errors[] = "Password must be at least 8 characters long.";
+        }
+        if (!preg_match('/[A-Z]/', $this->password)) {
+            $errors[] = "Password must contain at least one uppercase letter.";
+        }
+        if (!preg_match('/[a-z]/', $this->password)) {
+            $errors[] = "Password must contain at least one lowercase letter.";
+        }
+        if (!preg_match('/[0-9]/', $this->password)) {
+            $errors[] = "Password must contain at least one digit.";
+        }
+        if (!preg_match('/[\W]/', $this->password)) {
+            $errors[] = "Password must contain at least one special character.";
+        }
 
-        if (mysqli_num_rows($result) > 0) {
-            return "User already exists!";
+
+
+
+        // Check if the user already exists
+        $stmt = $this->conn->prepare("SELECT * FROM Bruker WHERE UserName = ?");
+        $stmt->bind_param("s", $this->username);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0) {
+            $errors[] = "User already exists.";
+        }
+
+        // Return all errors if there are any
+        if (!empty($errors)) {
+            return implode("<br>", $errors); // Join all errors with line breaks
+        }
+
+        // If no errors, hash the password and proceed with registration
+        $hashedPassword = password_hash($this->password, PASSWORD_BCRYPT);
+
+        // Insert the new user into the database
+        $query = "INSERT INTO Bruker (UserName, Navn, Etternavn, TlfNr, Email, Password, RolleID) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("ssssssi", $this->username, $this->firstname, $this->lastname, $this->phone, $this->email, $hashedPassword, $this->role);
+
+        if ($stmt->execute()) {
+            header('Location: Login.php');
+            exit;
         } else {
-            $query = "INSERT INTO Bruker (UserName, Navn, Etternavn, TlfNr, Password, RolleID) 
-                      VALUES ('$this->username', '$this->firstname', '$this->lastname', '$this->phone', '$this->password', '$this->role')";
-            if (mysqli_query($this->conn, $query)) {
-                return "Registration successful! <a href='login.php'>Login here</a>";
-            } else {
-                return "Error: " . mysqli_error($this->conn);
-            }
+            return "Error: " . $stmt->error;
         }
     }
 
-    // Login method
+
+    // Login method - Accepts only the password as parameter
     public function login($password)
     {
-        // Check if the user exists
-        $query = "SELECT * FROM Bruker WHERE UserName='$this->username'";
-        $result = mysqli_query($this->conn, $query);
+        // Retrieve the user's data from the database
+        $stmt = $this->conn->prepare("SELECT * FROM Bruker WHERE UserName = ?");
+        $stmt->bind_param("s", $this->username);
+        $stmt->execute();
+        $user = $stmt->get_result()->fetch_assoc();
 
-        if (mysqli_num_rows($result) == 1) {
-            $user = mysqli_fetch_assoc($result);
+        // Check if user exists
+        if (!$user) {
+            return "Incorrect username or password.";
+        }
 
-            // Verify password
-            if (password_verify($password, $user['Password'])) {
-                // Set session variables
-                $_SESSION['loggedin'] = true;
-                $_SESSION['RolleID'] = $user['RolleID'];
-                $_SESSION['UserName'] = $user['UserName'];
-                $_SESSION['BrukerID'] = $user['BrukerID'];
-                $_SESSION['TlfNr'] = $user['TlfNr'];
+        // Check for lockout due to too many failed login attempts
+        if ($user['FailedLoginAttempts'] >= 3 && (time() - strtotime($user['LastFailedLogin'])) < 3600) {
+            return "Too many failed login attempts. Please try again in one hour.";
+        }
 
-                // Redirect to a protected page
-                header('Location: ../../Index.php');
-                exit();
+        // Verify the entered password with the stored hashed password
+        if (password_verify($password, $user['Password'])) {
+            // Reset failed attempts on successful login
+            $stmt = $this->conn->prepare("UPDATE Bruker SET FailedLoginAttempts = 0 WHERE UserName = ?");
+            $stmt->bind_param("s", $this->username);
+            $stmt->execute();
+
+            // Set session variables upon successful login
+            $_SESSION['loggedin'] = true;
+            $_SESSION['RolleID'] = $user['RolleID'];
+            $_SESSION['UserName'] = $user['UserName'];
+            $_SESSION['BrukerID'] = $user['BrukerID'];
+            $_SESSION['TlfNr'] = $user['TlfNr'];
+            $_SESSION['email'] = $user['Email'];
+
+            // Redirect based on role
+            if ($user['RolleID'] == 2) {
+                header('Location: /RomBooking-System-/Views/AdminPanel/AdminPanel.php');
             } else {
-                return "Incorrect password.";
+                header('Location: ../../Index.php');
             }
+            exit;
         } else {
-            return "User does not exist.";
+            // Increment failed attempts and set last failed login timestamp
+            $stmt = $this->conn->prepare("UPDATE Bruker SET FailedLoginAttempts = FailedLoginAttempts + 1, LastFailedLogin = NOW() WHERE UserName = ?");
+            $stmt->bind_param("s", $this->username);
+            $stmt->execute();
+
+            return "Incorrect username or password.";
         }
     }
     // Password change method
