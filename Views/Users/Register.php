@@ -2,6 +2,8 @@
 include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/Classes/User.php'); // Include the User class
 // include('database.php'); // Include your database connection
 
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = $_POST['username'];
     $firstname = $_POST['firstname'];
@@ -11,8 +13,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $password = $_POST['password'];
     $role = $_POST['role'];
 
+
+
     // Create a new User instance and attempt to register
-    $user = new User($conn, $username, $firstname, $lastname, $phone, $email, $password, $role);
+    $user = new User($conn, $username, $password, $firstname, $lastname, $phone, $email, $role);
+
     $message = $user->register();
 
     echo $message;
@@ -51,6 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 class="border-2 rounded-md px-2 py-1"><br>
 
             <label for="email" class="px-2 mb-2 font-semibold">Email</label>
+
             <input type="email" id="email" name="email" placeholder="Email" required
                 style="background-color: inherit; width: 100%; margin-bottom: 10px;"
                 class="border-2 rounded-md px-2 py-1"><br>

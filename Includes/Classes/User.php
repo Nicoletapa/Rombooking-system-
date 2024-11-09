@@ -1,6 +1,6 @@
 <?php
 session_start(); // Start the session
-include('../../Includes/config.php'); // Include the database configuration file
+include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/config.php'); // Include the database configuration file
 
 class User
 {
@@ -19,7 +19,7 @@ class User
     {
         $this->conn = $conn;
         $this->username = mysqli_real_escape_string($conn, $username);
-        $this->password = $password ? password_hash($password, PASSWORD_BCRYPT) : null; // Hash password only if provided
+        $this->password = $password;
         $this->firstname = mysqli_real_escape_string($conn, $firstname);
         $this->lastname = mysqli_real_escape_string($conn, $lastname);
         $this->phone = mysqli_real_escape_string($conn, $phone);
@@ -27,9 +27,37 @@ class User
         $this->role = mysqli_real_escape_string($conn, $role);
     }
 
-    // Registration method - Uses class properties
     public function register()
     {
+        $errors = [];
+        // Validate phone number length (assuming the column length is 15)
+        if (strlen($this->phone) > 15) {
+            $errors[] = "Phone number must be at most 15 characters long.";
+        }
+        // Validate email format
+        if (!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
+            $errors[] = "Invalid email format.";
+        }
+        // Check password criteria
+        if (strlen($this->password) < 8) {
+            $errors[] = "Password must be at least 8 characters long.";
+        }
+        if (!preg_match('/[A-Z]/', $this->password)) {
+            $errors[] = "Password must contain at least one uppercase letter.";
+        }
+        if (!preg_match('/[a-z]/', $this->password)) {
+            $errors[] = "Password must contain at least one lowercase letter.";
+        }
+        if (!preg_match('/[0-9]/', $this->password)) {
+            $errors[] = "Password must contain at least one digit.";
+        }
+        if (!preg_match('/[\W]/', $this->password)) {
+            $errors[] = "Password must contain at least one special character.";
+        }
+
+
+
+
         // Check if the user already exists
         $stmt = $this->conn->prepare("SELECT * FROM Bruker WHERE UserName = ?");
         $stmt->bind_param("s", $this->username);
@@ -37,20 +65,30 @@ class User
         $result = $stmt->get_result();
 
         if ($result->num_rows > 0) {
-            return "User already exists!";
-        } else {
-            // Insert the new user into the database
-            $query = "INSERT INTO Bruker (UserName, Navn, Etternavn, TlfNr, Email, Password, RolleID) VALUES (?, ?, ?, ?, ?, ?, ?)";
-            $stmt = $this->conn->prepare($query);
-            $stmt->bind_param("ssssssi", $this->username, $this->firstname, $this->lastname, $this->phone, $this->email, $this->password, $this->role);
+            $errors[] = "User already exists.";
+        }
 
-            if ($stmt->execute()) {
-                header('Location: Login.php');
-            } else {
-                return "Error: " . $stmt->error;
-            }
+        // Return all errors if there are any
+        if (!empty($errors)) {
+            return implode("<br>", $errors); // Join all errors with line breaks
+        }
+
+        // If no errors, hash the password and proceed with registration
+        $hashedPassword = password_hash($this->password, PASSWORD_BCRYPT);
+
+        // Insert the new user into the database
+        $query = "INSERT INTO Bruker (UserName, Navn, Etternavn, TlfNr, Email, Password, RolleID) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("ssssssi", $this->username, $this->firstname, $this->lastname, $this->phone, $this->email, $hashedPassword, $this->role);
+
+        if ($stmt->execute()) {
+            header('Location: Login.php');
+            exit;
+        } else {
+            return "Error: " . $stmt->error;
         }
     }
+
 
     // Login method - Accepts only the password as parameter
     public function login($password)
