@@ -1,5 +1,6 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/Classes/User.php'); // Include the User class
+include('database.php'); // Include your database connection
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = $_POST['username'];
@@ -9,18 +10,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $user = new User($conn, $username);
     $message = $user->login($password);
 
-    // Display the message if there is one (for incorrect password or non-existent user)
+    // Display the message if there is one (e.g., incorrect password or non-existent user)
     if ($message) {
-        echo $message;
+        echo "<p class='error-message'>" . htmlspecialchars($message) . "</p>";
     }
 }
 ?>
 
-
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Login</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <div class="flex h-screen justify-center items-center">
