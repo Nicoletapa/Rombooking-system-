@@ -1,6 +1,5 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+
 
 include '../../Includes/config.php'; // Include database configuration
 include '../../Includes/Components/RoomCard.php'; // Include the RoomCard component
@@ -40,7 +39,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $roomID = $row["RomID"]; // Get the room ID
             $roomType = $row["RomTypeNavn"];
             $RoomImage = $row["RoomTypeImage"]; // Get the image path
-            
+
             if (isset($roomTypeCounts[$roomType])) {
                 $roomTypeCounts[$roomType]['count']++;
             } else {
@@ -57,9 +56,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $roomID = $data['RomID']; // Get the room ID
             $output .= displayRoomCard($roomID, $roomType, $count, $image, $innsjekk, $utsjekk, $antallPersoner);
         }
-        
-            
-      
+
+
+
         $output .= "</div>";
     } else {
         // If no rooms are available, display a message to the user
