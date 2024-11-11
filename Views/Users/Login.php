@@ -1,6 +1,10 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/Classes/User.php'); // Include the User class
 
+if (isset($_GET['logout']) && $_GET['logout'] === 'success') {
+    echo "<p style='color: green;'>Du har logget ut.</p>";
+}
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = $_POST['username'];
     $password = $_POST['password'];
