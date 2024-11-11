@@ -4,13 +4,7 @@ session_start();  // Start session
 // Assuming a connection to the database is already established
 include '../../Includes/config.php';
 
-// Retrieve the BrukerID from the session
-if (isset($_SESSION['BrukerID'])) {
-    $brukerID = $_SESSION['BrukerID'];
-} else {
-    echo "No user is logged in.";
-    exit;
-}
+include '../../Includes/utils/NoUserLoggedIn.php';
 
 // Count total reservations for the logged-in user
 $sql = "SELECT COUNT(*) AS total_reservations FROM Reservasjon WHERE BrukerID = ?";

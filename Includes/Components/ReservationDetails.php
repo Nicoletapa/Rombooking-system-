@@ -5,20 +5,9 @@ ini_set('display_errors', 1);
 include '../../Includes/config.php'; 
 
 
-// Retrieve the BrukerID and RolleID from the session
-if (isset($_SESSION['BrukerID']) && isset($_SESSION['RolleID'])) {
-    $brukerID = $_SESSION['BrukerID'];
-    $rolleID = $_SESSION['RolleID'];
-    
-   //RolleID == 2 er admin
-    if ($rolleID != 2) {
-        echo "Unauthorized access.";
-        exit;
-    }
-} else {
-    echo "No user is logged in.";
-    exit;
-}
+
+include '../../Includes/utils/NotAdmin.php';
+include '../../Includes/utils/NoUserLoggedIn.php';
 
 // Fetch the ReservasjonID from the query string
 $reservasjonID = isset($_GET['ReservasjonID']) ? $_GET['ReservasjonID'] : '';
@@ -92,6 +81,11 @@ $reservation = $result->fetch_assoc();
             </tr>
         </tbody>
     </table>
+    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-2" >
+        <a href="AdminReservations.php">Tilbake til oversikten</a>
+    </button>
+    <button class="bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-4 rounded mt-2" >
+        <a href="AdminEditReservation.php?ReservasjonID=<?php echo $reservation['ReservasjonID']; ?>">Rediger reservasjon</a>
     <?php else: ?>
     <p class="text-center">Reservasjonen ble ikke funnet.</p>
     <?php endif; ?>
