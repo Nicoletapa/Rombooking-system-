@@ -1,6 +1,8 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 // Include the database configuration
-include '../../Includes/config.php';
+include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/config.php');
 
 // Check if the form was submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -25,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($stmt->execute()) {
         // Display confirmation and redirect using JavaScript
         echo "<p class='text-green-500 my-4'>Reservasjonen din er bekreftet!</p>";
-        
+
         // Add JavaScript to redirect to index.php after 3 seconds
         echo "
         <script>
@@ -41,4 +43,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->close();
     $conn->close();
 }
-?>
