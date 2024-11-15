@@ -16,12 +16,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     session_start();
     $brukerID = $_SESSION['BrukerID']; // Replace with your session variable for user ID
 
+    // Get the current date in PHP
+    $bestillingsdato = date('Y-m-d');
+
     // Prepare the SQL query to insert the reservation
-    $sql = "INSERT INTO Reservasjon (RomID, BrukerID, Innsjekk, Utsjekk, AntallPersoner) VALUES (?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO Reservasjon (RomID, BrukerID, Innsjekk, Utsjekk, AntallPersoner, Bestillingsdato) 
+            VALUES (?, ?, ?, ?, ?, ?)";
 
     // Use a prepared statement to avoid SQL injection
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("iissi", $romID, $brukerID, $innsjekk, $utsjekk, $antallPersoner);
+    $stmt->bind_param("iissis", $romID, $brukerID, $innsjekk, $utsjekk, $antallPersoner, $bestillingsdato);
 
     // Execute the query
     if ($stmt->execute()) {
@@ -31,9 +35,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Add JavaScript to redirect to index.php after 3 seconds
         echo "
         <script>
-    alert('Reservasjonen din er bekreftet! Du blir nå omdirigert til startsiden.');
-    window.location.href = '../../index.php';
-</script>";
+            alert('Reservasjonen din er bekreftet! Du blir nå omdirigert til startsiden.');
+            window.location.href = '../../index.php';
+        </script>";
     } else {
         // Display an error message
         echo "<p class='text-red-500 my-4'>Det oppsto en feil under bestillingen. Prøv igjen senere.</p>";

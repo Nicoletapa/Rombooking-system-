@@ -11,7 +11,7 @@ class Reservation
         $this->conn = $conn;
     }
 
-    
+
     public function getReservationById($reservasjonID)
     {
         $sql = "
@@ -27,7 +27,7 @@ class Reservation
         $result = $stmt->get_result();
         return $result->fetch_assoc();
     }
-    
+
     // Method to fetch reservations for the logged-in user
     public function getReservationsLoggedInUser()
     {
@@ -42,11 +42,12 @@ class Reservation
 
         // Prepare the SQL query to fetch reservations
         $sql = "
-            SELECT r.RomID, r.Innsjekk, r.Utsjekk, rt.RomTypeNavn, rt.Beskrivelse
+            SELECT r.RomID, r.Innsjekk, r.Utsjekk, r.Bestillingsdato ,rt.RomTypeNavn, rt.Beskrivelse
             FROM Reservasjon r
             JOIN RomID_RomType rid ON r.RomID = rid.RomID
             JOIN Romtype rt ON rid.RomtypeID = rt.RomtypeID
             WHERE r.BrukerID = ?
+            ORDER BY r.Bestillingsdato DESC
         ";
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param("i", $brukerID);
@@ -61,7 +62,7 @@ class Reservation
         $stmt->close();
         return $reservations;
     }
-    
+
     public function editReservation($reservasjonID, $brukerID, $romID, $innsjekk, $utsjekk)
     {
         include $_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/utils/NotAdmin.php';
