@@ -40,7 +40,7 @@ if (isset($_SESSION['firstname']) && isset($_SESSION['lastname'])) {
             <span class="text-lg"><span class="font-semibold">Brukernavn:
                 </span><?php echo $_SESSION['UserName']; ?></span>
             <span class="text-lg"><span class="font-semibold">Email:
-                </span>Eksempel@gmail.com</span>
+                </span><?php echo $_SESSION['email']; ?></span>
 
             <span class="text-lg"><span class="font-semibold">Telefon:
                 </span><?php echo $_SESSION['TlfNr']; ?></span>
