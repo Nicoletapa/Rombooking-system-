@@ -1,10 +1,8 @@
 <?php
-session_start();  // Start session
 
 // Assuming a connection to the database is already established
-include '../../Includes/config.php';
-
-include '../../Includes/utils/NoUserLoggedIn.php';
+include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/config.php'); // Include the database configuration file
+include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/utils/NoUserLoggedIn.php'); // Include the User class
 
 // Count total reservations for the logged-in user
 $sql = "SELECT COUNT(*) AS total_reservations FROM Reservasjon WHERE BrukerID = ?";
@@ -15,7 +13,21 @@ $result = $stmt->get_result();
 $row = $result->fetch_assoc();
 $total_reservations = $row['total_reservations'];
 
+
+if (isset($_SESSION['firstname']) && isset($_SESSION['lastname'])) {
+    $firstname = $_SESSION['firstname'];
+    $lastname = $_SESSION['lastname'];
+
+    // Construct the avatar URL
+    $avatarUrl = 'https://ui-avatars.com/api/?name=' . urlencode($firstname . ' ' . $lastname) . '&size=128&background=0D8ABC&color=fff';
+} else {
+    echo "Session variables for first name and last name are not set.";
+    $avatarUrl = 'https://ui-avatars.com/api/?name=Guest&size=128&background=CCCCCC&color=000000';
+}
+
 ?>
+
+
 
 <div id="profile" class="section" style="display: block;">
     <h2 class="text-center text-xl font-semibold">Min Profil</h2>
@@ -23,7 +35,7 @@ $total_reservations = $row['total_reservations'];
     <p class="text-center text-gray-700">Velkommen til din profil.</p>
 
     <div class="flex flex-col items-center gap-6 h-[95%] p-4">
-        <i class="fa-solid fa-user-tie p-24 bg-blue-500 rounded-full"></i>
+        <img src="<?php echo $avatarUrl; ?>" alt="Avatar" class="rounded-full">
         <div class="flex justify-between w-full items-center px-1">
             <span class="text-lg"><span class="font-semibold">Brukernavn:
                 </span><?php echo $_SESSION['UserName']; ?></span>

@@ -123,6 +123,8 @@ class User
             // Set session variables upon successful login
             $_SESSION['loggedin'] = true;
             $_SESSION['RolleID'] = $user['RolleID'];
+            $_SESSION['firstname'] = $user['Navn'];
+            $_SESSION['lastname'] = $user['Etternavn'];
             $_SESSION['UserName'] = $user['UserName'];
             $_SESSION['BrukerID'] = $user['BrukerID'];
             $_SESSION['TlfNr'] = $user['TlfNr'];
