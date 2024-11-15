@@ -1,10 +1,13 @@
 <?php
-session_start(); // Start the session
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/config.php'); // Include the database configuration file
 
 class User
 {
-    private $conn;
+    protected $conn;
     private $brukerID;
     private $username;
     private $password;
@@ -15,17 +18,18 @@ class User
     private $role;
 
     // Constructor for registration
-    public function __construct($conn, $username = null, $password = null, $firstname = null, $lastname = null, $phone = null, $email = null, $role = null)
+    public function __construct($conn, ?string $username = null, ?string $password = null, ?string $firstname = null, ?string $lastname = null, ?string $phone = null, ?string $email = null, ?string $role = null)
     {
         $this->conn = $conn;
-        $this->username = mysqli_real_escape_string($conn, $username);
+        $this->username = $username ?? '';
         $this->password = $password;
-        $this->firstname = mysqli_real_escape_string($conn, $firstname);
-        $this->lastname = mysqli_real_escape_string($conn, $lastname);
-        $this->phone = mysqli_real_escape_string($conn, $phone);
-        $this->email = $email;
-        $this->role = mysqli_real_escape_string($conn, $role);
+        $this->firstname = $firstname ?? '';
+        $this->lastname = $lastname ?? '';
+        $this->phone = $phone ?? '';
+        $this->email = $email ?? '';
+        $this->role = $role ?? '';
     }
+
 
     public function register()
     {
