@@ -8,14 +8,14 @@ include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/config.php'); 
 class User
 {
     protected $conn;
-    private $brukerID;
-    private $username;
-    private $password;
-    private $firstname;
-    private $lastname;
-    private $phone;
-    private $email;
-    private $role;
+    protected $brukerID;
+    protected $username;
+    protected $password;
+    protected $firstname;
+    protected $lastname;
+    protected $phone;
+    protected $email;
+    protected $role;
 
     // Constructor for registration
     public function __construct($conn, ?string $username = null, ?string $password = null, ?string $firstname = null, ?string $lastname = null, ?string $phone = null, ?string $email = null, ?string $role = null)

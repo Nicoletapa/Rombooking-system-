@@ -25,7 +25,13 @@ $users = $admin->listUsers();
 <html>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
 <div class="users-section">
-    <h2 class="text-xl text-center font-semibold pb-2">Alle Brukere</h2>
+    <div class="relative flex items-center justify-between pb-2">
+        <a href="/Rombooking-system-/Views/AdminPanel/addUser.php"
+            class="bg-blue-500 text-white px-4 py-2 rounded absolute left-0">
+            Legg til ny bruker
+        </a>
+        <h2 class="text-xl text-center font-semibold w-full">Alle Brukere</h2>
+    </div>
 
     <?php if (!empty($users)): ?>
         <table class="table-auto w-full border-collapse">
