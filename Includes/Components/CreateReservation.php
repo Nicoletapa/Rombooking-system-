@@ -4,7 +4,7 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/config.php');
 include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/Classes/Admin.php');
-include '../../Includes/utils/NotAdmin.php';
+include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/utils/NotAdmin.php');
 
 $message = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

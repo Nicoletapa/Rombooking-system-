@@ -4,8 +4,8 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 // Assuming a connection to the database is already established
-include '../../Includes/config.php';
-
+include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/config.php');
+include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/Classes/Admin.php');
 // Check if the user is an admin
 include '../../Includes/utils/NotAdmin.php';
 include '../../Includes/utils/NoUserLoggedIn.php';
@@ -13,19 +13,21 @@ include '../../Includes/utils/NoUserLoggedIn.php';
 // Fetch the search input if provided
 $search_column = isset($_GET['search_column']) ? $_GET['search_column'] : 'ReservasjonID';
 $search_value = isset($_GET['search_value']) ? $_GET['search_value'] : '';
+$filter_active = $_GET['filter_active'] ?? 'all';
 
+$admin = new Admin($conn);
 // Fetch all reservations with room type details, optionally filtered by the selected column
-$sql = "
-    SELECT r.ReservasjonID, r.BrukerID, r.RomID, r.Innsjekk, r.Utsjekk, rt.RomTypeNavn
-    FROM Reservasjon r
-    JOIN RomID_RomType rid ON r.RomID = rid.RomID
-    JOIN Romtype rt ON rid.RomtypeID = rt.RomtypeID
-";
-if ($search_value) {
-    $sql .= " WHERE r.$search_column = ?";
+$sql = "SELECT * FROM Reservasjon";
+if ($filter_active == 'active') {
+    $sql .= " WHERE Utsjekk >= NOW()";
 }
+if (!empty($search_column) && !empty($search_value)) {
+    $sql .= ($filter_active == 'active' ? " AND" : " WHERE") . " $search_column LIKE ?";
+}
+
 $stmt = $conn->prepare($sql);
-if ($search_value) {
+if (!empty($search_column) && !empty($search_value)) {
+    $search_value = "%$search_value%";
     $stmt->bind_param("s", $search_value);
 }
 $stmt->execute();
@@ -46,10 +48,14 @@ $result = $stmt->get_result();
             <option value="BrukerID">BrukerID</option>
             <option value="RomID">RomID</option>
         </select>
-        <input type="text" name="search_value" placeholder="Søk verdi" value="<?php echo htmlspecialchars($search_value); ?>" class="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">Søk</button>
-    </form>
+        <input type="text" name="search_value" placeholder="Søk verdi" value="<?php echo htmlspecialchars(str_replace('%', '', $search_value)); ?>" class="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <select name="filter_active" class="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="all" <?php echo $filter_active == 'all' ? 'selected' : ''; ?>>Alle reservasjoner</option>
+            <option value="active" <?php echo $filter_active == 'active' ? 'selected' : ''; ?>>Aktive reservasjoner</option>
+        </select>
+        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">Søk</button> 
 </div>
+
 
 <div class="bg-blue-400 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded mt-2 flex justify-center">
 <a href="CreateReservation.php" class="text-white-500  ">Legg til Reservasjon +</a>
