@@ -16,8 +16,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $reservation = new Admin($conn);
     $message = $reservation->createReservation($brukerID, $romID, $innsjekk, $utsjekk, $antallPersoner);
+
 }
+if (strpos($message, 'opprettet') !== false) {
+    echo "<script>
+        setTimeout(function() {
+            window.location.href = '../../Views/AdminPanel/AdminReservations.php';
+        }, 3000);
+    </script>";
+}
+
 ?>
+
 <html>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
 <div class="create-reservation-section">
@@ -38,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <input type="datetime-local" id="utsjekk" name="utsjekk" required class="w-full border px-2 py-1 mb-3">
         <label for="antallPersoner" class="block font-medium">Antall Personer:</label>
         <input type="number" id="antallPersoner" name="antallPersoner" required class="w-full border px-2 py-1 mb-3">
-        <button type="submit" class="bg-blue-500 text-white px-4 py-2 mt-4">Create Reservation</button>
+        <button  type="submit" class="bg-blue-500 text-white px-4 py-2 mt-4">Create Reservation</button>
     </form>
 </div>
 </html>

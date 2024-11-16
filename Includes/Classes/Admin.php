@@ -126,6 +126,8 @@ class Admin extends User
     }
 
   
+
+    //Function to create reservation for a user
     public function createReservation($brukerID, $romID, $innsjekk, $utsjekk, $antallPersoner)
     {
         $errors = [];
@@ -140,11 +142,12 @@ class Admin extends User
         if (new DateTime($innsjekk) >= new DateTime($utsjekk)) {
             $errors[] = "Utsjekk dato må være etter innsjekk dato.";
         }
-    
+       
         // Validate number of people
-        if ($antallPersoner <= 0) {
+        if ($antallPersoner < 0 || $antallPersoner > 4) {
             $errors[] = "Antall personer må være minst 1.";
         }
+
     
         // Return all errors if there are any
         if (!empty($errors)) {
@@ -157,7 +160,7 @@ class Admin extends User
         $stmt->bind_param("iissi", $brukerID, $romID, $innsjekk, $utsjekk, $antallPersoner);
     
         if ($stmt->execute()) {
-            return "Reservasjonen ble opprettet!";
+            return "Reservasjonen ble opprettet!" ;
         } else {
             return "Feil ved oppretting av reservasjonen: " . $this->conn->error;
         }

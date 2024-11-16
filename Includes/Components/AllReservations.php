@@ -35,19 +35,25 @@ $result = $stmt->get_result();
 <html>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
 <div class="reservations-section">
-    <h2 class="text-xl text-center font-semibold pb-2">Alle Reservasjoner</h2>
+    <h2 class="text-2xl text-center font-semibold pb-4">Alle Reservasjoner</h2>
 
     <!-- Search Form -->
-    <form method="GET" action="">
-    <select name="search_column">
-        <option value="ReservasjonID">ReservasjonID</option>
-        <option value="BrukerID">BrukerID</option>
-        <option value="RomID">RomID</option>
-    </select>
-    <input type="text" name="search_value" placeholder="Søk verdi" value="<?php echo htmlspecialchars($search_value); ?>">
-    <button type="submit">Søk</button>
-</form>
+    <div class="bg-white/60 p-2  rounded shadow-md">
+    <div class="py-2 font-semibold text-lg text-center">Filtrer reservasjonene etter ReservasjonsID, BrukerID eller RomID</div>
+    <form method="GET" action="" class="flex flex-col md:flex-row items-center justify-center space-y-2 md:space-y-0 md:space-x-4">
+        <select name="search_column" class="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="ReservasjonID">ReservasjonID</option>
+            <option value="BrukerID">BrukerID</option>
+            <option value="RomID">RomID</option>
+        </select>
+        <input type="text" name="search_value" placeholder="Søk verdi" value="<?php echo htmlspecialchars($search_value); ?>" class="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">Søk</button>
+    </form>
+</div>
 
+<div class="bg-blue-400 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded mt-2 flex justify-center">
+<a href="CreateReservation.php" class="text-white-500  ">Legg til Reservasjon +</a>
+</div>
     <?php if ($result->num_rows > 0): ?>
     <table class="table-auto w-full border-collapse ">
         <thead>
@@ -73,7 +79,7 @@ $result = $stmt->get_result();
                 <td class="border px-4 py-2"><?php echo htmlspecialchars($row['Utsjekk']); ?></td>
                 <td class="border px-4 py-2">
                     <a href="ReservationDetails.php?ReservasjonID=<?php echo $row['ReservasjonID']; ?>" class="text-blue-500 hover:underline">Vis detaljer</a>
-                    <a href="CreateReservation.php" class="text-blue-500 hover:underline">Legg til Reservasjon</a>
+                    
                 </td>
             </tr>
             <?php endwhile; ?>
