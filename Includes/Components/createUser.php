@@ -6,7 +6,8 @@ include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/config.php');
 include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/Classes/Admin.php');
 
 // Check if admin is logged in
-include '../../Includes/utils/NotAdmin.php';
+include $_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/utils/NoUserLoggedIn.php';
+include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/utils/NotAdmin.php');
 
 
 $message = '';
