@@ -84,6 +84,9 @@ $reservation = $result->fetch_assoc();
     <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-2" >
         <a href="AdminReservations.php">Tilbake til oversikten</a>
     </button>
+    <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-2" >
+        <a href="DeleteReservation.php?ReservasjonID=<?php echo $reservation['ReservasjonID']; ?>">Slett reservasjonen</a>
+    </button>
     <button class="bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-4 rounded mt-2" >
         <a href="AdminEditReservation.php?ReservasjonID=<?php echo $reservation['ReservasjonID']; ?>">Rediger reservasjon</a>
     <?php else: ?>

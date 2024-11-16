@@ -80,5 +80,19 @@ class Reservation
             return "Feil ved oppdatering av reservasjonen: " . $this->conn->error;
         }
     }
-    
+
+    public function deleteReservation($reservasjonID)
+    {
+        include $_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/utils/NotAdmin.php';
+        // Prepare the SQL query to delete the reservation
+        $sql = "DELETE FROM Reservasjon WHERE ReservasjonID = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("i", $reservasjonID);
+        if ($stmt->execute()) {
+            return "Reservasjonen ble slettet!";
+        } else {
+            return "Feil ved sletting av reservasjonen: " . $this->conn->error;
+        }
+    }
+
 }
