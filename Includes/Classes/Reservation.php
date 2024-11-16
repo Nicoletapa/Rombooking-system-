@@ -80,4 +80,5 @@ class Reservation
             return "Feil ved oppdatering av reservasjonen: " . $this->conn->error;
         }
     }
+    
 }

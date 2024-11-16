@@ -73,6 +73,7 @@ $result = $stmt->get_result();
                 <td class="border px-4 py-2"><?php echo htmlspecialchars($row['Utsjekk']); ?></td>
                 <td class="border px-4 py-2">
                     <a href="ReservationDetails.php?ReservasjonID=<?php echo $row['ReservasjonID']; ?>" class="text-blue-500 hover:underline">Vis detaljer</a>
+                    <a href="CreateReservation.php" class="text-blue-500 hover:underline">Legg til Reservasjon</a>
                 </td>
             </tr>
             <?php endwhile; ?>
