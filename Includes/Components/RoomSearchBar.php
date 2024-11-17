@@ -67,7 +67,7 @@
         <form method="POST" action="/Rombooking-system-/Views/Bookings/AvailableReservations.php" class="flex flex-row gap-4 items-center">
             <div class="relative w-1/6">
                 <label for="innsjekk" class="absolute -top-6 left-1 font-semibold">Innsjekk dato:</label>
-                <div class="bg-gray-300 rounded-md flex flex-col p-4">
+                <div class="bg-gray-300 rounded-md flex flex-col p-4 opacity-90">
                     <input type="date" id="innsjekk" name="innsjekk" class="bg-transparent relative text-lg" value="<?php echo htmlspecialchars($innsjekk)?>" />
                 </div>
                 <!-- Feilmelding -->
@@ -77,7 +77,7 @@
             </div>
             <div class="relative w-1/6">
                 <label for="utsjekk" class="absolute -top-6 left-1 font-semibold">Utsjekk dato:</label>
-                <div class="bg-gray-300 rounded-md flex flex-col p-4">
+                <div class="bg-gray-300 rounded-md flex flex-col p-4 opacity-90">
                     <input type="date" id="utsjekk" name="utsjekk" class="relative bg-transparent text-lg" value="<?php echo htmlspecialchars($utsjekk)?>" />
                 </div>
                 <!-- Feilmelding -->
@@ -88,7 +88,7 @@
             <div class="relative w-1/6">
                 <label for="antallPersoner" class="absolute -top-6 left-1 font-semibold">Personer:</label>
                 <!-- Felt for personer -->
-                <div class="bg-gray-300 rounded-md flex flex-col p-4">
+                <div class="bg-gray-300 rounded-md flex flex-col p-4 opacity-90">
                     <label for="antallVoksne">Voksne:</label>
                     <input type="number" id="antallVoksne" name="antallVoksne" value="<?php echo $antallVoksne; ?>" class="rounded-sm" />
                     <!-- Feilmelding -->
@@ -103,9 +103,9 @@
                     <?php endif; ?>
                 </div>
             </div>
-            <div class="w-1/4 bg-gray-300 text-xl p-4 rounded-md">
+            <div class="w-1/4 bg-gray-300 text-xl p-4 rounded-md opacity-90">
                 <select name="romtype" class="w-full bg-transparent h-full">
-                    <option>Typerom</option>
+                    <option>Romtype</option>
                     <?php
                     if ($resultRomType->num_rows > 0) {
                         while ($row = $resultRomType->fetch_assoc()) {
