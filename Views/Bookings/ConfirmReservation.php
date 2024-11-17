@@ -35,8 +35,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Add JavaScript to redirect to index.php after 3 seconds
         echo "
         <script>
-            alert('Reservasjonen din er bekreftet! Du blir nå omdirigert til startsiden.');
-            window.location.href = '../../index.php';
+          setTimeout(function() { window.location.href = '../Users/UserReservations.php'; }, 3000);
+            
         </script>";
     } else {
         // Display an error message
