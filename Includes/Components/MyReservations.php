@@ -1,5 +1,7 @@
 <?php
-include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/Classes/Reservation.php'); // Include the Reservation class
+include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/Classes/Reservation.php');
+include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/utils/NoUserLoggedIn.php');
+include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/utils/DateFormat.php');
 $userReservations = new Reservation($conn);
 $reservations = $userReservations->getReservationsLoggedInUser();
 ?>
@@ -11,7 +13,7 @@ $reservations = $userReservations->getReservationsLoggedInUser();
     <table class="table-auto w-full border-collapse">
         <thead>
             <tr class="bg-gray-200">
-                <th class="border px-4 py-2">Romnummer</th>
+                <th class="border px-4 py-2">RomID</th>
                 <th class="border px-4 py-2">RomType</th>
                 <th class="border px-4 py-2">Beskrivelse</th>
                 <th class="border px-4 py-2">Innsjekk</th>
@@ -25,9 +27,9 @@ $reservations = $userReservations->getReservationsLoggedInUser();
                 <td class="border px-4 py-2"><?php echo htmlspecialchars($reservation['RomID']); ?></td>
                 <td class="border px-4 py-2"><?php echo htmlspecialchars($reservation['RomTypeNavn']); ?></td>
                 <td class="border px-4 py-2"><?php echo htmlspecialchars($reservation['Beskrivelse']); ?></td>
-                <td class="border px-4 py-2"><?php echo htmlspecialchars($reservation['Innsjekk']); ?></td>
-                <td class="border px-4 py-2"><?php echo htmlspecialchars($reservation['Utsjekk']); ?></td>
-                <td class="border px-4 py-2"><?php echo htmlspecialchars($reservation['Bestillingsdato']); ?></td>
+                <td class="border px-4 py-2"><?php echo formatDate($reservation['Innsjekk']); ?></td>
+                <td class="border px-4 py-2"><?php echo formatDate($reservation['Utsjekk']); ?></td>
+                <td class="border px-4 py-2"><?php echo formatDate($reservation['Bestillingsdato']); ?></td>
             </tr>
             <?php endforeach; ?>
         </tbody>
