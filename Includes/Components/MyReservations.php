@@ -1,4 +1,6 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/Classes/Reservation.php'); // Include the Reservation class
 $userReservations = new Reservation($conn);
 $reservations = $userReservations->getReservationsLoggedInUser();
@@ -11,13 +13,13 @@ $reservations = $userReservations->getReservationsLoggedInUser();
     <table class="table-auto w-full border-collapse">
         <thead>
             <tr class="bg-gray-200">
-                <th class="border px-4 py-2">Romnummer</th>
+                <th class="border px-4 py-2">RomNr</th>
                 <th class="border px-4 py-2">RomType</th>
                 <th class="border px-4 py-2">Beskrivelse</th>
                 <th class="border px-4 py-2">Innsjekk</th>
                 <th class="border px-4 py-2">Utsjekk</th>
-                <th class="border px-4 py-2">Bestillings Dato</th>
-                <th class="border px-4 py-2">Handling</th>
+                <th class="border px-4 py-2">BestillingsDato</th>
+                <th class="border px-6 py-2">Handling</th>
             </tr>
         </thead>
         <tbody>
@@ -35,7 +37,10 @@ $reservations = $userReservations->getReservationsLoggedInUser();
                 <td class="border px-4 py-2"><?php echo htmlspecialchars($reservation['Innsjekk']); ?></td>
                 <td class="border px-4 py-2"><?php echo htmlspecialchars($reservation['Utsjekk']); ?></td>
                 <td class="border px-4 py-2"><?php echo htmlspecialchars($reservation['Bestillingsdato']); ?></td>
-                <td class="border px-4 py-2">
+                <td class="border px-3 py-2">
+                <a href="/Rombooking-system-/Includes/utils/ReservationPDF.php?reservation_id=<?php echo htmlspecialchars($reservation['ReservasjonID']); ?>" class="bg-blue-500 text-white px-2 py-1 rounded text-sm">
+    Last ned PDF
+    </a>
                     <?php if ($isCancelable): ?>
                         <button class="bg-red-500 text-white px-2 py-1 rounded cancel-btn" data-reservation-id="<?php echo htmlspecialchars($reservation['ReservasjonID']); ?>">
                             Avbestill
