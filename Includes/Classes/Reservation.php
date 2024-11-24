@@ -42,7 +42,7 @@ class Reservation
 
         // Prepare the SQL query to fetch reservations
         $sql = "
-            SELECT r.RomID, r.Innsjekk, r.Utsjekk, r.Bestillingsdato ,rt.RomTypeNavn, rt.Beskrivelse
+            SELECT r.ReservasjonID, r.RomID, r.Innsjekk, r.Utsjekk, r.Bestillingsdato ,rt.RomTypeNavn, rt.Beskrivelse
             FROM Reservasjon r
             JOIN RomID_RomType rid ON r.RomID = rid.RomID
             JOIN Romtype rt ON rid.RomtypeID = rt.RomtypeID
