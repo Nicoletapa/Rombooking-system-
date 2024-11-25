@@ -11,6 +11,53 @@ class Reservation
         $this->conn = $conn;
     }
 
+    public function confirmReservation($postData, $userId)
+    {
+        // Extract data from the form
+        $romID = $postData['romID'];
+        $innsjekk = $postData['innsjekk'];
+        $utsjekk = $postData['utsjekk'];
+        $antallPersoner = $postData['antallPersoner'];
+        $bestillingsdato = date('Y-m-d'); // Current date
+
+        // SQL query
+        $sql = "INSERT INTO Reservasjon (RomID, BrukerID, Innsjekk, Utsjekk, AntallPersoner, Bestillingsdato) 
+                VALUES (?, ?, ?, ?, ?, ?)";
+
+        // Use prepared statement to avoid SQL injection
+        $stmt = $this->conn->prepare($sql);
+        if (!$stmt) {
+            die("Prepared statement failed: " . $this->conn->error);
+        }
+
+        $stmt->bind_param("iissis", $romID, $userId, $innsjekk, $utsjekk, $antallPersoner, $bestillingsdato);
+
+        // Execute the query and handle the response
+        if ($stmt->execute()) {
+            $this->displaySuccessMessage();
+        } else {
+            $this->displayErrorMessage();
+        }
+
+        // Close the statement
+        $stmt->close();
+    }
+
+    private function displaySuccessMessage()
+    {
+        echo "<p class='text-green-500 my-4'>Reservasjonen din er bekreftet!</p>";
+        echo "
+        <script>
+            alert('Reservasjonen din er bekreftet! Du blir nå omdirigert til startsiden.');
+            window.location.href = '../../index.php';
+        </script>";
+    }
+
+    private function displayErrorMessage()
+    {
+        echo "<p class='text-red-500 my-4'>Det oppsto en feil under bestillingen. Prøv igjen senere.</p>";
+    }
+
 
     public function getReservationById($reservasjonID)
     {
@@ -81,6 +128,62 @@ class Reservation
         }
     }
 
+    public function cancelReservation($reservationID)
+    {
+        if (empty($reservationID)) {
+            return "<p class='text-red-500'>Ugyldig reservasjon.</p>";
+        }
+
+        // Fetch reservation check-in date
+        $query = "SELECT Innsjekk FROM Reservasjon WHERE ReservasjonID = ?";
+        $stmt = $this->conn->prepare($query);
+
+        if (!$stmt) {
+            die("Failed to prepare statement: " . $this->conn->error);
+        }
+
+        $stmt->bind_param('i', $reservationID);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0) {
+            $reservation = $result->fetch_assoc();
+            $checkInDate = new DateTime($reservation['Innsjekk']);
+            $today = new DateTime();
+            $daysDifference = $today->diff($checkInDate)->days;
+
+            if ($checkInDate > $today && $daysDifference > 2) {
+                // Proceed with deletion
+                return $this->deleteReservationAndRedirect($reservationID);
+            } else {
+                return "<p class='text-red-500'>Reservasjonen kan ikke avbestilles mindre enn 2 dager før innsjekk.</p>";
+            }
+        } else {
+            return "<p class='text-red-500'>Reservasjonen ble ikke funnet.</p>";
+        }
+    }
+
+    private function deleteReservationAndRedirect($reservationID)
+    {
+        // Prepare the SQL query to delete the reservation
+        $sql = "DELETE FROM Reservasjon WHERE ReservasjonID = ?";
+        $stmt = $this->conn->prepare($sql);
+
+        if (!$stmt) {
+            die("Failed to prepare delete statement: " . $this->conn->error);
+        }
+
+        $stmt->bind_param("i", $reservationID);
+        if ($stmt->execute() && $stmt->affected_rows > 0) {
+            // Set success message and redirect
+            header("Location: http://localhost/RomBooking-System-/Views/Users/UserReservations.php?message=success");
+            exit;
+        } else {
+            return "<p class='text-red-500'>Kunne ikke avbestille reservasjonen. Vennligst ta kontakt med vår kundeservice.</p>";
+        }
+    }
+
+
     public function deleteReservation($reservasjonID)
     {
         include $_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/utils/NotAdmin.php';
@@ -95,7 +198,7 @@ class Reservation
         }
     }
 
-    public function handlePostRequest()
+    public function availableRoomPostRequest()
     {
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $innsjekk = $_POST['innsjekk'];
