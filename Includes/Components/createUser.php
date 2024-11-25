@@ -1,14 +1,10 @@
 <?php
-session_start(); // Start session
-
+session_start();
 
 include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/config.php');
 include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/Classes/Admin.php');
-
-// Check if admin is logged in
 include $_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/utils/NoUserLoggedIn.php';
 include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/utils/NotAdmin.php');
-
 
 $message = '';
 
@@ -25,49 +21,83 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $admin = new Admin($conn, $username, $password, $firstname, $lastname, $phone, $email, $role);
 
     $message = $admin->register();
+    $feedbackClass = strpos($message, 'successfully') !== false ? 'text-green-600' : 'text-red-600';
 }
 ?>
 
-<html>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+<!DOCTYPE html>
+<html lang="en">
 
-<div class="create-user-section">
-    <h2 class="text-xl text-center font-semibold pb-2">Create New User</h2>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create New User</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
 
-    <?php if (!empty($message)): ?>
-        <p
-            class="text-center <?php echo strpos($message, 'successfully') !== false ? 'text-green-500' : 'text-red-500'; ?>">
-            <?php echo $message; ?>
-        </p>
-    <?php endif; ?>
+<body class="bg-gray-100">
+    <div class="flex h-[85vh] justify-center items-center">
+        <div class="bg-white border-2 p-6 rounded-md shadow-lg w-2/5">
+            <h2 class="text-2xl font-semibold text-center mb-4">Create New User</h2>
+            <p class="text-sm text-gray-500 text-center mb-6">
+                Please fill in this form to create a new user account.
+            </p>
 
-    <form method="POST" action="" class="mt-4 max-w-lg mx-auto">
-        <label for="username" class="block font-medium">Username:</label>
-        <input type="text" id="username" name="username" required class="w-full border px-2 py-1 mb-3">
+            <?php if (!empty($message)): ?>
+                <p class="<?php echo $feedbackClass; ?> text-center mt-2"><?php echo htmlspecialchars($message); ?></p>
+            <?php endif; ?>
 
-        <label for="password" class="block font-medium">Password:</label>
-        <input type="password" id="password" name="password" required class="w-full border px-2 py-1 mb-3">
-
-        <label for="firstname" class="block font-medium">First Name:</label>
-        <input type="text" id="firstname" name="firstname" required class="w-full border px-2 py-1 mb-3">
-
-        <label for="lastname" class="block font-medium">Last Name:</label>
-        <input type="text" id="lastname" name="lastname" required class="w-full border px-2 py-1 mb-3">
-
-        <label for="phone" class="block font-medium">Phone:</label>
-        <input type="text" id="phone" name="phone" class="w-full border px-2 py-1 mb-3">
-
-        <label for="email" class="block font-medium">Email:</label>
-        <input type="email" id="email" name="email" required class="w-full border px-2 py-1 mb-3">
-
-        <label for="role" class="block font-medium">Role:</label>
-        <select id="role" name="role" class="w-full border px-2 py-1 mb-3">
-            <option value="1">Customer</option>
-            <option value="2">Admin</option>
-        </select>
-
-        <button type="submit" class="bg-blue-500 text-white px-4 py-2 mt-4">Create User</button>
-    </form>
-</div>
+            <form action="" method="POST" class="space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label for="username" class="block text-sm font-medium text-gray-700 mb-1">Username</label>
+                        <input type="text" id="username" name="username" placeholder="Username" required
+                            class="block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 px-3 py-2">
+                    </div>
+                    <div>
+                        <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                        <input type="text" id="phone" name="phone" placeholder="Phone Number" required
+                            class="block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 px-3 py-2">
+                    </div>
+                    <div>
+                        <label for="firstname" class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                        <input type="text" id="firstname" name="firstname" placeholder="First Name" required
+                            class="block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 px-3 py-2">
+                    </div>
+                    <div>
+                        <label for="lastname" class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                        <input type="text" id="lastname" name="lastname" placeholder="Last Name" required
+                            class="block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 px-3 py-2">
+                    </div>
+                </div>
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                    <input type="email" id="email" name="email" placeholder="Email" required
+                        class="block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 px-3 py-2">
+                </div>
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Password" required
+                        class="block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 px-3 py-2">
+                </div>
+                <div>
+                    <label for="role" class="block text-sm font-medium text-gray-700 mb-1">Role</label>
+                    <select id="role" name="role" required
+                        class="block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 px-3 py-2">
+                        <option value="1">Customer</option>
+                        <option value="2">Admin</option>
+                    </select>
+                </div>
+                <button type="submit"
+                    class="block w-full bg-black text-white text-sm font-semibold py-2 rounded-md hover:opacity-80 transition">
+                    Create User
+                </button>
+            </form>
+            <div class="text-center mt-4">
+                <a href="AdminDashboard.php" class="text-blue-600 text-sm hover:underline">Back to Dashboard</a>
+            </div>
+        </div>
+    </div>
+</body>
 
 </html>
