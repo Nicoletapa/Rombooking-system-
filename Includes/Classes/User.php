@@ -182,6 +182,14 @@ class User
         }
     }
 
+    public function getUserById($userID)
+    {
+        $stmt = $this->conn->prepare("SELECT * FROM Bruker WHERE BrukerID = ?");
+        $stmt->bind_param("i", $userID);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_assoc();
+    }
+
     // Method to fetch reservations for the logged-in user
     public function getLoggedInUserReservations()
     {

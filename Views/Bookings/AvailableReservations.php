@@ -1,73 +1,8 @@
 <?php
 
-
-include '../../Includes/config.php'; // Include database configuration
-include '../../Includes/Components/RoomCard.php'; // Include the RoomCard component
-
-// Check if the request is a POST request
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Get the check-in and check-out dates from the form
-    $innsjekk = $_POST['innsjekk'];
-    $utsjekk = $_POST['utsjekk'];
-
-    // Get the selected number of people and room type
-    $romtype = $_POST['romtype'];
-    $antallPersoner = $_POST['antallVoksne'] + $_POST['antallBarn'];
-
-    // SQL query to find available rooms
-    $sql = "SELECT RomID_RomType.RomID, Romtype.RomTypeNavn, Romtype.RoomTypeImage 
-        FROM RomID_RomType 
-        JOIN Romtype ON RomID_RomType.RomTypeID = Romtype.RomtypeID
-        WHERE RomID_RomType.RomID NOT IN (
-            SELECT RomID 
-            FROM Reservasjon 
-            WHERE ('$innsjekk' BETWEEN Innsjekk AND Utsjekk) 
-            OR ('$utsjekk' BETWEEN Innsjekk AND Utsjekk)
-            OR (Innsjekk BETWEEN '$innsjekk' AND '$utsjekk')
-        )
-        AND Romtype.RomKapsitet >= $antallPersoner";
-
-
-    // Execute the SQL query
-    $result = $conn->query($sql);
-
-    $roomTypeCounts = [];
-    // Check if there are available rooms in the result
-    if ($result->num_rows > 0) {
-        // Count available room types
-        while ($row = $result->fetch_assoc()) {
-            $roomID = $row["RomID"]; // Get the room ID
-            $roomType = $row["RomTypeNavn"];
-            $RoomImage = $row["RoomTypeImage"]; // Get the image path
-
-            if (isset($roomTypeCounts[$roomType])) {
-                $roomTypeCounts[$roomType]['count']++;
-            } else {
-                $roomTypeCounts[$roomType] = ['count' => 1, 'RoomTypeImage' => $RoomImage, 'RomID' => $roomID];
-            }
-        }
-
-        // Create a list of available room types with their counts as cards
-        $output = "<h2 class='text-xl font-semibold my-4 text-center'>Ledige rom fra $innsjekk til $utsjekk for $antallPersoner personer:</h2>";
-        $output .= "<div class='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>";
-        foreach ($roomTypeCounts as $roomType => $data) {
-            $count = $data['count'];
-            $image = $data['RoomTypeImage'];
-            $roomID = $data['RomID']; // Get the room ID
-            $output .= displayRoomCard($roomID, $roomType, $count, $image, $innsjekk, $utsjekk, $antallPersoner);
-        }
-
-
-
-        $output .= "</div>";
-    } else {
-        // If no rooms are available, display a message to the user
-        $output = "<p class='text-red-500 my-4'>Ingen rom er tilgjengelige for dette antall personer i dette tidsrommet.</p>";
-    }
-
-    // Close the database connection
-    $conn->close();
-}
+include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/Classes/Reservation.php');
+$reservation = new Reservation($conn);
+$output = $reservation->availableRoomPostRequest();
 ?>
 
 <!DOCTYPE html>
@@ -89,7 +24,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
             <div class="container mx-auto pb-2">
                 <?php
-                // Display the search results if available
                 if (isset($output)) {
                     echo $output;
                 }

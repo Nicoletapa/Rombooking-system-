@@ -24,7 +24,7 @@ $token = $_GET['token'] ?? '';
                 Token mangler eller er ugyldig. Vennligst prøv igjen.
             </div>
         <?php else: ?>
-            <form action="/Rombooking-system-/Includes/Components/ProcessResetPassword.php" method="POST" class="space-y-4">
+            <form action="/Rombooking-system-/Includes/Handlers/ProcessResetPassword.php" method="POST" class="space-y-4">
                 <input type="hidden" name="token" value="<?php echo htmlspecialchars($token); ?>">
                 <div>
                     <label for="password" class="block text-sm font-medium text-gray-700 mb-2">Nytt passord</label>

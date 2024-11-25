@@ -26,8 +26,7 @@ $message = $_GET['message'] ?? null;
                 </p>
             </div>
         <?php endif; ?>
-        <form action="/Rombooking-system-/Includes/Components/ProcessForgotPassword.php" method="POST"
-            class="space-y-4">
+        <form action="/Rombooking-system-/Includes/Handlers/ProcessForgotPassword.php" method="POST" class="space-y-4">
             <div>
                 <label for="email" class="block text-sm font-medium text-gray-700 mb-2">E-post</label>
                 <input type="email" name="email" id="email" placeholder="Din e-postadresse" required

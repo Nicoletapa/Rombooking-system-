@@ -39,9 +39,9 @@ class Admin extends User
         );
 
         if ($stmt->execute()) {
-            return "User updated successfully!";
+            return true;
         } else {
-            return "Error updating user: " . $this->conn->error;
+            return false;
         }
     }
 
@@ -125,13 +125,44 @@ class Admin extends User
         }
     }
 
-  
+    public function getAllReservations($searchColumn = null, $searchValue = null, $filterActive = 'all')
+    {
+        $sql = "SELECT * FROM Reservasjon";
+
+        $params = [];
+        $conditions = [];
+
+        if ($filterActive === 'active') {
+            $conditions[] = "Utsjekk >= NOW()";
+        }
+
+        if (!empty($searchColumn) && !empty($searchValue)) {
+            $conditions[] = "$searchColumn LIKE ?";
+            $params[] = "%$searchValue%";
+        }
+
+        if (!empty($conditions)) {
+            $sql .= " WHERE " . implode(" AND ", $conditions);
+        }
+
+        $stmt = $this->conn->prepare($sql);
+
+        if (!empty($params)) {
+            $types = str_repeat('s', count($params));
+            $stmt->bind_param($types, ...$params);
+        }
+
+        $stmt->execute();
+        return $stmt->get_result();
+    }
+
+
 
     //Function to create reservation for a user
     public function createReservation($brukerID, $romID, $innsjekk, $utsjekk, $antallPersoner)
     {
         $errors = [];
-    
+
         // Validate check-in and check-out dates
         if (empty($innsjekk)) {
             $errors[] = "Innsjekk dato er påkrevd.";
@@ -142,25 +173,25 @@ class Admin extends User
         if (new DateTime($innsjekk) >= new DateTime($utsjekk)) {
             $errors[] = "Utsjekk dato må være etter innsjekk dato.";
         }
-       
+
         // Validate number of people
         if ($antallPersoner < 0 || $antallPersoner > 4) {
             $errors[] = "Antall personer må være minst 1.";
         }
 
-    
+
         // Return all errors if there are any
         if (!empty($errors)) {
             return implode("<br>", $errors); // Join all errors with line breaks
         }
-    
+
         // Prepare the SQL query to insert the reservation
         $sql = "INSERT INTO Reservasjon (BrukerID, RomID, Innsjekk, Utsjekk, AntallPersoner) VALUES (?, ?, ?, ?, ?)";
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param("iissi", $brukerID, $romID, $innsjekk, $utsjekk, $antallPersoner);
-    
+
         if ($stmt->execute()) {
-            return "Reservasjonen ble opprettet!" ;
+            return "Reservasjonen ble opprettet!";
         } else {
             return "Feil ved oppretting av reservasjonen: " . $this->conn->error;
         }
