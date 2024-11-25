@@ -1,4 +1,7 @@
 <?php
+
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/config.php'); // Include the Reservation class
 
 
@@ -15,18 +18,31 @@ class Reservation
     public function getReservationById($reservasjonID)
     {
         $sql = "
-            SELECT r.ReservasjonID, r.BrukerID, r.RomID, r.Innsjekk, r.Utsjekk, rt.RomTypeNavn, rt.Beskrivelse
-            FROM Reservasjon r
-            JOIN RomID_RomType rid ON r.RomID = rid.RomID
-            JOIN Romtype rt ON rid.RomtypeID = rt.RomtypeID
-            WHERE r.ReservasjonID = ?
-        ";
+        SELECT r.ReservasjonID, r.BrukerID, r.RomID, r.Innsjekk, r.Utsjekk, rt.RomTypeNavn, rt.Beskrivelse, 
+               b.Navn, b.Etternavn, b.TlfNr
+        FROM Reservasjon r
+        JOIN RomID_RomType rid ON r.RomID = rid.RomID
+        JOIN Romtype rt ON rid.RomtypeID = rt.RomtypeID
+        JOIN Bruker b ON r.BrukerID = b.BrukerID
+        WHERE r.ReservasjonID = ?
+    ";
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param("i", $reservasjonID);
-        $stmt->execute();
+
+        if (!$stmt->execute()) {
+            die("Error executing query: " . $this->conn->error);
+        }
+
         $result = $stmt->get_result();
-        return $result->fetch_assoc();
+        $reservation = $result->fetch_assoc();
+
+        if (!$reservation) {
+            error_log("Reservation with ID $reservasjonID not found.");
+        }
+
+        return $reservation;
     }
+
 
     // Method to fetch reservations for the logged-in user
     public function getReservationsLoggedInUser()
@@ -109,7 +125,7 @@ class Reservation
         return null;
     }
 
-    private function findAvailableRooms($innsjekk, $utsjekk, $romtype, $antallPersoner)
+    public function findAvailableRooms($innsjekk, $utsjekk, $romtype, $antallPersoner)
     {
         $sql = "SELECT RomID_RomType.RomID, Romtype.RomTypeNavn, Romtype.RoomTypeImage 
                 FROM RomID_RomType 
@@ -171,6 +187,46 @@ class Reservation
         $output .= "</div>";
         return $output;
     }
+
+    public function cancelReservation($reservasjonID)
+    {
+        // Validate reservation ID
+        if (empty($reservasjonID) || !is_numeric($reservasjonID)) {
+            return "Ugyldig reservasjon.";
+        }
+
+        // Check if reservation exists and is cancelable
+        $query = "SELECT Innsjekk FROM Reservasjon WHERE ReservasjonID = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("i", $reservasjonID);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows === 0) {
+            return "Reservasjonen ble ikke funnet.";
+        }
+
+        $reservation = $result->fetch_assoc();
+        $checkInDate = new DateTime($reservation['Innsjekk']);
+        $today = new DateTime();
+        $daysDifference = $today->diff($checkInDate)->days;
+
+        if ($checkInDate <= $today || $daysDifference <= 2) {
+            return "Reservasjonen kan ikke avbestilles mindre enn 2 dager før innsjekk.";
+        }
+
+        // Proceed with cancellation
+        $deleteQuery = "DELETE FROM Reservasjon WHERE ReservasjonID = ?";
+        $deleteStmt = $this->conn->prepare($deleteQuery);
+        $deleteStmt->bind_param("i", $reservasjonID);
+
+        if ($deleteStmt->execute()) {
+            return "Reservasjonen ble avbestilt.";
+        } else {
+            return "Kunne ikke avbestille reservasjonen. Vennligst ta kontakt med vår kundeservice.";
+        }
+    }
+
 
     public function __destruct()
     {

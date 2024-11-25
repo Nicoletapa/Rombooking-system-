@@ -1,8 +1,20 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Controllers/ReservationController.php');
+include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/config.php');
 
-include('../../Includes/Classes/Reservation.php');
-$reservation = new Reservation($conn);
-$output = $reservation->handlePostRequest();
+$controller = new ReservationController($conn);
+$output = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $innsjekk = $_POST['innsjekk'];
+    $utsjekk = $_POST['utsjekk'];
+    $romtype = $_POST['romtype'];
+    $antallPersoner = $_POST['antallVoksne'] + $_POST['antallBarn'];
+
+    $output = $controller->findAvailableRooms($innsjekk, $utsjekk, $romtype, $antallPersoner);
+}
 ?>
 
 <!DOCTYPE html>
@@ -24,7 +36,7 @@ $output = $reservation->handlePostRequest();
             </div>
             <div class="container mx-auto pb-2">
                 <?php
-                if (isset($output)) {
+                if (!empty($output)) {
                     echo $output;
                 }
                 ?>
