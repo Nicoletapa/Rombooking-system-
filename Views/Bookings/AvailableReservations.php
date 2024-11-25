@@ -1,8 +1,8 @@
 <?php
 
-include('../../Includes/Classes/Reservation.php');
+include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/Classes/Reservation.php');
 $reservation = new Reservation($conn);
-$output = $reservation->handlePostRequest();
+$output = $reservation->availableRoomPostRequest();
 ?>
 
 <!DOCTYPE html>
