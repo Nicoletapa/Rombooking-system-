@@ -11,6 +11,8 @@ class Reservation
         $this->conn = $conn;
     }
 
+
+
     public function confirmReservation($postData, $userId)
     {
         // Extract data from the form
@@ -62,17 +64,18 @@ class Reservation
     public function getReservationById($reservasjonID)
     {
         $sql = "
-            SELECT r.ReservasjonID, r.BrukerID, r.RomID, r.Innsjekk, r.Utsjekk, rt.RomTypeNavn, rt.Beskrivelse
+            SELECT r.ReservasjonID, r.BrukerID, r.RomID, r.Innsjekk, r.Utsjekk, rt.RomTypeNavn, rt.Beskrivelse, 
+                   b.Navn, b.Etternavn, b.TlfNr
             FROM Reservasjon r
             JOIN RomID_RomType rid ON r.RomID = rid.RomID
             JOIN Romtype rt ON rid.RomtypeID = rt.RomtypeID
+            JOIN Bruker b ON r.BrukerID = b.BrukerID
             WHERE r.ReservasjonID = ?
         ";
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param("i", $reservasjonID);
         $stmt->execute();
-        $result = $stmt->get_result();
-        return $result->fetch_assoc();
+        return $stmt->get_result()->fetch_assoc();
     }
 
     // Method to fetch reservations for the logged-in user

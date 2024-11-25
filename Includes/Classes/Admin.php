@@ -125,6 +125,37 @@ class Admin extends User
         }
     }
 
+    public function getAllReservations($searchColumn = null, $searchValue = null, $filterActive = 'all')
+    {
+        $sql = "SELECT * FROM Reservasjon";
+
+        $params = [];
+        $conditions = [];
+
+        if ($filterActive === 'active') {
+            $conditions[] = "Utsjekk >= NOW()";
+        }
+
+        if (!empty($searchColumn) && !empty($searchValue)) {
+            $conditions[] = "$searchColumn LIKE ?";
+            $params[] = "%$searchValue%";
+        }
+
+        if (!empty($conditions)) {
+            $sql .= " WHERE " . implode(" AND ", $conditions);
+        }
+
+        $stmt = $this->conn->prepare($sql);
+
+        if (!empty($params)) {
+            $types = str_repeat('s', count($params));
+            $stmt->bind_param($types, ...$params);
+        }
+
+        $stmt->execute();
+        return $stmt->get_result();
+    }
+
 
 
     //Function to create reservation for a user
