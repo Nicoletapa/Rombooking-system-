@@ -201,6 +201,8 @@ class Reservation
         }
     }
 
+
+  
     public function availableRoomPostRequest()
     {
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -285,3 +287,4 @@ class Reservation
         }
     }
 }
+
