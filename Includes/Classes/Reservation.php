@@ -11,6 +11,37 @@ class Reservation
         $this->conn = $conn;
     }
 
+    public function countTotalReservations($brukerID)
+    {
+        $sql = "SELECT COUNT(*) AS total_reservations FROM Reservasjon WHERE BrukerID = ?";
+        $stmt = $this->conn->prepare($sql);
+
+        if (!$stmt) {
+            die("Prepared statement failed: " . $this->conn->error);
+        }
+
+        $stmt->bind_param("i", $brukerID);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+
+        return $row['total_reservations'] ?? 0;
+    }
+
+    // Method to generate avatar URL based on session data
+    public function generateAvatarUrl()
+    {
+        if (isset($_SESSION['firstname']) && isset($_SESSION['lastname'])) {
+            $firstname = $_SESSION['firstname'];
+            $lastname = $_SESSION['lastname'];
+
+            // Construct the avatar URL
+            return 'https://ui-avatars.com/api/?name=' . urlencode($firstname . ' ' . $lastname) . '&size=128&background=0D8ABC&color=fff';
+        } else {
+            return 'https://ui-avatars.com/api/?name=Guest&size=128&background=CCCCCC&color=000000';
+        }
+    }
+
 
 
     public function confirmReservation($postData, $userId)
@@ -202,7 +233,7 @@ class Reservation
     }
 
 
-  
+
     public function availableRoomPostRequest()
     {
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -287,4 +318,3 @@ class Reservation
         }
     }
 }
-

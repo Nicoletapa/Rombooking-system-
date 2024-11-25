@@ -1,4 +1,6 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -188,6 +190,30 @@ class User
         $stmt->bind_param("i", $userID);
         $stmt->execute();
         return $stmt->get_result()->fetch_assoc();
+    }
+
+    public function getTotalReservations()
+    {
+        $sql = "SELECT COUNT(*) AS total_reservations FROM Reservasjon WHERE BrukerID = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("i", $this->brukerID);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        $stmt->close();
+
+        return $row['total_reservations'] ?? 0;
+    }
+
+    public function getAvatarUrl()
+    {
+        if (isset($_SESSION['firstname']) && isset($_SESSION['lastname'])) {
+            $firstname = $_SESSION['firstname'];
+            $lastname = $_SESSION['lastname'];
+            return 'https://ui-avatars.com/api/?name=' . urlencode($firstname . ' ' . $lastname) . '&size=128&background=0D8ABC&color=fff';
+        }
+
+        return 'https://ui-avatars.com/api/?name=Guest&size=128&background=CCCCCC&color=000000';
     }
 
     // Method to fetch reservations for the logged-in user

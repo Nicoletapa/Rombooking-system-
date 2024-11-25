@@ -3,27 +3,11 @@
 // Assuming a connection to the database is already established
 include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/config.php'); // Include the database configuration file
 include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/utils/NoUserLoggedIn.php'); // Include the User class
+include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/Classes/Reservation.php'); // Include the Reservation class
 
-// Count total reservations for the logged-in user
-$sql = "SELECT COUNT(*) AS total_reservations FROM Reservasjon WHERE BrukerID = ?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $brukerID);
-$stmt->execute();
-$result = $stmt->get_result();
-$row = $result->fetch_assoc();
-$total_reservations = $row['total_reservations'];
-
-
-if (isset($_SESSION['firstname']) && isset($_SESSION['lastname'])) {
-    $firstname = $_SESSION['firstname'];
-    $lastname = $_SESSION['lastname'];
-
-    // Construct the avatar URL
-    $avatarUrl = 'https://ui-avatars.com/api/?name=' . urlencode($firstname . ' ' . $lastname) . '&size=128&background=0D8ABC&color=fff';
-} else {
-    echo "Session variables for first name and last name are not set.";
-    $avatarUrl = 'https://ui-avatars.com/api/?name=Guest&size=128&background=CCCCCC&color=000000';
-}
+$reservation = new Reservation($conn);
+$total_reservations = $reservation->countTotalReservations($_SESSION['BrukerID']);
+$avatarUrl = $reservation->generateAvatarUrl();
 
 ?>
 
