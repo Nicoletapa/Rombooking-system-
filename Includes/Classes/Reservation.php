@@ -95,4 +95,87 @@ class Reservation
         }
     }
 
+    public function handlePostRequest()
+    {
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            $innsjekk = $_POST['innsjekk'];
+            $utsjekk = $_POST['utsjekk'];
+            $romtype = $_POST['romtype'];
+            $antallPersoner = $_POST['antallVoksne'] + $_POST['antallBarn'];
+
+            return $this->findAvailableRooms($innsjekk, $utsjekk, $romtype, $antallPersoner);
+        }
+
+        return null;
+    }
+
+    private function findAvailableRooms($innsjekk, $utsjekk, $romtype, $antallPersoner)
+    {
+        $sql = "SELECT RomID_RomType.RomID, Romtype.RomTypeNavn, Romtype.RoomTypeImage 
+                FROM RomID_RomType 
+                JOIN Romtype ON RomID_RomType.RomTypeID = Romtype.RomtypeID
+                WHERE RomID_RomType.RomID NOT IN (
+                    SELECT RomID 
+                    FROM Reservasjon 
+                    WHERE ('$innsjekk' BETWEEN Innsjekk AND Utsjekk) 
+                    OR ('$utsjekk' BETWEEN Innsjekk AND Utsjekk)
+                    OR (Innsjekk BETWEEN '$innsjekk' AND '$utsjekk')
+                )
+                AND Romtype.RomKapsitet >= $antallPersoner";
+
+        $result = $this->conn->query($sql);
+        return $this->processRoomResults($result, $innsjekk, $utsjekk, $antallPersoner);
+    }
+
+    private function processRoomResults($result, $innsjekk, $utsjekk, $antallPersoner)
+    {
+        $roomTypeCounts = [];
+
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $roomID = $row["RomID"];
+                $roomType = $row["RomTypeNavn"];
+                $RoomImage = $row["RoomTypeImage"];
+
+                if (isset($roomTypeCounts[$roomType])) {
+                    $roomTypeCounts[$roomType]['count']++;
+                } else {
+                    $roomTypeCounts[$roomType] = [
+                        'count' => 1,
+                        'RoomTypeImage' => $RoomImage,
+                        'RomID' => $roomID
+                    ];
+                }
+            }
+
+            return $this->generateOutput($roomTypeCounts, $innsjekk, $utsjekk, $antallPersoner);
+        }
+
+        return "<p class='text-red-500 my-4'>Ingen rom er tilgjengelige for dette antall personer i dette tidsrommet.</p>";
+    }
+
+    private function generateOutput($roomTypeCounts, $innsjekk, $utsjekk, $antallPersoner)
+    {
+        include '../../Includes/Components/RoomCard.php'; // Include RoomCard component
+
+        $output = "<h2 class='text-xl font-semibold my-4 text-center'>Ledige rom fra $innsjekk til $utsjekk for $antallPersoner personer:</h2>";
+        $output .= "<div class='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>";
+
+        foreach ($roomTypeCounts as $roomType => $data) {
+            $count = $data['count'];
+            $image = $data['RoomTypeImage'];
+            $roomID = $data['RomID'];
+            $output .= displayRoomCard($roomID, $roomType, $count, $image, $innsjekk, $utsjekk, $antallPersoner);
+        }
+
+        $output .= "</div>";
+        return $output;
+    }
+
+    public function __destruct()
+    {
+        if ($this->conn) {
+            $this->conn->close();
+        }
+    }
 }
