@@ -10,6 +10,7 @@ $message = $_GET['message'] ?? null;
 
         <!-- Content Section -->
         <div class="bg-[#B7B2B2] w-full p-4 min-h-min">
+
             <!-- Display the message if present -->
             <?php if ($message): ?>
                 <div class="mb-4 text-center">
