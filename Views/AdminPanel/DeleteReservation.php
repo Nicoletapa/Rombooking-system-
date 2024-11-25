@@ -17,8 +17,9 @@ include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/Layout/Navbar.
                     <div class="text-center mt-4">
                         <button type="submit" name="confirm" class="bg-red-500 text-white px-4 py-2 rounded">Ja,
                             slett</button>
-                        <a href="AdminReservations.php" class="bg-gray-500 text-white px-4 py-2 rounded">Nei, gå
-                            tilbake</a>
+                        <a href="/Rombooking-system-/Views/AdminPanel/AdminReservations.php"><button
+                                class="bg-gray-500 text-white px-4 py-2 rounded">Nei, gå
+                                tilbake</button></a>
                     </div>
                 </form>
             </div>

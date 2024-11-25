@@ -93,6 +93,18 @@ class User
         }
     }
 
+    public function getTotalReservations($brukerID)
+    {
+        $sql = "SELECT COUNT(*) AS total_reservations FROM Reservasjon WHERE BrukerID = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("i", $brukerID);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+
+        return $row['total_reservations'] ?? 0;
+    }
+
 
     // Login method - Accepts only the password as parameter
     public function login($password)

@@ -1,8 +1,11 @@
 <?php
 include('Controllers/ReservationController.php');
+include('Controllers/UserController.php');
 include('Includes/config.php');
 
 $controller = new ReservationController($conn);
+$userController = new userController($conn);
+
 
 // Handle POST requests
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
@@ -38,6 +41,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action'])) {
             } else {
                 echo "ReservasjonID mangler.";
             }
+            break;
+
+        case 'profile':
+            $userController->showProfile();
             break;
 
         case 'edit_reservation':
