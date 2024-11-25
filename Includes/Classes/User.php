@@ -61,9 +61,6 @@ class User
             $errors[] = "Password must contain at least one special character.";
         }
 
-
-
-
         // Check if the user already exists
         $stmt = $this->conn->prepare("SELECT * FROM Bruker WHERE UserName = ?");
         $stmt->bind_param("s", $this->username);
@@ -82,10 +79,13 @@ class User
         // If no errors, hash the password and proceed with registration
         $hashedPassword = password_hash($this->password, PASSWORD_BCRYPT);
 
+        // Default role as "Customer" (RolleID = 1)
+        $defaultRole = 1;
+
         // Insert the new user into the database
         $query = "INSERT INTO Bruker (UserName, Navn, Etternavn, TlfNr, Email, Password, RolleID) VALUES (?, ?, ?, ?, ?, ?, ?)";
         $stmt = $this->conn->prepare($query);
-        $stmt->bind_param("ssssssi", $this->username, $this->firstname, $this->lastname, $this->phone, $this->email, $hashedPassword, $this->role);
+        $stmt->bind_param("ssssssi", $this->username, $this->firstname, $this->lastname, $this->phone, $this->email, $hashedPassword, $defaultRole);
 
         if ($stmt->execute()) {
             header('Location: Login.php');
@@ -94,6 +94,7 @@ class User
             return "Error: " . $stmt->error;
         }
     }
+
 
 
     // Login method - Accepts only the password as parameter

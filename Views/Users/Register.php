@@ -3,7 +3,6 @@ include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/Classes/User.p
 
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
-
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = $_POST['username'];
     $firstname = $_POST['firstname'];
@@ -11,10 +10,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $phone = $_POST['phone'];
     $email = $_POST['email'];
     $password = $_POST['password'];
-    $role = $_POST['role'];
 
     // Create a new User instance and attempt to register
-    $user = new User($conn, $username, $password, $firstname, $lastname, $phone, $email, $role);
+    $user = new User($conn, $username, $password, $firstname, $lastname, $phone, $email);
     $message = $user->register();
 
     // Display feedback message
@@ -74,14 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <input type="password" id="password" name="password" placeholder="Password" required
                         class="block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 px-3 py-2">
                 </div>
-                <div>
-                    <label for="role" class="block text-sm font-medium text-gray-700 mb-1">Role</label>
-                    <select id="role" name="role" required
-                        class="block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 px-3 py-2">
-                        <option value="1">Customer</option>
-                        <option value="2">Admin</option>
-                    </select>
-                </div>
+
                 <button type="submit"
                     class="block w-full bg-black text-white text-sm font-semibold py-2 rounded-md hover:opacity-80 transition">
                     Register
