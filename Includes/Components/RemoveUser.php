@@ -6,28 +6,21 @@ ini_set('display_errors', 1);
 // Include necessary files
 include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/config.php');
 include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/Classes/Admin.php');
-include '../../Includes/utils/NotAdmin.php';
-include '../../Includes/utils/NoUserLoggedIn.php';
-
+include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/utils/NotAdmin.php');
+include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/utils/NoUserLoggedIn.php');
 // Create an Admin object
 $admin = new Admin($conn);
-
 // Get the user ID from the query string
 $userID = $_GET['BrukerID'] ?? null;
-
+// Ensure the user ID is provided
 if (!$userID) {
     die("User ID is required.");
 }
-
 // Fetch user details
-$stmt = $conn->prepare("SELECT * FROM Bruker WHERE BrukerID = ?");
-$stmt->bind_param("i", $userID);
-$stmt->execute();
-$user = $stmt->get_result()->fetch_assoc();
+$user = $admin->getUserById($userID);
 if (!$user) {
     die("User not found.");
 }
-
 // Process the deletion if confirmed
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm'])) {
     $result = $admin->removeUser($userID);
