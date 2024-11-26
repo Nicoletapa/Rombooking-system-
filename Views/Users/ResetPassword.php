@@ -17,9 +17,9 @@ $error_message = $_GET['error'] ?? '';
 
 <body class="flex h-screen justify-center items-center bg-gray-100">
     <div class="border-2 p-6 rounded-md shadow-lg bg-white w-96">
-        <?php if (isset($error_message)) : ?>
+        <?php if (!empty($error_message)) : ?>
         <div class="bg-red-500 text-white p-4 rounded-md shadow-md text-center">
-            <?php echo $error_message; ?>
+            <?php echo ($error_message); ?>
         </div>
         <?php endif; ?>
         <h2 class="text-2xl font-semibold text-center mb-4">Tilbakestill passord</h2>
