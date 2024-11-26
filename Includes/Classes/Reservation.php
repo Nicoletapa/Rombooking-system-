@@ -81,7 +81,10 @@ class Reservation
     // Method to fetch reservations for the logged-in user
     public function getReservationsLoggedInUser()
     {
-        session_start(); // Ensure session is started
+        // Check if a session is already started
+    if (session_status() == PHP_SESSION_NONE) {
+        session_start(); 
+    }
 
         // Check if the user is logged in
         if (!isset($_SESSION['BrukerID'])) {
@@ -92,7 +95,7 @@ class Reservation
 
         // Prepare the SQL query to fetch reservations
         $sql = "
-            SELECT r.ReservasjonID, r.RomID, r.Innsjekk, r.Utsjekk, r.Bestillingsdato ,rt.RomTypeNavn, rt.Beskrivelse
+            SELECT r.ReservasjonID, r.RomID, r.Innsjekk, r.Utsjekk, r.Bestillingsdato ,rt.RomTypeNavn, rt.Beskrivelse, rt.RoomTypeImage
             FROM Reservasjon r
             JOIN RomID_RomType rid ON r.RomID = rid.RomID
             JOIN Romtype rt ON rid.RomtypeID = rt.RomtypeID
