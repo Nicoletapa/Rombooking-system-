@@ -61,7 +61,7 @@ class User
 
         // Return all errors if there are any
         if (!empty($errors)) {
-            return implode("<br>", $errors); // Join all errors with line breaks
+            return implode($errors); // Join all errors with line breaks
         }
 
         // If no errors, hash the password and proceed with registration
@@ -140,6 +140,7 @@ class User
     // Password change method
     public function changePassword($current_password, $new_password)
     {
+        $errors = [];
         // Fetch the user from the database
         $sql = "SELECT * FROM Bruker WHERE UserName = ?";
         $stmt = $this->conn->prepare($sql);
@@ -147,9 +148,21 @@ class User
         $stmt->execute();
         $result = $stmt->get_result();
 
+
         if ($result->num_rows === 1) {
             $user = $result->fetch_assoc();
+            // Verify current password
+            if (!password_verify($current_password, $user['Password'])) {
+                $errors[] = "Current password is incorrect.";
+            }
+            // Validate new password
+            $passwordErrors = PasswordHelper::validate($new_password);
+            $errors = array_merge($errors, $passwordErrors);
 
+            // If there are any errors, return them as a single string
+            if (!empty($errors)) {
+                return implode("<br>", $errors);
+            }
             // Verify current password
             if (password_verify($current_password, $user['Password'])) {
                 // Hash the new password
@@ -165,8 +178,6 @@ class User
                 } else {
                     return "Error updating password: " . $this->conn->error;
                 }
-            } else {
-                return "Current password is incorrect.";
             }
         } else {
             return "User not found.";

@@ -1,5 +1,4 @@
 <?php
-session_start();
 include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/Classes/User.php'); // Include the User class
 
 // Initialize message variable
@@ -39,10 +38,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && empty($message)) {
 
                 <!-- Display message -->
                 <?php if (!empty($message)): ?>
-                    <div
-                        class="text-center mb-4 p-2 <?php echo strpos($message, 'successfully') !== false ? 'bg-green-500' : 'bg-red-500'; ?> text-white">
-                        <?php echo htmlspecialchars($message); ?>
-                    </div><br>
+                <div
+                    class="text-center mb-4 p-2 <?php echo strpos($message, 'successfully') !== false ? 'bg-green-500' : 'bg-red-500'; ?> text-white">
+                    <?php echo ($message); ?>
+                </div><br>
                 <?php endif; ?>
 
                 <div class="flex justify-center items-center">
