@@ -12,7 +12,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Handle password reset and get the result message
     $result = $passwordManager->resetPassword($token, $newPassword, $confirmPassword);
 
-    // Redirect back to the login page with a result message
-    header("Location: /Rombooking-system-/Views/Users/Login.php?message=" . urlencode($result));
-    exit;
+    if ($result === "Passordet ditt har blitt oppdatert. Logg inn med det nye passordet.") {
+        // Success: Redirect to login page with a success message
+        header("Location: /Rombooking-system-/Views/Users/Login.php?message=" . urlencode($result));
+        exit;
+    } else {
+        // Failure: Stay on the same page and display the error message
+        header("Location: /Rombooking-system-/Views/Users/ResetPassword.php?error=" . urlencode($result) . "&token=" . urlencode($token));
+        exit;
+    }
 }

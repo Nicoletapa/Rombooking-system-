@@ -1,6 +1,7 @@
 <?php
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
+require_once($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/Classes/PasswordHelper.php');
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -36,7 +37,11 @@ class User
     public function register()
     {
         $errors = [];
-        // Validate phone number length (assuming the column length is 15)
+
+        // Validate password using PasswordValidator
+        $passwordErrors = PasswordHelper::validate($this->password);
+        $errors = array_merge($errors, $passwordErrors);
+
         if (strlen($this->phone) > 15) {
             $errors[] = "Phone number must be at most 15 characters long.";
         }
@@ -44,23 +49,6 @@ class User
         if (!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
             $errors[] = "Invalid email format.";
         }
-        // Check password criteria
-        if (strlen($this->password) < 8) {
-            $errors[] = "Password must be at least 8 characters long.";
-        }
-        if (!preg_match('/[A-Z]/', $this->password)) {
-            $errors[] = "Password must contain at least one uppercase letter.";
-        }
-        if (!preg_match('/[a-z]/', $this->password)) {
-            $errors[] = "Password must contain at least one lowercase letter.";
-        }
-        if (!preg_match('/[0-9]/', $this->password)) {
-            $errors[] = "Password must contain at least one digit.";
-        }
-        if (!preg_match('/[\W]/', $this->password)) {
-            $errors[] = "Password must contain at least one special character.";
-        }
-
         // Check if the user already exists
         $stmt = $this->conn->prepare("SELECT * FROM Bruker WHERE UserName = ?");
         $stmt->bind_param("s", $this->username);
