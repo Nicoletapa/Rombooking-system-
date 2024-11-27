@@ -31,7 +31,9 @@ html {
                     </li>
                 </ul>
             </div>
-
+            <?php
+            session_start();
+            ?>
 
             <div class="flex gap-4 items-center">
                 <?php if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true): ?>
