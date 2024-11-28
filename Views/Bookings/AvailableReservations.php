@@ -1,8 +1,13 @@
 <?php
 
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/Classes/Reservation.php');
 $reservation = new Reservation($conn);
 $output = $reservation->availableRoomPostRequest();
+session_start();
+
 ?>
 
 <!DOCTYPE html>

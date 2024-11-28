@@ -1,10 +1,15 @@
 <?php
+session_start();
 // Get the posted booking details
 $romID = $_POST['romID'];
 $romNavn = $_POST['romNavn'];
 $innsjekk = $_POST['innsjekk'];
 $utsjekk = $_POST['utsjekk'];
 $antallPersoner = $_POST['antallPersoner'];
+$email = $_SESSION['email'];
+
+
+
 ?>
 
 <!DOCTYPE html>
@@ -26,19 +31,24 @@ $antallPersoner = $_POST['antallPersoner'];
             <p><strong>Innsjekk:</strong> <?php echo htmlspecialchars($innsjekk); ?></p>
             <p><strong>Utsjekk:</strong> <?php echo htmlspecialchars($utsjekk); ?></p>
             <p><strong>Antall Personer:</strong> <?php echo htmlspecialchars($antallPersoner); ?></p>
+           
 
             <!-- Hidden form to submit the booking -->
             <form id="bookingForm" method="POST" action="/Rombooking-system-/Includes/Handlers/ConfirmReservation.php">
+                
                 <input type="hidden" name="romID" value="<?php echo htmlspecialchars($romID); ?>">
                 <input type="hidden" name="innsjekk" value="<?php echo htmlspecialchars($innsjekk); ?>">
                 <input type="hidden" name="utsjekk" value="<?php echo htmlspecialchars($utsjekk); ?>">
-                <input type="hidden" name="antallPersoner" value="<?php echo htmlspecialchars($antallPersoner); ?>">
+                <input type="hidden" name="antallPersoner" value="<?php echo htmlspecialchars($antallPersoner);
+                 ?>">
+                <input type="hidden" name="email" value="<?php echo htmlspecialchars($email); ?>">
 
                 <button type="button" id="openModal"
                     class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded mt-4">
                     Bekreft Reservasjon
                 </button>
             </form>
+           
         </div>
     </div>
 
@@ -57,28 +67,28 @@ $antallPersoner = $_POST['antallPersoner'];
 
     <!-- JavaScript to handle modal behavior -->
     <script>
-        // Get modal and buttons
-        const modal = document.getElementById('confirmationModal');
-        const openModalButton = document.getElementById('openModal');
-        const confirmButton = document.getElementById('confirmButton');
-        const cancelButton = document.getElementById('cancelButton');
-        const bookingForm = document.getElementById('bookingForm');
+    const modal = document.getElementById('confirmationModal');
+    const openModalButton = document.getElementById('openModal');
+    const confirmButton = document.getElementById('confirmButton');
+    const cancelButton = document.getElementById('cancelButton');
+    const bookingForm = document.getElementById('bookingForm');
 
-        // Show the modal when clicking the "Bekreft Reservasjon" button
-        openModalButton.addEventListener('click', function() {
-            modal.classList.remove('hidden');
-        });
+    // Show the modal when clicking the "Bekreft Reservasjon" button
+    openModalButton.addEventListener('click', function() {
+        modal.classList.remove('hidden');
+    });
 
-        // When the user clicks on "Ja, Bekreft", submit the form
-        confirmButton.addEventListener('click', function() {
-            bookingForm.submit();
-        });
+    // When the user clicks on "Ja, Bekreft", submit the form
+    confirmButton.addEventListener('click', function() {
+        
+        bookingForm.submit();
+    });
 
-        // When the user clicks on "Avbryt", close the modal
-        cancelButton.addEventListener('click', function() {
-            modal.classList.add('hidden');
-        });
-    </script>
+    // When the user clicks on "Avbryt", close the modal
+    cancelButton.addEventListener('click', function() {
+        modal.classList.add('hidden');
+    });
+</script>
 </body>
 
 </html>

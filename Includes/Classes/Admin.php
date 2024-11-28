@@ -159,7 +159,7 @@ class Admin extends User
 
 
     //Function to create reservation for a user
-    public function createReservation($brukerID, $romID, $innsjekk, $utsjekk, $antallPersoner)
+    public function createReservationAdmin($brukerID, $romID, $innsjekk, $utsjekk, $antallPersoner)
     {
         $errors = [];
 

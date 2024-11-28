@@ -67,7 +67,10 @@ class Reservation
 
         // Execute the query and handle the response
         if ($stmt->execute()) {
-            $this->displaySuccessMessage();
+            $reservationId = $this->conn->insert_id; // Get the auto-incremented reservation ID
+        $this->displaySuccessMessage();
+        $stmt->close();
+        return $reservationId;
         } else {
             $this->displayErrorMessage();
         }
@@ -112,7 +115,10 @@ class Reservation
     // Method to fetch reservations for the logged-in user
     public function getReservationsLoggedInUser()
     {
-        session_start(); // Ensure session is started
+        // Check if a session is already started
+    if (session_status() == PHP_SESSION_NONE) {
+        session_start(); 
+    }
 
         // Check if the user is logged in
         if (!isset($_SESSION['BrukerID'])) {
@@ -123,7 +129,7 @@ class Reservation
 
         // Prepare the SQL query to fetch reservations
         $sql = "
-            SELECT r.ReservasjonID, r.RomID, r.Innsjekk, r.Utsjekk, r.Bestillingsdato ,rt.RomTypeNavn, rt.Beskrivelse
+            SELECT r.ReservasjonID, r.RomID, r.Innsjekk, r.Utsjekk, r.Bestillingsdato ,rt.RomTypeNavn, rt.Beskrivelse, rt.RoomTypeImage
             FROM Reservasjon r
             JOIN RomID_RomType rid ON r.RomID = rid.RomID
             JOIN Romtype rt ON rid.RomtypeID = rt.RomtypeID
@@ -317,4 +323,55 @@ class Reservation
             $this->conn->close();
         }
     }
+   
+    
+
+public function sendReservationConfirmation($reservationId, $email, $mailer)
+{
+    // Fetch reservation details
+    $sql = "
+        SELECT r.ReservasjonID, r.Innsjekk, r.Utsjekk, r.Bestillingsdato, rt.RomTypeNavn, rt.Beskrivelse
+        FROM Reservasjon r
+        JOIN RomID_RomType rid ON r.RomID = rid.RomID
+        JOIN Romtype rt ON rid.RomtypeID = rt.RomtypeID
+        WHERE r.ReservasjonID = ?
+    ";
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param("i", $reservationId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $reservation = $result->fetch_assoc();
+
+    if ($reservation) {
+        // Prepare email content
+        $subject = "Reservasjonsbekreftelse";
+        $message = "
+            Hei,
+
+            Din reservasjon er bekreftet. Her er detaljene:
+
+            Reservasjon ID: {$reservation['ReservasjonID']}
+            Romtype: {$reservation['RomTypeNavn']}
+            Beskrivelse: {$reservation['Beskrivelse']}
+            Innsjekk: {$reservation['Innsjekk']}
+            Utsjekk: {$reservation['Utsjekk']}
+            Bestillingsdato: {$reservation['Bestillingsdato']}
+
+            Takk for at du valgte oss.
+
+            Vennlig hilsen,
+            Rombooking-system
+        ";
+
+        // Send email
+        $mailer->sendEmail($email, $subject, nl2br($message));
+        return "En e-post med reservasjonsbekreftelse har blitt sendt.";
+    } else {
+        return "Reservasjonen ble ikke funnet.";
+    }
 }
+
+}
+
+
+
