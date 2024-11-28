@@ -1,5 +1,7 @@
 <?php
 session_start();
+
+
 // Get the posted booking details
 $romID = $_POST['romID'];
 $romNavn = $_POST['romNavn'];
@@ -11,6 +13,7 @@ $email = $_SESSION['email'];
 
 
 ?>
+<?php include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/Layout/Navbar.php'); ?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -42,12 +45,23 @@ $email = $_SESSION['email'];
                 <input type="hidden" name="antallPersoner" value="<?php echo htmlspecialchars($antallPersoner);
                  ?>">
                 <input type="hidden" name="email" value="<?php echo htmlspecialchars($email); ?>">
-
-                <button type="button" id="openModal"
+<div class="flex justify-between">
+                
+                 <button type="submit" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded mt-4">
+        <a href="/Rombooking-system-/index.php">Avbryt reservasjon</a>
+    </button>
+    <button type="button" id="openModal"
                     class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded mt-4">
                     Bekreft Reservasjon
                 </button>
+</div>
+
             </form>
+         
+    
+   
+
+
            
         </div>
     </div>

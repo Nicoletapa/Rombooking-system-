@@ -1,3 +1,52 @@
+<?php
+error_reporting(E_ALL); // Report all errors        
+ini_set('display_errors', 1); // Display all errors
+$isValid = false;
+$errors = [];
+$antallVoksne = isset($_POST['antallVoksne']) ? $_POST['antallVoksne'] : 1;
+$antallBarn = isset($_POST['antallBarn']) ? $_POST['antallBarn'] : 0;
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Your validation logic here
+    if (empty($_POST['innsjekk'])) {
+        $errors['innsjekk'] = 'Innsjekk dato er påkrevd.';
+        $isValid = false;
+    } else {
+        $innsjekk = $_POST['innsjekk'];
+    }
+   // Validering utsjekk
+   if (empty($_POST['utsjekk'])) {
+    $errors['utsjekk'] = 'Utsjekk dato er påkrevd.';
+    $isValid = false;
+} else {
+    $utsjekk = $_POST['utsjekk'];
+}
+
+// Additional validation to ensure utsjekk is not before innsjekk
+if (!empty($innsjekk) && !empty($utsjekk) && $utsjekk < $innsjekk) {
+    $errors['date'] = 'Utsjekk dato kan ikke være før innsjekk dato.';
+    $isValid = false;
+}
+
+// Validering antall voksne
+if (empty($_POST['antallVoksne']) || $_POST['antallVoksne'] <= 0) {
+    $errors['antallVoksne'] = 'Antall voksne må være minst 1.';
+    $isValid = false;
+} else {
+    $antallVoksne = $_POST['antallVoksne'];
+}
+
+// Validering antall barn
+if (!isset($_POST['antallBarn']) || $_POST['antallBarn'] < 0) {
+    $errors['antallBarn'] = 'Antall barn kan ikke være negativt.';
+    $isValid = false;
+} else {
+    $antallBarn = $_POST['antallBarn'];
+}
+}
+$today = date('Y-m-d');
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -37,6 +86,11 @@
         } else {
             $innsjekk = $_POST['innsjekk'];
         }
+        // Additional validation to ensure utsjekk is not before innsjekk
+    if (!empty($innsjekk) && !empty($utsjekk) && $utsjekk <= $innsjekk) {
+        $errors['date'] = 'Utsjekk dato kan ikke være før innsjekk dato.';
+        $isValid = false;
+    }
 
         // Validering utsjekk
         if (empty($_POST['utsjekk'])) {
@@ -68,7 +122,7 @@
             <div class="relative w-1/6">
                 <label for="innsjekk" class="absolute -top-6 left-1 font-semibold">Innsjekk dato:</label>
                 <div class="bg-gray-300 rounded-md flex flex-col p-4 opacity-90">
-                    <input type="date" id="innsjekk" name="innsjekk" class="bg-transparent relative text-lg" value="<?php echo htmlspecialchars($innsjekk)?>" />
+                    <input type="date" id="innsjekk" name="innsjekk" class="bg-transparent relative text-lg" value="<?php echo htmlspecialchars($innsjekk)?>" min="<?php echo $today; ?>" />
                 </div>
                 <!-- Feilmelding -->
                 <?php if (isset($errors['innsjekk'])): ?>
@@ -78,12 +132,13 @@
             <div class="relative w-1/6">
                 <label for="utsjekk" class="absolute -top-6 left-1 font-semibold">Utsjekk dato:</label>
                 <div class="bg-gray-300 rounded-md flex flex-col p-4 opacity-90">
-                    <input type="date" id="utsjekk" name="utsjekk" class="relative bg-transparent text-lg" value="<?php echo htmlspecialchars($utsjekk)?>" />
+                    <input type="date" id="utsjekk" name="utsjekk" class="relative bg-transparent text-lg" value="<?php echo htmlspecialchars($utsjekk)?>" min="<?php echo $today; ?>" />
                 </div>
                 <!-- Feilmelding -->
                 <?php if (isset($errors['utsjekk'])): ?>
                     <p class="text-red-500 text-sm"><?php echo $errors['utsjekk']; ?></p>
                 <?php endif; ?>
+                
             </div>
             <div class="relative w-1/6">
                 <label for="antallPersoner" class="absolute -top-6 left-1 font-semibold">Personer:</label>
@@ -100,6 +155,7 @@
                     <!-- Feilmelding -->
                     <?php if (isset($errors['antallBarn'])): ?>
                         <p class="text-red-500 text-sm"><?php echo $errors['antallBarn']; ?></p>
+                        
                     <?php endif; ?>
                 </div>
             </div>

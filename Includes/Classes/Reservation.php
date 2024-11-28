@@ -84,8 +84,8 @@ class Reservation
         echo "<p class='text-green-500 my-4'>Reservasjonen din er bekreftet!</p>";
         echo "
         <script>
-            alert('Reservasjonen din er bekreftet! Du blir nå omdirigert til startsiden.');
-            window.location.href = '../../index.php';
+            alert('Reservasjonen din er bekreftet! En e-post med reservasjonsdetaljer ble sendt til din mail. Du blir nå omdirigert til dine reservasjoner.');
+            window.location.href = '../../Views/Users/UserReservations.php';
         </script>";
     }
 
