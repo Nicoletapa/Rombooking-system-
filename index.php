@@ -25,21 +25,21 @@
                 <div class="flex w-full gap-4 h-2/3 lg:flex-row flex-col items-center">
                     <!-- Enkeltrom -->
                     <div class="flex flex-col h-full w-full text-center">
-                        <div onclick="showModal('enkeltrom')" class="bg-gray-500 rounded-3xl h-full aspect-square overflow-hidden shadow-md cursor-pointer">
+                        <div onclick="showModal('enkeltrom')" class="bg-gray-500 rounded-3xl h-full aspect-square overflow-hidden shadow-md cursor-pointer hover:opacity-80 hover:shadow-lg transform transition-transform">
                             <img src="Public/Images/Enkeltrom.avif" class="w-full h-full object-cover" alt="Enkeltrom" />
                         </div>
                         <span class="text-2xl">Enkeltrom</span>
                     </div>
                     <!-- Dobbeltrom -->
                     <div class="flex flex-col h-full w-full text-center">
-                        <div onclick="showModal('dobbeltrom')" class="bg-gray-500 rounded-3xl h-full aspect-square overflow-hidden shadow-md cursor-pointer">
+                        <div onclick="showModal('dobbeltrom')" class="bg-gray-500 rounded-3xl h-full aspect-square overflow-hidden shadow-md cursor-pointer hover:opacity-80 hover:shadow-lg transform transition-transform">
                             <img src="Public/Images/Dobbeltrom.avif" class="w-full h-full object-cover" alt="Dobbeltrom" />
                         </div>
                         <span class="text-2xl">Dobbeltrom</span>
                     </div>
                     <!-- Junior Suite -->
                     <div class="flex flex-col h-full w-full text-center">
-                        <div onclick="showModal('juniorSuite')" class="bg-gray-500 rounded-3xl h-full aspect-square overflow-hidden shadow-md cursor-pointer">
+                        <div onclick="showModal('juniorSuite')" class="bg-gray-500 rounded-3xl h-full aspect-square overflow-hidden shadow-md cursor-pointer hover:opacity-80 hover:shadow-lg transform transition-transform">
                             <img src="Public/Images/JuniorSuite.jpg" class="w-full h-full object-cover" alt="Junior Suite" />
                         </div>
                         <span class="text-2xl">Junior Suite</span>
