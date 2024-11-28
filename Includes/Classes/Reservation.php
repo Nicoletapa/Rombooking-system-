@@ -36,7 +36,10 @@ class Reservation
 
         // Execute the query and handle the response
         if ($stmt->execute()) {
-            $this->displaySuccessMessage();
+            $reservationId = $this->conn->insert_id; // Get the auto-incremented reservation ID
+        $this->displaySuccessMessage();
+        $stmt->close();
+        return $reservationId;
         } else {
             $this->displayErrorMessage();
         }

@@ -7,7 +7,9 @@ $innsjekk = $_POST['innsjekk'];
 $utsjekk = $_POST['utsjekk'];
 $antallPersoner = $_POST['antallPersoner'];
 $email = $_SESSION['email'];
-$reservationId = $_POST['reservationId'];
+
+
+
 ?>
 
 <!DOCTYPE html>
@@ -29,10 +31,11 @@ $reservationId = $_POST['reservationId'];
             <p><strong>Innsjekk:</strong> <?php echo htmlspecialchars($innsjekk); ?></p>
             <p><strong>Utsjekk:</strong> <?php echo htmlspecialchars($utsjekk); ?></p>
             <p><strong>Antall Personer:</strong> <?php echo htmlspecialchars($antallPersoner); ?></p>
+           
 
             <!-- Hidden form to submit the booking -->
             <form id="bookingForm" method="POST" action="/Rombooking-system-/Includes/Handlers/ConfirmReservation.php">
-                <input type="hidden" name="reservationId" value="<?php echo htmlspecialchars($reservationId); ?>">
+                
                 <input type="hidden" name="romID" value="<?php echo htmlspecialchars($romID); ?>">
                 <input type="hidden" name="innsjekk" value="<?php echo htmlspecialchars($innsjekk); ?>">
                 <input type="hidden" name="utsjekk" value="<?php echo htmlspecialchars($utsjekk); ?>">
@@ -45,6 +48,7 @@ $reservationId = $_POST['reservationId'];
                     Bekreft Reservasjon
                 </button>
             </form>
+           
         </div>
     </div>
 
