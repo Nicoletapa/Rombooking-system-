@@ -289,5 +289,53 @@ class Reservation
             $this->conn->close();
         }
     }
+   
+    
+
+public function sendReservationConfirmation($reservationId, $email, $mailer)
+{
+    // Fetch reservation details
+    $sql = "
+        SELECT r.ReservasjonID, r.Innsjekk, r.Utsjekk, r.Bestillingsdato, rt.RomTypeNavn, rt.Beskrivelse
+        FROM Reservasjon r
+        JOIN RomID_RomType rid ON r.RomID = rid.RomID
+        JOIN Romtype rt ON rid.RomtypeID = rt.RomtypeID
+        WHERE r.ReservasjonID = ?
+    ";
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param("i", $reservationId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $reservation = $result->fetch_assoc();
+
+    if ($reservation) {
+        // Prepare email content
+        $subject = "Reservasjonsbekreftelse";
+        $message = "
+            Hei,
+
+            Din reservasjon er bekreftet. Her er detaljene:
+
+            Reservasjon ID: {$reservation['ReservasjonID']}
+            Romtype: {$reservation['RomTypeNavn']}
+            Beskrivelse: {$reservation['Beskrivelse']}
+            Innsjekk: {$reservation['Innsjekk']}
+            Utsjekk: {$reservation['Utsjekk']}
+            Bestillingsdato: {$reservation['Bestillingsdato']}
+
+            Takk for at du valgte oss.
+
+            Vennlig hilsen,
+            Rombooking-system
+        ";
+
+        // Send email
+        $mailer->sendEmail($email, $subject, nl2br($message));
+        return "En e-post med reservasjonsbekreftelse har blitt sendt.";
+    } else {
+        return "Reservasjonen ble ikke funnet.";
+    }
 }
+}
+
 

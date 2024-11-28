@@ -101,6 +101,37 @@ $reservations = $userReservations->getReservationsLoggedInUser();
         <?php endif; ?>
     </div>
 </div>
+<!-- Cancel confirmation modal -->
+
+<div id="confirmationModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center">
+    <div class="bg-white p-6 rounded-md">
+        <h3 class="text-xl">Er du sikker på at du vil avbestille reservasjonen?</h3>
+        <form id="cancelForm" method="post" action="/Rombooking-system-/Includes/Handlers/CancelReservation.php">
+            <input type="hidden" name="reservation_id" id="reservation_id">
+            <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded mt-4">Ja, avbestill</button>
+            <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded mt-4" id="closeModal">Avbryt</button>
+        </form>
+    </div>
+</div>
+
+<!-- JavaScript to handle modal -->
+<script>
+    // Open modal when cancel button is clicked
+    document.querySelectorAll('.cancel-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const reservationId = this.getAttribute('data-reservation-id');
+            document.getElementById('reservation_id').value =
+                reservationId; // Set reservationID in hidden input
+            document.getElementById('confirmationModal').classList.remove('hidden'); // Show modal
+        });
+    });
+
+    // Close modal when 'avbryt' is clicked
+    document.getElementById('closeModal').addEventListener('click', function() {
+        document.getElementById('confirmationModal').classList.add('hidden'); // Hide modal
+    });
+</script>
+
 
 <!-- JavaScript to handle view switching -->
 <script>

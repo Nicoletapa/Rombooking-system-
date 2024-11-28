@@ -26,7 +26,7 @@ class Mailer
         $mail->SMTPSecure = 'tls';
         $mail->Port = 587;
 
-        $mail->setFrom('thevithach@gmail.com', 'Password Reset');
+        $mail->setFrom('thevithach@gmail.com', $subject);
         $mail->addAddress($to);
         $mail->Subject = $subject;
         $mail->Body = $body;

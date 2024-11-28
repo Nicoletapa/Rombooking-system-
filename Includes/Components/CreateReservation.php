@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $antallPersoner = $_POST['antallPersoner'] ?? 1;
 
     $reservation = new Admin($conn);
-    $message = $reservation->createReservation($brukerID, $romID, $innsjekk, $utsjekk, $antallPersoner);
+    $message = $reservation->createReservationAdmin($brukerID, $romID, $innsjekk, $utsjekk, $antallPersoner);
 
 }
 if (strpos($message, 'opprettet') !== false) {
