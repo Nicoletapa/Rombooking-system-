@@ -3,7 +3,6 @@ include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/Classes/User.p
 
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
-
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = $_POST['username'];
     $firstname = $_POST['firstname'];
@@ -11,15 +10,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $phone = $_POST['phone'];
     $email = $_POST['email'];
     $password = $_POST['password'];
-    $role = $_POST['role'];
 
     // Create a new User instance and attempt to register
-    $user = new User($conn, $username, $password, $firstname, $lastname, $phone, $email, $role);
+    $user = new User($conn, $username, $password, $firstname, $lastname, $phone, $email);
     $message = $user->register();
-
-    // Display feedback message
-    $feedbackClass = strpos($message, 'Error') !== false ? 'text-red-600' : 'text-green-600';
-    echo "<p class='$feedbackClass text-center mt-2'>$message</p>";
 }
 ?>
 
@@ -35,7 +29,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 <body class="bg-gray-100">
     <div class="flex h-screen justify-center items-center">
+
+
         <div class="bg-white border-2 p-6 rounded-md shadow-lg w-96">
+            <?php if (isset($message)) : ?>
+            <div class="bg-red-500 text-white p-4 rounded-md shadow-md text-center">
+                <?php echo $message; ?>
+            </div>
+            <?php endif; ?>
             <h2 class="text-2xl font-semibold text-center mb-4">Register</h2>
             <p class="text-sm text-gray-500 text-center mb-6">
                 Please fill in this form to create an account.
@@ -53,7 +54,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             class="block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 px-3 py-2">
                     </div>
                     <div>
-                        <label for="firstname" class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                        <label for="firstname" class="block text-sm font-medium text-gray-700 mb-1">First
+                            Name</label>
                         <input type="text" id="firstname" name="firstname" placeholder="First Name" required
                             class="block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 px-3 py-2">
                     </div>
@@ -74,14 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <input type="password" id="password" name="password" placeholder="Password" required
                         class="block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 px-3 py-2">
                 </div>
-                <div>
-                    <label for="role" class="block text-sm font-medium text-gray-700 mb-1">Role</label>
-                    <select id="role" name="role" required
-                        class="block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 px-3 py-2">
-                        <option value="1">Customer</option>
-                        <option value="2">Admin</option>
-                    </select>
-                </div>
+
                 <button type="submit"
                     class="block w-full bg-black text-white text-sm font-semibold py-2 rounded-md hover:opacity-80 transition">
                     Register

@@ -1,4 +1,5 @@
 <?php
+require_once($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/Classes/PasswordHelper.php');
 class PasswordManager
 {
     private $conn;
@@ -37,8 +38,15 @@ class PasswordManager
 
     public function resetPassword($token, $newPassword, $confirmPassword)
     {
+        $passwordErrors = PasswordHelper::validate($newPassword);
+
+        // Check if passwords match
         if ($newPassword !== $confirmPassword) {
-            return "Passordene stemmer ikke overens.";
+            $passwordErrors[] = "Passordene stemmer ikke overens.";
+        }
+        // If there are any errors, return them as a single string
+        if (!empty($passwordErrors)) {
+            return implode("<br>", $passwordErrors);
         }
 
         $hashedPassword = password_hash($newPassword, PASSWORD_BCRYPT);

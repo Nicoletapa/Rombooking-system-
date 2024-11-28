@@ -1,4 +1,7 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+require_once($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/Classes/PasswordHelper.php');
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -34,7 +37,11 @@ class User
     public function register()
     {
         $errors = [];
-        // Validate phone number length (assuming the column length is 15)
+
+        // Validate password using PasswordValidator
+        $passwordErrors = PasswordHelper::validate($this->password);
+        $errors = array_merge($errors, $passwordErrors);
+
         if (strlen($this->phone) > 15) {
             $errors[] = "Phone number must be at most 15 characters long.";
         }
@@ -42,26 +49,6 @@ class User
         if (!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
             $errors[] = "Invalid email format.";
         }
-        // Check password criteria
-        if (strlen($this->password) < 8) {
-            $errors[] = "Password must be at least 8 characters long.";
-        }
-        if (!preg_match('/[A-Z]/', $this->password)) {
-            $errors[] = "Password must contain at least one uppercase letter.";
-        }
-        if (!preg_match('/[a-z]/', $this->password)) {
-            $errors[] = "Password must contain at least one lowercase letter.";
-        }
-        if (!preg_match('/[0-9]/', $this->password)) {
-            $errors[] = "Password must contain at least one digit.";
-        }
-        if (!preg_match('/[\W]/', $this->password)) {
-            $errors[] = "Password must contain at least one special character.";
-        }
-
-
-
-
         // Check if the user already exists
         $stmt = $this->conn->prepare("SELECT * FROM Bruker WHERE UserName = ?");
         $stmt->bind_param("s", $this->username);
@@ -74,16 +61,19 @@ class User
 
         // Return all errors if there are any
         if (!empty($errors)) {
-            return implode("<br>", $errors); // Join all errors with line breaks
+            return implode($errors); // Join all errors with line breaks
         }
 
         // If no errors, hash the password and proceed with registration
         $hashedPassword = password_hash($this->password, PASSWORD_BCRYPT);
 
+        // Default role as "Customer" (RolleID = 1)
+        $defaultRole = 1;
+
         // Insert the new user into the database
         $query = "INSERT INTO Bruker (UserName, Navn, Etternavn, TlfNr, Email, Password, RolleID) VALUES (?, ?, ?, ?, ?, ?, ?)";
         $stmt = $this->conn->prepare($query);
-        $stmt->bind_param("ssssssi", $this->username, $this->firstname, $this->lastname, $this->phone, $this->email, $hashedPassword, $this->role);
+        $stmt->bind_param("ssssssi", $this->username, $this->firstname, $this->lastname, $this->phone, $this->email, $hashedPassword, $defaultRole);
 
         if ($stmt->execute()) {
             header('Location: Login.php');
@@ -92,6 +82,7 @@ class User
             return "Error: " . $stmt->error;
         }
     }
+
 
 
     // Login method - Accepts only the password as parameter
@@ -149,6 +140,7 @@ class User
     // Password change method
     public function changePassword($current_password, $new_password)
     {
+        $errors = [];
         // Fetch the user from the database
         $sql = "SELECT * FROM Bruker WHERE UserName = ?";
         $stmt = $this->conn->prepare($sql);
@@ -156,9 +148,21 @@ class User
         $stmt->execute();
         $result = $stmt->get_result();
 
+
         if ($result->num_rows === 1) {
             $user = $result->fetch_assoc();
+            // Verify current password
+            if (!password_verify($current_password, $user['Password'])) {
+                $errors[] = "Current password is incorrect.";
+            }
+            // Validate new password
+            $passwordErrors = PasswordHelper::validate($new_password);
+            $errors = array_merge($errors, $passwordErrors);
 
+            // If there are any errors, return them as a single string
+            if (!empty($errors)) {
+                return implode("<br>", $errors);
+            }
             // Verify current password
             if (password_verify($current_password, $user['Password'])) {
                 // Hash the new password
@@ -174,8 +178,6 @@ class User
                 } else {
                     return "Error updating password: " . $this->conn->error;
                 }
-            } else {
-                return "Current password is incorrect.";
             }
         } else {
             return "User not found.";
@@ -188,6 +190,30 @@ class User
         $stmt->bind_param("i", $userID);
         $stmt->execute();
         return $stmt->get_result()->fetch_assoc();
+    }
+
+    public function getTotalReservations()
+    {
+        $sql = "SELECT COUNT(*) AS total_reservations FROM Reservasjon WHERE BrukerID = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("i", $this->brukerID);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        $stmt->close();
+
+        return $row['total_reservations'] ?? 0;
+    }
+
+    public function getAvatarUrl()
+    {
+        if (isset($_SESSION['firstname']) && isset($_SESSION['lastname'])) {
+            $firstname = $_SESSION['firstname'];
+            $lastname = $_SESSION['lastname'];
+            return 'https://ui-avatars.com/api/?name=' . urlencode($firstname . ' ' . $lastname) . '&size=128&background=0D8ABC&color=fff';
+        }
+
+        return 'https://ui-avatars.com/api/?name=Guest&size=128&background=CCCCCC&color=000000';
     }
 
     // Method to fetch reservations for the logged-in user
