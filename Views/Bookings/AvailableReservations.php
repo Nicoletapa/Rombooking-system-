@@ -1,12 +1,13 @@
 <?php
 
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
 
 include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/Classes/Reservation.php');
 $reservation = new Reservation($conn);
 $output = $reservation->availableRoomPostRequest();
 session_start();
+
+$errors = isset($_GET['errors']) ? $_GET['errors'] : [];
+
 
 ?>
 
@@ -29,9 +30,20 @@ session_start();
             </div>
             <div class="container mx-auto pb-2">
                 <?php
-                if (isset($output)) {
-                    echo $output;
-                }
+
+if (!empty($errors)) {
+    echo '<div class="error-messages">';
+    foreach ($errors as $error) {
+        echo '<p class="text-red-500 px-4">' . htmlspecialchars($error) . '</p>';
+    }
+    echo '</div>';
+} else {
+    if (isset($output)) {
+        echo $output;
+    }
+
+}
+                
                 ?>
             </div>
         </div>
