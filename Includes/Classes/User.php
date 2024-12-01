@@ -1,15 +1,22 @@
 <?php
+// Enable error reporting and display for debugging
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
+
+// Include the PasswordHelper class
 require_once($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/Classes/PasswordHelper.php');
+
+// Start a session if not already started
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/config.php'); // Include the database configuration file
+// Include the database configuration file
+include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/config.php');
 
 class User
 {
+    // Database connection and user-related properties
     protected $conn;
     protected $brukerID;
     protected $username;
@@ -20,98 +27,120 @@ class User
     protected $email;
     protected $role;
 
-    // Constructor for registration
+    /**
+     * Constructor to initialize a User instance.
+     *
+     * @param mysqli $conn The database connection.
+     * @param string|null $username The username (optional).
+     * @param string|null $password The password (optional).
+     * @param string|null $firstname The first name (optional).
+     * @param string|null $lastname The last name (optional).
+     * @param string|null $phone The phone number (optional).
+     * @param string|null $email The email address (optional).
+     * @param string|null $role The user role (optional).
+     */
     public function __construct($conn, ?string $username = null, ?string $password = null, ?string $firstname = null, ?string $lastname = null, ?string $phone = null, ?string $email = null, ?string $role = null)
     {
-        $this->conn = $conn;
-        $this->username = $username ?? '';
-        $this->password = $password;
-        $this->firstname = $firstname ?? '';
-        $this->lastname = $lastname ?? '';
-        $this->phone = $phone ?? '';
-        $this->email = $email ?? '';
-        $this->role = $role ?? '';
+        $this->conn = $conn; // Assign database connection
+        $this->username = $username ?? ''; // Assign or set default empty string
+        $this->password = $password; // Assign password
+        $this->firstname = $firstname ?? ''; // Assign or default to empty string
+        $this->lastname = $lastname ?? ''; // Assign or default to empty string
+        $this->phone = $phone ?? ''; // Assign or default to empty string
+        $this->email = $email ?? ''; // Assign or default to empty string
+        $this->role = $role ?? ''; // Assign or default to empty string
     }
 
-
+    /**
+     * Registers a new user in the system.
+     *
+     * @return string|null Error messages if validation fails, otherwise redirects to the login page.
+     */
     public function register()
     {
-        $errors = [];
+        $errors = []; // Initialize an array to collect validation errors
 
         // Validate password using PasswordValidator
         $passwordErrors = PasswordHelper::validate($this->password);
-        $errors = array_merge($errors, $passwordErrors);
+        $errors = array_merge($errors, $passwordErrors); // Add password validation errors to the list
 
+        // Validate phone number length
         if (strlen($this->phone) > 15) {
             $errors[] = "Phone number must be at most 15 characters long.";
         }
+
         // Validate email format
         if (!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
             $errors[] = "Invalid email format.";
         }
-        // Check if the user already exists
+
+        // Check if the user already exists in the database
         $stmt = $this->conn->prepare("SELECT * FROM Bruker WHERE UserName = ?");
-        $stmt->bind_param("s", $this->username);
-        $stmt->execute();
-        $result = $stmt->get_result();
+        $stmt->bind_param("s", $this->username); // Bind the username parameter
+        $stmt->execute(); // Execute the query
+        $result = $stmt->get_result(); // Fetch the result set
 
         if ($result->num_rows > 0) {
-            $errors[] = "User already exists.";
+            $errors[] = "User already exists."; // Add error if user exists
         }
 
-        // Return all errors if there are any
+        // Return errors if any are found
         if (!empty($errors)) {
-            return implode($errors); // Join all errors with line breaks
+            return implode($errors); // Join errors with line breaks and return
         }
 
-        // If no errors, hash the password and proceed with registration
+        // If no errors, hash the password for secure storage
         $hashedPassword = password_hash($this->password, PASSWORD_BCRYPT);
 
         // Default role as "Customer" (RolleID = 1)
         $defaultRole = 1;
 
-        // Insert the new user into the database
+        // Prepare SQL query to insert the new user
         $query = "INSERT INTO Bruker (UserName, Navn, Etternavn, TlfNr, Email, Password, RolleID) VALUES (?, ?, ?, ?, ?, ?, ?)";
         $stmt = $this->conn->prepare($query);
         $stmt->bind_param("ssssssi", $this->username, $this->firstname, $this->lastname, $this->phone, $this->email, $hashedPassword, $defaultRole);
 
+        // Execute the query and handle success or failure
         if ($stmt->execute()) {
-            header('Location: Login.php');
+            header('Location: Login.php'); // Redirect to login page on success
             exit;
         } else {
-            return "Error: " . $stmt->error;
+            return "Error: " . $stmt->error; // Return error message on failure
         }
     }
 
-
-
-    // Login method - Accepts only the password as parameter
+    /**
+     * Authenticates a user with the provided password.
+     *
+     * @param string $password The user's password.
+     * @return string|null Error message if login fails, otherwise redirects to the appropriate page.
+     */
     public function login($password)
     {
-        // Retrieve the user's data from the database
+        // Prepare SQL query to retrieve the user's data
         $stmt = $this->conn->prepare("SELECT * FROM Bruker WHERE UserName = ?");
-        $stmt->bind_param("s", $this->username);
-        $stmt->execute();
-        $user = $stmt->get_result()->fetch_assoc();
+        $stmt->bind_param("s", $this->username); // Bind the username parameter
+        $stmt->execute(); // Execute the query
+        $user = $stmt->get_result()->fetch_assoc(); // Fetch user data as an associative array
 
         // Check if user exists
         if (!$user) {
             return "Incorrect username or password.";
         }
 
-        // Check for lockout due to too many failed login attempts
+        // Check if the account is locked due to too many failed attempts
         if ($user['FailedLoginAttempts'] >= 3 && (time() - strtotime($user['LastFailedLogin'])) < 3600) {
             return "Too many failed login attempts. Please try again in one hour.";
         }
 
-        // Verify the entered password with the stored hashed password
+        // Verify the provided password against the stored hashed password
         if (password_verify($password, $user['Password'])) {
-            // Reset failed attempts on successful login
+            // Reset failed login attempts on success
             $stmt = $this->conn->prepare("UPDATE Bruker SET FailedLoginAttempts = 0 WHERE UserName = ?");
             $stmt->bind_param("s", $this->username);
             $stmt->execute();
 
-            // Set session variables upon successful login
+            // Set session variables to indicate a successful login
             $_SESSION['loggedin'] = true;
             $_SESSION['RolleID'] = $user['RolleID'];
             $_SESSION['firstname'] = $user['Navn'];
@@ -121,15 +150,15 @@ class User
             $_SESSION['TlfNr'] = $user['TlfNr'];
             $_SESSION['email'] = $user['Email'];
 
-            // Redirect based on role
-            if ($user['RolleID'] == 2) {
+            // Redirect based on the user's role
+            if ($user['RolleID'] == 2) { // Admin role
                 header('Location: /RomBooking-System-/Views/AdminPanel/AdminPanel.php');
-            } else {
+            } else { // Regular user role
                 header('Location: ../../Index.php');
             }
-            exit;
+            exit; // Stop further script execution after redirection
         } else {
-            // Increment failed attempts and set last failed login timestamp
+            // Increment failed login attempts on incorrect password
             $stmt = $this->conn->prepare("UPDATE Bruker SET FailedLoginAttempts = FailedLoginAttempts + 1, LastFailedLogin = NOW() WHERE UserName = ?");
             $stmt->bind_param("s", $this->username);
             $stmt->execute();
@@ -137,116 +166,72 @@ class User
             return "Incorrect username or password.";
         }
     }
-    // Password change method
+
+    /**
+     * Changes the password for the current user.
+     *
+     * @param string $current_password The current password.
+     * @param string $new_password The new password.
+     * @return string Message indicating success or failure.
+     */
     public function changePassword($current_password, $new_password)
     {
-        $errors = [];
-        // Fetch the user from the database
+        $errors = []; // Initialize an array to collect errors
+
+        // Prepare SQL query to fetch user data
         $sql = "SELECT * FROM Bruker WHERE UserName = ?";
         $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("s", $this->username);
-        $stmt->execute();
-        $result = $stmt->get_result();
+        $stmt->bind_param("s", $this->username); // Bind the username parameter
+        $stmt->execute(); // Execute the query
+        $result = $stmt->get_result(); // Fetch the result set
 
-
+        // Check if a matching user was found
         if ($result->num_rows === 1) {
-            $user = $result->fetch_assoc();
-            // Verify current password
+            $user = $result->fetch_assoc(); // Fetch user data
+
+            // Verify the current password
             if (!password_verify($current_password, $user['Password'])) {
                 $errors[] = "Current password is incorrect.";
             }
-            // Validate new password
+
+            // Validate the new password using PasswordHelper
             $passwordErrors = PasswordHelper::validate($new_password);
-            $errors = array_merge($errors, $passwordErrors);
+            $errors = array_merge($errors, $passwordErrors); // Add validation errors to the list
 
-            // If there are any errors, return them as a single string
             if (!empty($errors)) {
-                return implode("<br>", $errors);
+                return implode("<br>", $errors); // Return all errors joined with line breaks
             }
-            // Verify current password
-            if (password_verify($current_password, $user['Password'])) {
-                // Hash the new password
-                $new_password_hashed = password_hash($new_password, PASSWORD_DEFAULT);
 
-                // Update the password in the database
-                $update_sql = "UPDATE Bruker SET Password = ? WHERE UserName = ?";
-                $update_stmt = $this->conn->prepare($update_sql);
-                $update_stmt->bind_param("ss", $new_password_hashed, $this->username);
+            // Hash the new password
+            $new_password_hashed = password_hash($new_password, PASSWORD_DEFAULT);
 
-                if ($update_stmt->execute()) {
-                    return "Password changed successfully!";
-                } else {
-                    return "Error updating password: " . $this->conn->error;
-                }
+            // Update the password in the database
+            $update_sql = "UPDATE Bruker SET Password = ? WHERE UserName = ?";
+            $update_stmt = $this->conn->prepare($update_sql);
+            $update_stmt->bind_param("ss", $new_password_hashed, $this->username);
+
+            if ($update_stmt->execute()) {
+                return "Password changed successfully!";
+            } else {
+                return "Error updating password: " . $this->conn->error;
             }
         } else {
             return "User not found.";
         }
     }
 
+    /**
+     * Retrieves user information by their ID.
+     *
+     * @param int $userID The user's ID.
+     * @return array|null The user's information as an associative array or null if not found.
+     */
     public function getUserById($userID)
     {
+        // Prepare SQL query to fetch user data by ID
         $stmt = $this->conn->prepare("SELECT * FROM Bruker WHERE BrukerID = ?");
-        $stmt->bind_param("i", $userID);
-        $stmt->execute();
-        return $stmt->get_result()->fetch_assoc();
-    }
-
-    public function getTotalReservations()
-    {
-        $sql = "SELECT COUNT(*) AS total_reservations FROM Reservasjon WHERE BrukerID = ?";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("i", $this->brukerID);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $row = $result->fetch_assoc();
-        $stmt->close();
-
-        return $row['total_reservations'] ?? 0;
-    }
-
-    public function getAvatarUrl()
-    {
-        if (isset($_SESSION['firstname']) && isset($_SESSION['lastname'])) {
-            $firstname = $_SESSION['firstname'];
-            $lastname = $_SESSION['lastname'];
-            return 'https://ui-avatars.com/api/?name=' . urlencode($firstname . ' ' . $lastname) . '&size=128&background=0D8ABC&color=fff';
-        }
-
-        return 'https://ui-avatars.com/api/?name=Guest&size=128&background=CCCCCC&color=000000';
-    }
-
-    // Method to fetch reservations for the logged-in user
-    public function getLoggedInUserReservations()
-    {
-        session_start(); // Ensure session is started
-
-        // Check if the user is logged in
-        if (!isset($_SESSION['BrukerID'])) {
-            return "No user is logged in.";
-        }
-
-        $brukerID = $_SESSION['BrukerID']; // Get the user ID from the session
-
-        // Prepare the SQL query to fetch reservations
-        $sql = "
-        SELECT r.RomID, r.Innsjekk, r.Utsjekk, rt.RomTypeNavn, rt.Beskrivelse
-        FROM Reservasjon r
-        JOIN RomID_RomType rid ON r.RomID = rid.RomID
-        JOIN Romtype rt ON rid.RomtypeID = rt.RomtypeID
-        WHERE r.BrukerID = ?
-    ";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("i", $brukerID);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        $reservations = [];
-        while ($row = $result->fetch_assoc()) {
-            $reservations[] = $row;
-        }
-
-        $stmt->close();
-        return $reservations;
+        $stmt->bind_param("i", $userID); // Bind the user ID parameter
+        $stmt->execute(); // Execute the query
+        return $stmt->get_result()->fetch_assoc(); // Fetch and return user data as an associative array
     }
 }
