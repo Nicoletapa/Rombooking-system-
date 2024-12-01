@@ -32,7 +32,10 @@ html {
                 </ul>
             </div>
             <?php
-            session_start();
+            // Check if a session is already active
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start(); // Start a new session if no session exists
+            }
             ?>
 
             <div class="flex gap-4 items-center">

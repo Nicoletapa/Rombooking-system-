@@ -83,7 +83,7 @@ $today = date('Y-m-d');
 
                 <!-- Feilmelding -->
                 <?php if (isset($errors['innsjekk'])): ?>
-                    <p class="text-red-500 text-sm"><?php echo $errors['innsjekk']; ?></p>
+                <p class="text-red-500 text-sm"><?php echo $errors['innsjekk']; ?></p>
                 <?php endif; ?>
             </div>
 
@@ -96,7 +96,7 @@ $today = date('Y-m-d');
 
                 <!-- Feilmelding -->
                 <?php if (isset($errors['utsjekk'])): ?>
-                    <p class="text-red-500 text-sm"><?php echo $errors['utsjekk']; ?></p>
+                <p class="text-red-500 text-sm"><?php echo $errors['utsjekk']; ?></p>
                 <?php endif; ?>
 
 
@@ -107,19 +107,19 @@ $today = date('Y-m-d');
                 <!-- Felt for personer -->
                 <div class="bg-gray-300 flex  gap-x-3 rounded-md flex  p-4 opacity-90">
                     <label for="antallVoksne">Voksne:</label>
-                    <input class="w-10 rounded-sm" type="number" id="antallVoksne" name="antallVoksne"
+                    <input class="w-10 rounded-sm text-center pl-3" type="number" id="antallVoksne" name="antallVoksne"
                         value="<?php echo $antallVoksne; ?>" />
 
                     <!-- Feilmelding -->
                     <?php if (isset($errors['antallVoksne'])): ?>
-                        <p class="text-red-500 text-sm"><?php echo $errors['antallVoksne']; ?></p>
+                    <p class="text-red-500 text-sm"><?php echo $errors['antallVoksne']; ?></p>
                     <?php endif; ?>
                     <label for="antallBarn">Barn:</label>
-                    <input class="w-10 rounded-sm" type="number" id="antallBarn" name="antallBarn"
+                    <input class="w-10 rounded-sm text-center pl-3" type="number" id="antallBarn" name="antallBarn"
                         value="<?php echo $antallBarn; ?>" />
                     <!-- Feilmelding -->
                     <?php if (isset($errors['antallBarn'])): ?>
-                        <p class="text-red-500 text-sm"><?php echo $errors['antallBarn']; ?></p>
+                    <p class="text-red-500 text-sm"><?php echo $errors['antallBarn']; ?></p>
 
                     <?php endif; ?>
                 </div>
