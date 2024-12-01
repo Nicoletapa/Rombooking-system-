@@ -68,9 +68,9 @@ class Reservation
         // Execute the query and handle the response
         if ($stmt->execute()) {
             $reservationId = $this->conn->insert_id; // Get the auto-incremented reservation ID
-        $this->displaySuccessMessage();
-        $stmt->close();
-        return $reservationId;
+            $this->displaySuccessMessage();
+            $stmt->close();
+            return $reservationId;
         } else {
             $this->displayErrorMessage();
         }
@@ -116,9 +116,9 @@ class Reservation
     public function getReservationsLoggedInUser()
     {
         // Check if a session is already started
-    if (session_status() == PHP_SESSION_NONE) {
-        session_start(); 
-    }
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
 
         // Check if the user is logged in
         if (!isset($_SESSION['BrukerID'])) {
@@ -245,7 +245,7 @@ class Reservation
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $innsjekk = $_POST['innsjekk'];
             $utsjekk = $_POST['utsjekk'];
-            $romtype = $_POST['romtype'];
+            $romtype = isset($_POST['romtype']) ? $_POST['romtype'] : '';
             $antallPersoner = $_POST['antallVoksne'] + $_POST['antallBarn'];
 
             return $this->findAvailableRooms($innsjekk, $utsjekk, $romtype, $antallPersoner);
@@ -256,17 +256,23 @@ class Reservation
 
     private function findAvailableRooms($innsjekk, $utsjekk, $romtype, $antallPersoner)
     {
-        $sql = "SELECT RomID_RomType.RomID, Romtype.RomTypeNavn, Romtype.RoomTypeImage 
-                FROM RomID_RomType 
-                JOIN Romtype ON RomID_RomType.RomTypeID = Romtype.RomtypeID
-                WHERE RomID_RomType.RomID NOT IN (
-                    SELECT RomID 
-                    FROM Reservasjon 
-                    WHERE ('$innsjekk' BETWEEN Innsjekk AND Utsjekk) 
-                    OR ('$utsjekk' BETWEEN Innsjekk AND Utsjekk)
-                    OR (Innsjekk BETWEEN '$innsjekk' AND '$utsjekk')
-                )
-                AND Romtype.RomKapsitet >= $antallPersoner";
+        $sql = "
+        SELECT RomID_RomType.RomID, Romtype.RomTypeNavn, Romtype.RoomTypeImage 
+        FROM RomID_RomType 
+        JOIN Romtype ON RomID_RomType.RomTypeID = Romtype.RomtypeID
+        WHERE RomID_RomType.RomID NOT IN (
+            SELECT RomID 
+            FROM Reservasjon 
+            WHERE ('$innsjekk' BETWEEN Innsjekk AND Utsjekk) 
+            OR ('$utsjekk' BETWEEN Innsjekk AND Utsjekk)
+            OR (Innsjekk BETWEEN '$innsjekk' AND '$utsjekk')
+        )
+        AND Romtype.RomKapsitet >= $antallPersoner
+    ";
+
+        if (!empty($romtype)) {
+            $sql .= " AND Romtype.RomtypeID = $romtype";
+        }
 
         $result = $this->conn->query($sql);
         return $this->processRoomResults($result, $innsjekk, $utsjekk, $antallPersoner);
@@ -323,29 +329,29 @@ class Reservation
             $this->conn->close();
         }
     }
-   
-    
 
-public function sendReservationConfirmation($reservationId, $email, $mailer)
-{
-    // Fetch reservation details
-    $sql = "
+
+
+    public function sendReservationConfirmation($reservationId, $email, $mailer)
+    {
+        // Fetch reservation details
+        $sql = "
         SELECT r.ReservasjonID, r.Innsjekk, r.Utsjekk, r.Bestillingsdato, rt.RomTypeNavn, rt.Beskrivelse
         FROM Reservasjon r
         JOIN RomID_RomType rid ON r.RomID = rid.RomID
         JOIN Romtype rt ON rid.RomtypeID = rt.RomtypeID
         WHERE r.ReservasjonID = ?
     ";
-    $stmt = $this->conn->prepare($sql);
-    $stmt->bind_param("i", $reservationId);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $reservation = $result->fetch_assoc();
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("i", $reservationId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $reservation = $result->fetch_assoc();
 
-    if ($reservation) {
-        // Prepare email content
-        $subject = "Reservasjonsbekreftelse";
-        $message = "
+        if ($reservation) {
+            // Prepare email content
+            $subject = "Reservasjonsbekreftelse";
+            $message = "
             Hei,
 
             Din reservasjon er bekreftet. Her er detaljene:
@@ -363,15 +369,11 @@ public function sendReservationConfirmation($reservationId, $email, $mailer)
             Rombooking-system
         ";
 
-        // Send email
-        $mailer->sendEmail($email, $subject, nl2br($message));
-        return "En e-post med reservasjonsbekreftelse har blitt sendt.";
-    } else {
-        return "Reservasjonen ble ikke funnet.";
+            // Send email
+            $mailer->sendEmail($email, $subject, nl2br($message));
+            return "En e-post med reservasjonsbekreftelse har blitt sendt.";
+        } else {
+            return "Reservasjonen ble ikke funnet.";
+        }
     }
 }
-
-}
-
-
-
