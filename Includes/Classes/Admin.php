@@ -1,4 +1,4 @@
-Here’s the provided code with detailed comments explaining each line for better understanding:
+
 
 <?php
 // Include the User class to extend its functionalities
