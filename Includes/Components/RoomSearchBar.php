@@ -129,14 +129,19 @@ $today = date('Y-m-d');
                 <select name="romtype" class="w-full bg-transparent h-full">
                     <option value="">Alle Romtyper</option>
                     <?php
-                    if ($resultRomType->num_rows > 0) {
-                        while ($row = $resultRomType->fetch_assoc()) {
-                            $selected = isset($_POST['romtype']) && $_POST['romtype'] == $row['RomtypeID'] ? 'selected' : '';
-                            echo "<option value='" . $row['RomtypeID'] . "' $selected>" . $row['RomTypeNavn'] . "</option>";
-                        }
-                    } else {
-                        echo "<option>No types available</option>";
-                    }
+                    // Check if there are any room types available
+if ($resultRomType->num_rows > 0) {
+    // Loop through each room type and create an option element
+    while ($row = $resultRomType->fetch_assoc()) {
+        // Check if the current room type is selected
+        $selected = isset($_POST['romtype']) && $_POST['romtype'] == $row['RomtypeID'] ? 'selected' : '';
+        // Output the option element with the room type ID and name
+        echo "<option value='" . $row['RomtypeID'] . "' $selected>" . $row['RomTypeNavn'] . "</option>";
+    }
+} else {
+    // If no room types are available, display a message
+    echo "<option>No types available</option>";
+}
                     ?>
                 </select>
 

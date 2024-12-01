@@ -17,13 +17,10 @@ $filter_active = $_GET['filter_active'] ?? 'all';
 // Initialize the manager
 $admin = new Admin($conn);
 
-// Fetch filter options
-$searchColumn = $_GET['search_column'] ?? 'ReservasjonID';
-$searchValue = $_GET['search_value'] ?? '';
-$filterActive = $_GET['filter_active'] ?? 'all';
 
 // Fetch reservations
-$result = $admin->getAllReservations($searchColumn, $searchValue, $filterActive);
+$result = $admin->getAllReservations($search_column, $search_value, $filter_active);
+
 ?>
 
 <html>
@@ -43,15 +40,25 @@ $result = $admin->getAllReservations($searchColumn, $searchValue, $filterActive)
                 <option value="BrukerID">BrukerID</option>
                 <option value="RomID">RomID</option>
             </select>
+<!-- Input for search value 
+ Remove '%' characters from search value for display purposes -->
             <input type="text" name="search_value" placeholder="Søk verdi"
-                value="<?php echo htmlspecialchars(str_replace('%', '', $search_value)); ?>"
+                value="<?php echo htmlspecialchars(str_replace('%', '', $search_value)); ?>" 
+                class="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"> 
+                
+
+           <!-- Dropdown for filtering active reservations -->
+                <select name="filter_active"
                 class="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-            <select name="filter_active"
-                class="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                
+              <!-- Option to filter all reservations -->
                 <option value="all" <?php echo $filter_active == 'all' ? 'selected' : ''; ?>>Alle reservasjoner</option>
-                <option value="active" <?php echo $filter_active == 'active' ? 'selected' : ''; ?>>Aktive reservasjoner
-                </option>
-            </select>
+
+           <!-- Option to filter only active reservations -->
+                <option value="active" <?php echo $filter_active == 'active' ? 'selected' : ''; ?>>Aktive reservasjoner</option>
+           
+                 </select>
+            
             <button type="submit"
                 class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">Søk</button>
     </div>

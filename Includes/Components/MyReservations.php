@@ -2,8 +2,18 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/Classes/Reservation.php'); // Include the Reservation class
+
 $userReservations = new Reservation($conn);
 $reservations = $userReservations->getReservationsLoggedInUser();
+
+
+function isCancelable($checkInDate) {
+    $today = new DateTime(); // Get current date
+    $checkInDate = new DateTime($checkInDate);
+    $daysDifference = $today->diff($checkInDate)->days;
+    return $checkInDate > $today && $daysDifference > 1; // More than 2 days left
+}
+
 ?>
 <div class="container mx-auto p-4">
     <div class="flex justify-end mb-4">
@@ -16,11 +26,8 @@ $reservations = $userReservations->getReservationsLoggedInUser();
             <div class="flex flex-col gap-4">
                 <?php foreach ($reservations as $reservation): ?>
                     <?php
-                        $today = new DateTime(); // Get current date
-                        $checkInDate = new DateTime($reservation['Innsjekk']);
-                        $daysDifference = $today->diff($checkInDate)->days;
-                        $isCancelable = $checkInDate > $today && $daysDifference > 2; // More than 2 days left 
-                    ?>
+                    $isCancelable = isCancelable($reservation['Innsjekk']);
+                ?>
                     <div class="bg-white flex  shadow-md rounded-lg overflow-hidden">
                         <img src="<?php echo htmlspecialchars($reservation['RoomTypeImage']); ?>" alt="Room Image" class="w-80 object-cover">
                         <div class="p-4">
@@ -31,6 +38,7 @@ $reservations = $userReservations->getReservationsLoggedInUser();
                             <p class="text-gray-600"><strong>Utsjekk:</strong> <?php echo htmlspecialchars($reservation['Utsjekk']); ?></p>
                             <p class="text-gray-600"><strong>BestillingsDato:</strong> <?php echo htmlspecialchars($reservation['Bestillingsdato']); ?></p>
                             <div class="mt-4 flex justify-between items-center">
+                                <!-- construct an URL that points to the ReservationPDF.php script  -->
                                 <a href="/Rombooking-system-/Includes/utils/ReservationPDF.php?reservation_id=<?php echo htmlspecialchars($reservation['ReservasjonID']); ?>" class="bg-blue-500 text-white px-4 py-2 rounded text-sm flex items-center justify-center">
                                     Last ned PDF
                                 </a>
@@ -68,11 +76,8 @@ $reservations = $userReservations->getReservationsLoggedInUser();
                 <tbody>
                     <?php foreach ($reservations as $reservation): ?>
                         <?php
-                            $today = new DateTime(); // Get current date
-                            $checkInDate = new DateTime($reservation['Innsjekk']);
-                            $daysDifference = $today->diff($checkInDate)->days;
-                            $isCancelable = $checkInDate > $today && $daysDifference > 2; // More than 2 days left 
-                        ?>
+                    $isCancelable = isCancelable($reservation['Innsjekk']);
+                ?>
                         <tr>
                             <td class="border px-4 py-2"><?php echo htmlspecialchars($reservation['RomID']); ?></td>
                             <td class="border px-4 py-2"><?php echo htmlspecialchars($reservation['RomTypeNavn']); ?></td>

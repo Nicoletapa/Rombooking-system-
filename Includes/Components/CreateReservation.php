@@ -7,6 +7,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/Classes/Admin.
 include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/utils/NotAdmin.php');
 
 $message = '';
+// Retrieve the form data and create a new reservation
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $brukerID = $_POST['brukerID'] ?? '';
     $romID = $_POST['romID'] ?? '';

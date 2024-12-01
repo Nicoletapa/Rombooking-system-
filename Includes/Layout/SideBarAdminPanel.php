@@ -5,7 +5,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/utils/NotAdmin
 <nav class="w-1/4 flex flex-col gap-4 font-medium p-4">
 
 
-    <!-- Mine Bestillinger -->
+    <!-- Alle Bestillinger -->
     <a href="/RomBooking-System-/Views/AdminPanel/AdminReservations.php"
         class="flex gap-2 hover:bg-gray-200 rounded-md">
         <i class="fa-solid fa-file-invoice h-full flex justify-center items-center w-5"></i><span class="text-xl">
@@ -14,7 +14,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/utils/NotAdmin
 
 
 
-    <!-- BYTT PATHEN-->
+    <!-- Alle Brukere -->
     <a href="/RomBooking-System-/Views/AdminPanel/ManageUsers.php" class="flex gap-2 hover:bg-gray-200 rounded-md">
         <i class="fa-solid fa-key h-full flex justify-center items-center w-5"></i><span class="text-xl">Brukere</span>
     </a>

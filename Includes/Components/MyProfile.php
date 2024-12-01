@@ -6,7 +6,11 @@ include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/utils/NoUserLo
 include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/Classes/Reservation.php'); // Include the Reservation class
 
 $reservation = new Reservation($conn);
+
+// Get the total number of reservations for the current user
 $total_reservations = $reservation->countTotalReservations($_SESSION['BrukerID']);
+
+// Generate the URL for the user's avatar
 $avatarUrl = $reservation->generateAvatarUrl();
 
 ?>
