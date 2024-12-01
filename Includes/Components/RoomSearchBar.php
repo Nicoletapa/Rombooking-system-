@@ -3,7 +3,7 @@ error_reporting(E_ALL); // Report all errors
 ini_set('display_errors', 1); // Display all errors
 
 include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/config.php');
-    
+
 
 $sql = "SELECT * FROM Romtype";
 $resultRomType = $conn->query($sql);
@@ -26,35 +26,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         $innsjekk = $_POST['innsjekk'];
     }
-   // Validering utsjekk
-   if (empty($_POST['utsjekk'])) {
-    $errors['utsjekk'] = 'Utsjekk dato er påkrevd.';
-    $isValid = false;
-} else {
-    $utsjekk = $_POST['utsjekk'];
-}
+    // Validering utsjekk
+    if (empty($_POST['utsjekk'])) {
+        $errors['utsjekk'] = 'Utsjekk dato er påkrevd.';
+        $isValid = false;
+    } else {
+        $utsjekk = $_POST['utsjekk'];
+    }
 
-// Additional validation to ensure utsjekk is not before innsjekk
-if (!empty($innsjekk) && !empty($utsjekk) && $utsjekk < $innsjekk) {
-    $errors['date'] = 'Utsjekk dato kan ikke være før innsjekk dato.';
-    $isValid = false;
-}
+    // Additional validation to ensure utsjekk is not before innsjekk
+    if (!empty($innsjekk) && !empty($utsjekk) && $utsjekk < $innsjekk) {
+        $errors['date'] = 'Utsjekk dato kan ikke være før innsjekk dato.';
+        $isValid = false;
+    }
 
-// Validering antall voksne
-if (empty($_POST['antallVoksne']) || $_POST['antallVoksne'] <= 0) {
-    $errors['antallVoksne'] = 'Antall voksne må være minst 1.';
-    $isValid = false;
-} else {
-    $antallVoksne = $_POST['antallVoksne'];
-}
+    // Validering antall voksne
+    if (empty($_POST['antallVoksne']) || $_POST['antallVoksne'] <= 0) {
+        $errors['antallVoksne'] = 'Antall voksne må være minst 1.';
+        $isValid = false;
+    } else {
+        $antallVoksne = $_POST['antallVoksne'];
+    }
 
-// Validering antall barn
-if (!isset($_POST['antallBarn']) || $_POST['antallBarn'] < 0) {
-    $errors['antallBarn'] = 'Antall barn kan ikke være negativt.';
-    $isValid = false;
-} else {
-    $antallBarn = $_POST['antallBarn'];
-}
+    // Validering antall barn
+    if (!isset($_POST['antallBarn']) || $_POST['antallBarn'] < 0) {
+        $errors['antallBarn'] = 'Antall barn kan ikke være negativt.';
+        $isValid = false;
+    } else {
+        $antallBarn = $_POST['antallBarn'];
+    }
 }
 $today = date('Y-m-d');
 
@@ -72,13 +72,15 @@ $today = date('Y-m-d');
 
 <body>
     <div class="w-full min-h-max">
-        <form method="POST" action="/Rombooking-system-/Views/Bookings/AvailableReservations.php" class="flex flex-row gap-4 items-center">
+        <form method="POST" action="/Rombooking-system-/Views/Bookings/AvailableReservations.php"
+            class="flex flex-row gap-4 items-center">
             <div class="relative w-1/6">
                 <label for="innsjekk" class="absolute -top-6 left-1 font-semibold">Innsjekk dato:</label>
                 <div class="bg-gray-300 rounded-md flex flex-col p-4 opacity-90">
-                    <input type="date" id="innsjekk" name="innsjekk" class="bg-transparent relative text-lg" value="<?php echo htmlspecialchars($innsjekk)?>" min="<?php echo $today; ?>" />
+                    <input type="date" id="innsjekk" name="innsjekk" class="bg-transparent relative text-lg"
+                        value="<?php echo htmlspecialchars($innsjekk) ?>" min="<?php echo $today; ?>" />
                 </div>
-               
+
                 <!-- Feilmelding -->
                 <?php if (isset($errors['innsjekk'])): ?>
                     <p class="text-red-500 text-sm"><?php echo $errors['innsjekk']; ?></p>
@@ -88,51 +90,56 @@ $today = date('Y-m-d');
             <div class="relative w-1/6">
                 <label for="utsjekk" class="absolute -top-6 left-1 font-semibold">Utsjekk dato:</label>
                 <div class="bg-gray-300 rounded-md flex flex-col p-4 opacity-90">
-                    <input type="date" id="utsjekk" name="utsjekk" class="relative bg-transparent text-lg" value="<?php echo htmlspecialchars($utsjekk)?>" min="<?php echo $today; ?>" />
+                    <input type="date" id="utsjekk" name="utsjekk" class="relative bg-transparent text-lg"
+                        value="<?php echo htmlspecialchars($utsjekk) ?>" min="<?php echo $today; ?>" />
                 </div>
 
                 <!-- Feilmelding -->
                 <?php if (isset($errors['utsjekk'])): ?>
                     <p class="text-red-500 text-sm"><?php echo $errors['utsjekk']; ?></p>
                 <?php endif; ?>
-                
+
 
             </div>
             <div class="relative w-1/5">
                 <label for="antallPersoner" class="absolute -top-6 left-1 font-semibold">Personer:</label>
-                
+
                 <!-- Felt for personer -->
                 <div class="bg-gray-300 flex  gap-x-3 rounded-md flex  p-4 opacity-90">
                     <label for="antallVoksne">Voksne:</label>
-                    <input class="w-10 rounded-sm" type="number" id="antallVoksne" name="antallVoksne" value="<?php echo $antallVoksne; ?>"  />
+                    <input class="w-10 rounded-sm" type="number" id="antallVoksne" name="antallVoksne"
+                        value="<?php echo $antallVoksne; ?>" />
 
                     <!-- Feilmelding -->
                     <?php if (isset($errors['antallVoksne'])): ?>
                         <p class="text-red-500 text-sm"><?php echo $errors['antallVoksne']; ?></p>
                     <?php endif; ?>
                     <label for="antallBarn">Barn:</label>
-                    <input  class="w-10 rounded-sm" type="number" id="antallBarn" name="antallBarn" value="<?php echo $antallBarn; ?>"  />
+                    <input class="w-10 rounded-sm" type="number" id="antallBarn" name="antallBarn"
+                        value="<?php echo $antallBarn; ?>" />
                     <!-- Feilmelding -->
                     <?php if (isset($errors['antallBarn'])): ?>
                         <p class="text-red-500 text-sm"><?php echo $errors['antallBarn']; ?></p>
-                        
+
                     <?php endif; ?>
                 </div>
             </div>
-            
+
             <div class="w-1/4 bg-gray-300 text-xl p-4 rounded-md opacity-90">
                 <select name="romtype" class="w-full bg-transparent h-full">
-                    <option>Romtype</option>
+                    <option value="">Alle Romtyper</option>
                     <?php
                     if ($resultRomType->num_rows > 0) {
                         while ($row = $resultRomType->fetch_assoc()) {
-                            echo "<option value='" . $row['RomtypeID'] . "'>" . $row['RomTypeNavn'] . "</option>";
+                            $selected = isset($_POST['romtype']) && $_POST['romtype'] == $row['RomtypeID'] ? 'selected' : '';
+                            echo "<option value='" . $row['RomtypeID'] . "' $selected>" . $row['RomTypeNavn'] . "</option>";
                         }
                     } else {
                         echo "<option>No types available</option>";
                     }
                     ?>
                 </select>
+
             </div>
             <div class="w-48 p-4 text-xl rounded-md bg-[#563635]">
                 <button type="submit" value="Sjekk tilgjengelige rom" class="w-full h-full text-white">Søk</button>
