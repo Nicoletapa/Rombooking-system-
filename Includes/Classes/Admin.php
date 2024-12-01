@@ -1,5 +1,4 @@
 
-
 <?php
 // Include the User class to extend its functionalities
 include_once($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/Classes/User.php');
