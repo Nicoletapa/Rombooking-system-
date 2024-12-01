@@ -2,6 +2,8 @@
 <?php
 // Include the User class to extend its functionalities
 include_once($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/Classes/User.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/Classes/PasswordHelper.php');
+
 
 // Define the Admin class, which extends the User class to inherit its methods and properties
 class Admin extends User
@@ -73,36 +75,23 @@ class Admin extends User
         return $stmtUser->execute() ? "User and related reservations deleted successfully!" : "Error deleting user: " . $this->conn->error;
     }
 
-    // Method to register a new user with validation
+    // Method to register a new user with validation (overriden method from User class)
     public function register()
     {
-        $errors = []; // Initialize an array to collect error messages
+        $errors = []; // Initialize an array to collect validation errors
+
+        // Validate password using PasswordValidator
+        $passwordErrors = PasswordHelper::validate($this->password);
+        $errors = array_merge($errors, $passwordErrors); // Add password validation errors to the list
 
         // Validate phone number length
         if (strlen($this->phone) > 15) {
-            $errors[] = "Phone number must be at most 15 characters long.";
+            $errors[] = "Telefonnummeret må være maksimalt 15 tegn langt.";
         }
 
         // Validate email format
         if (!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
-            $errors[] = "Invalid email format.";
-        }
-
-        // Validate password complexity
-        if (strlen($this->password) < 8) {
-            $errors[] = "Password must be at least 8 characters long.";
-        }
-        if (!preg_match('/[A-Z]/', $this->password)) {
-            $errors[] = "Password must contain at least one uppercase letter.";
-        }
-        if (!preg_match('/[a-z]/', $this->password)) {
-            $errors[] = "Password must contain at least one lowercase letter.";
-        }
-        if (!preg_match('/[0-9]/', $this->password)) {
-            $errors[] = "Password must contain at least one digit.";
-        }
-        if (!preg_match('/[\W]/', $this->password)) {
-            $errors[] = "Password must contain at least one special character.";
+            $errors[] = "Ugyldig e-postformat.";
         }
 
         // Check if a user with the same username already exists
@@ -112,7 +101,7 @@ class Admin extends User
         $result = $stmt->get_result();
 
         if ($result->num_rows > 0) {
-            $errors[] = "User already exists.";
+            $errors[] = "Brukeren eksisterer allerede.";
         }
 
         // If there are any validation errors, return them as a single string
@@ -130,7 +119,7 @@ class Admin extends User
 
         // Return a success message if the insertion was successful, otherwise an error message
         if ($stmt->execute()) {
-            return "User created successfully!"; // Return success message instead of redirecting
+            return "Vellykket bruker opprettelse"; // Return success message instead of redirecting (overriden method from User class)
         } else {
             return "Error: " . $stmt->error;
         }
