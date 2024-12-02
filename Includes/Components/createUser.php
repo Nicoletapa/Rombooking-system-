@@ -21,7 +21,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $admin = new Admin($conn, $username, $password, $firstname, $lastname, $phone, $email, $role);
 
     $message = $admin->register();
+
     $feedbackClass = strpos($message, 'vellykket') !== false ? 'text-green-600' : 'text-red-600';
+
 }
 ?>
 
@@ -40,10 +42,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="bg-white border-2 p-6 rounded-md shadow-lg w-2/5">
             <h2 class="text-2xl font-semibold text-center mb-4">Opprett ny bruker</h2>
             <p class="text-sm text-gray-500 text-center mb-6">
+
             Vennligst fyll ut dette skjemaet for å opprette en ny brukerkonto.            </p>
 
+
             <?php if (!empty($message)): ?>
-                <p class="<?php echo $feedbackClass; ?> text-center mt-2"><?php echo htmlspecialchars($message); ?></p>
+            <p class="<?php echo $feedbackClass; ?> text-center mt-2"><?php echo htmlspecialchars($message); ?></p>
             <?php endif; ?>
 
             <form action="" method="POST" class="space-y-4">
@@ -54,7 +58,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             class="block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 px-3 py-2">
                     </div>
                     <div>
+
                         <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Telefonnummer</label>
+
                         <input type="text" id="phone" name="phone" placeholder="Phone Number" required
                             class="block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 px-3 py-2">
                     </div>
@@ -89,11 +95,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
                 <button type="submit"
                     class="block w-full bg-black text-white text-sm font-semibold py-2 rounded-md hover:opacity-80 transition">
+
                     Opprett bruker
                 </button>
             </form>
             <div class="text-center mt-4">
                 <a href="/Rombooking-system-/Views/AdminPanel/ManageUsers.php" class="text-blue-600 text-sm hover:underline">Tilbake til dashbord</a>
+
             </div>
         </div>
     </div>
