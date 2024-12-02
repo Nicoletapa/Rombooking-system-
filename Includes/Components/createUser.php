@@ -68,29 +68,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div>
                         <label for="username" class="block text-sm font-medium text-gray-700 mb-1">Brukernavn</label>
                         <input type="text" id="username" name="username" placeholder="Username" required
+                            value="<?php echo htmlspecialchars($_POST['username'] ?? ''); ?>"
                             class="block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 px-3 py-2">
                     </div>
                     <div>
-
                         <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Telefonnummer</label>
-
                         <input type="text" id="phone" name="phone" placeholder="Phone Number" required
+                            value="<?php echo htmlspecialchars($_POST['phone'] ?? ''); ?>"
                             class="block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 px-3 py-2">
                     </div>
                     <div>
                         <label for="firstname" class="block text-sm font-medium text-gray-700 mb-1">Fornavn</label>
                         <input type="text" id="firstname" name="firstname" placeholder="First Name" required
+                            value="<?php echo htmlspecialchars($_POST['firstname'] ?? ''); ?>"
                             class="block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 px-3 py-2">
                     </div>
                     <div>
                         <label for="lastname" class="block text-sm font-medium text-gray-700 mb-1">Etternavn</label>
                         <input type="text" id="lastname" name="lastname" placeholder="Last Name" required
+                            value="<?php echo htmlspecialchars($_POST['lastname'] ?? ''); ?>"
                             class="block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 px-3 py-2">
                     </div>
                 </div>
                 <div>
                     <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
                     <input type="email" id="email" name="email" placeholder="Email" required
+                        value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>"
                         class="block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 px-3 py-2">
                 </div>
                 <div>
@@ -102,13 +105,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <label for="role" class="block text-sm font-medium text-gray-700 mb-1">Rolle</label>
                     <select id="role" name="role" required
                         class="block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 px-3 py-2">
-                        <option value="1">Bruker</option>
-                        <option value="2">Admin</option>
+                        <option value="1"
+                            <?php echo (isset($_POST['role']) && $_POST['role'] == 1) ? 'selected' : ''; ?>>Bruker
+                        </option>
+                        <option value="2"
+                            <?php echo (isset($_POST['role']) && $_POST['role'] == 2) ? 'selected' : ''; ?>>Admin
+                        </option>
                     </select>
                 </div>
                 <button type="submit"
                     class="block w-full bg-black text-white text-sm font-semibold py-2 rounded-md hover:opacity-80 transition">
-
                     Opprett bruker
                 </button>
             </form>

@@ -51,6 +51,10 @@ class Helper
             return "Telefonnummeret kan kun inneholde sifre.";
         }
 
+        if (strlen($phone) < 8) {
+            return "Telefonnummeret må være minst 8 siffer.";
+        }
+
         return null;
     }
 
