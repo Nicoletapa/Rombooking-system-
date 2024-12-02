@@ -1,6 +1,6 @@
 <?php
 // Include the PasswordHelper class for validating passwords
-require_once($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/Classes/PasswordHelper.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/Classes/Helper.php');
 
 // Define the PasswordManager class to handle password-related functionalities
 class PasswordManager
@@ -67,7 +67,7 @@ class PasswordManager
     public function resetPassword($token, $newPassword, $confirmPassword)
     {
         // Validate the new password using PasswordHelper
-        $passwordErrors = PasswordHelper::validate($newPassword);
+        $passwordErrors = Helper::validatePassword($newPassword);
 
         // Check if the new password matches the confirmation password
         if ($newPassword !== $confirmPassword) {

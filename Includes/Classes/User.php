@@ -4,7 +4,7 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 // Include the PasswordHelper class
-require_once($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/Classes/PasswordHelper.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/Classes/Helper.php');
 
 // Start a session if not already started
 if (session_status() === PHP_SESSION_NONE) {
@@ -54,43 +54,45 @@ class User
     /**
      * Registers a new user in the system.
      *
-     * @return string|null Error messages if validation fails, otherwise redirects to the login page.
+     * Validates input fields (username, email, phone, password) and ensures the user does not already exist.
+     * If validation passes, it hashes the password and inserts the user into the database.
+     *
+     * @return string|null Returns a success message if registration is successful, validation errors if input is invalid, or database error messages on failure.
      */
     public function register()
     {
         $errors = []; // Initialize an array to collect validation errors
 
         // Validate password using PasswordValidator
-        $passwordErrors = PasswordHelper::validate($this->password);
+        $passwordErrors = Helper::validatePassword($this->password);
         $errors = array_merge($errors, $passwordErrors); // Add password validation errors to the list
 
-        // Validate phone number length
-        if (strlen($this->phone) > 15) {
-            $errors[] = "Telefonnummer må være på maks 15 tegn.";
-        }
-         // Validate phone number format (only digits allowed)
-    if (!preg_match('/^\d+$/', $this->phone)) {
-        $errors[] = "Telefonnummeret kan kun inneholde sifre.";
-    }
-
-        // Validate email format
-        if (!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
-            $errors[] = "Ugyldig e-postformat.";
+        // Validate the phone number
+        $phoneError = Helper::validatePhone($this->phone);
+        if ($phoneError) {
+            $errors[] = $phoneError;
         }
 
-        // Check if the user already exists in the database
-        $stmt = $this->conn->prepare("SELECT * FROM Bruker WHERE UserName = ?");
-        $stmt->bind_param("s", $this->username); // Bind the username parameter
-        $stmt->execute(); // Execute the query
-        $result = $stmt->get_result(); // Fetch the result set
-
-        if ($result->num_rows > 0) {
-            $errors[] = "Bruker eksisterer allerede."; // Add error if user exists
+        // Validate the email address
+        $emailError = Helper::validateEmail($this->email);
+        if ($emailError) {
+            $errors[] = $emailError;
         }
+
+        // Check if username is unique
+        if (!Helper::isUsernameUnique($this->conn, $this->username)) {
+            $errors[] = "Brukernavnet er allerede i bruk.";
+        }
+
+        // Check if email is unique
+        if (!Helper::isEmailUnique($this->conn, $this->email)) {
+            $errors[] = "E-posten er allerede i bruk.";
+        }
+
 
         // Return errors if any are found
         if (!empty($errors)) {
-            return implode($errors); // Join errors with line breaks and return
+            return implode("<br>", $errors); // Join errors with line breaks and return
         }
 
         // If no errors, hash the password for secure storage
@@ -106,7 +108,7 @@ class User
 
         // Execute the query and handle success or failure
         if ($stmt->execute()) {
-            header('Location: Login.php'); // Redirect to login page on success
+            header('Location: Login.php?message=Bruker opprettet vellykket! Logg inn for å fortsette.'); // Redirect to login page
             exit;
         } else {
             return "Feil: " . $stmt->error; // Return error message on failure
@@ -199,7 +201,7 @@ class User
             }
 
             // Validate the new password using PasswordHelper
-            $passwordErrors = PasswordHelper::validate($new_password);
+            $passwordErrors = Helper::validatePassword($new_password);
             $errors = array_merge($errors, $passwordErrors); // Add validation errors to the list
 
             if (!empty($errors)) {

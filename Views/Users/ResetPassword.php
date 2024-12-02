@@ -31,6 +31,7 @@ $error_message = $_GET['error'] ?? '';
             Token mangler eller er ugyldig. Vennligst prøv igjen.
         </div>
         <?php else: ?>
+        <!-- Form to handler ProcessResetPassword -->
         <form action="/Rombooking-system-/Includes/Handlers/ProcessResetPassword.php" method="POST" class="space-y-4">
             <input type="hidden" name="token" value="<?php echo htmlspecialchars($token); ?>">
             <div>

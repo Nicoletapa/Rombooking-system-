@@ -13,12 +13,12 @@ $message = $_GET['message'] ?? null;
 
             <!-- Display the message if present -->
             <?php if ($message): ?>
-                <div class="mb-4 text-center">
-                    <p
-                        class="text-lg <?php echo (strpos($message, 'successfully') !== false) ? 'text-green-600' : 'text-red-600'; ?>">
-                        <?php echo htmlspecialchars($message); ?>
-                    </p>
-                </div>
+            <div class="mb-4 text-center">
+                <p
+                    class="text-lg <?php echo (strpos($message, 'vellykket') !== false) ? 'text-green-600' : 'text-red-600'; ?>">
+                    <?php echo htmlspecialchars($message); ?>
+                </p>
+            </div>
             <?php endif; ?>
 
             <!-- Profile Section -->

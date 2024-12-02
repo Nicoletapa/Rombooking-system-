@@ -6,7 +6,8 @@ include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/Classes/Admin.
 include $_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/utils/NoUserLoggedIn.php';
 include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/utils/NotAdmin.php');
 
-$message = '';
+$message = [];
+$feedbackClass = ''; // Initialize to avoid undefined variable notices
 
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -20,10 +21,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $admin = new Admin($conn, $username, $password, $firstname, $lastname, $phone, $email, $role);
 
-    $message = $admin->register();
+    // Capture the result of the register method
+    $result = $admin->register();
 
-    $feedbackClass = strpos($message, 'vellykket') !== false ? 'text-green-600' : 'text-red-600';
-
+    if (is_array($result)) {
+        // If validation errors are returned as an array
+        $message = $result;
+        $feedbackClass = 'text-red-600';
+    } else {
+        // If registration is successful, store the success message
+        $message[] = $result;
+        $feedbackClass = 'text-green-600';
+    }
 }
 ?>
 
@@ -43,11 +52,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <h2 class="text-2xl font-semibold text-center mb-4">Opprett ny bruker</h2>
             <p class="text-sm text-gray-500 text-center mb-6">
 
-            Vennligst fyll ut dette skjemaet for å opprette en ny brukerkonto.            </p>
+                Vennligst fyll ut dette skjemaet for å opprette en ny brukerkonto. </p>
 
 
             <?php if (!empty($message)): ?>
-            <p class="<?php echo $feedbackClass; ?> text-center mt-2"><?php echo htmlspecialchars($message); ?></p>
+            <div class="<?php echo $feedbackClass; ?> text-center mb-2">
+                <?php foreach ($message as $msg): ?>
+                <p><?php echo htmlspecialchars($msg); ?></p>
+                <?php endforeach; ?>
+            </div>
             <?php endif; ?>
 
             <form action="" method="POST" class="space-y-4">
@@ -100,7 +113,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </button>
             </form>
             <div class="text-center mt-4">
-                <a href="/Rombooking-system-/Views/AdminPanel/ManageUsers.php" class="text-blue-600 text-sm hover:underline">Tilbake til dashbord</a>
+                <a href="/Rombooking-system-/Views/AdminPanel/ManageUsers.php"
+                    class="text-blue-600 text-sm hover:underline">Tilbake til dashbord</a>
 
             </div>
         </div>

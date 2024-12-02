@@ -1,8 +1,7 @@
-
 <?php
 // Include the User class to extend its functionalities
 include_once($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/Classes/User.php');
-require_once($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/Classes/PasswordHelper.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/Classes/Helper.php');
 
 
 // Define the Admin class, which extends the User class to inherit its methods and properties
@@ -81,39 +80,34 @@ class Admin extends User
         $errors = []; // Initialize an array to collect validation errors
 
         // Validate password using PasswordValidator
-        $passwordErrors = PasswordHelper::validate($this->password);
+        $passwordErrors = Helper::validatePassword($this->password);
         $errors = array_merge($errors, $passwordErrors); // Add password validation errors to the list
 
-        // Validate phone number length
-        if (strlen($this->phone) > 15) {
-
-            $errors[] = "Telefonnummer må være på maks 15 tegn.";
-
+        // Validate the phone number
+        $phoneError = Helper::validatePhone($this->phone);
+        if ($phoneError) {
+            $errors[] = $phoneError;
         }
 
-        // Validate email format
-        if (!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
-            $errors[] = "Ugyldig e-postformat.";
-
+        // Validate the email address
+        $emailError = Helper::validateEmail($this->email);
+        if ($emailError) {
+            $errors[] = $emailError;
         }
 
-        
+        // Check if username is unique
+        if (!Helper::isUsernameUnique($this->conn, $this->username)) {
+            $errors[] = "Brukernavnet er allerede i bruk.";
+        }
 
-        // Check if a user with the same username already exists
-        $stmt = $this->conn->prepare("SELECT * FROM Bruker WHERE UserName = ?");
-        $stmt->bind_param("s", $this->username);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        if ($result->num_rows > 0) {
-
-            $errors[] = "Bruker eksisterer allerede.";
-
+        // Check if email is unique
+        if (!Helper::isEmailUnique($this->conn, $this->email)) {
+            $errors[] = "E-posten er allerede i bruk.";
         }
 
         // If there are any validation errors, return them as a single string
         if (!empty($errors)) {
-            return implode("<br>", $errors);
+            return $errors;
         }
 
         // Hash the password for secure storage
@@ -127,10 +121,10 @@ class Admin extends User
         // Return a success message if the insertion was successful, otherwise an error message
         if ($stmt->execute()) {
 
-          
+
             return "Bruker opprettet vellykket!"; // Return success message instead of redirecting
 
-          
+
         } else {
             return "Feil: " . $stmt->error;
         }
