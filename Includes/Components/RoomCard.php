@@ -22,7 +22,7 @@ function displayRoomCard($roomID, $roomType, $count, $image, $innsjekk, $utsjekk
 
     return "
     <div class='bg-white shadow-md rounded-lg'>
-    <div class='h-72 w-full overflow-hidden'>
+    <div class='h-56 w-full overflow-hidden'>
         <img src='$image' alt='room image' class='object-cover rounded-t-lg'>
         </div>
         <div class='p-4'>
