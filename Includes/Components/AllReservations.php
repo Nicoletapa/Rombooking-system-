@@ -36,29 +36,32 @@ $result = $admin->getAllReservations($search_column, $search_value, $filter_acti
             class="flex flex-col md:flex-row items-center justify-center space-y-2 md:space-y-0 md:space-x-4">
             <select name="search_column"
                 class="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <option value="ReservasjonID">ReservasjonID</option>
-                <option value="BrukerID">BrukerID</option>
-                <option value="RomID">RomID</option>
+                <option value="ReservasjonID" <?php echo $search_column === 'ReservasjonID' ? 'selected' : ''; ?>>
+                    ReservasjonID</option>
+                <option value="BrukerID" <?php echo $search_column === 'BrukerID' ? 'selected' : ''; ?>>BrukerID
+                </option>
+                <option value="RomID" <?php echo $search_column === 'RomID' ? 'selected' : ''; ?>>RomID</option>
             </select>
-<!-- Input for search value 
+            <!-- Input for search value 
  Remove '%' characters from search value for display purposes -->
             <input type="text" name="search_value" placeholder="Søk verdi"
-                value="<?php echo htmlspecialchars(str_replace('%', '', $search_value)); ?>" 
-                class="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"> 
-                
-
-           <!-- Dropdown for filtering active reservations -->
-                <select name="filter_active"
+                value="<?php echo htmlspecialchars(str_replace('%', '', $search_value)); ?>"
                 class="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                
-              <!-- Option to filter all reservations -->
+
+
+            <!-- Dropdown for filtering active reservations -->
+            <select name="filter_active"
+                class="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+
+                <!-- Option to filter all reservations -->
                 <option value="all" <?php echo $filter_active == 'all' ? 'selected' : ''; ?>>Alle reservasjoner</option>
 
-           <!-- Option to filter only active reservations -->
-                <option value="active" <?php echo $filter_active == 'active' ? 'selected' : ''; ?>>Aktive reservasjoner</option>
-           
-                 </select>
-            
+                <!-- Option to filter only active reservations -->
+                <option value="active" <?php echo $filter_active == 'active' ? 'selected' : ''; ?>>Aktive reservasjoner
+                </option>
+
+            </select>
+
             <button type="submit"
                 class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">Søk</button>
     </div>
@@ -68,39 +71,39 @@ $result = $admin->getAllReservations($search_column, $search_value, $filter_acti
         <a href="CreateReservation.php" class="text-white-500  ">Legg til Reservasjon +</a>
     </div>
     <?php if ($result->num_rows > 0): ?>
-        <table class="table-auto w-full border-collapse ">
-            <thead>
-                <tr class="bg-gray-200">
-                    <th class="border px-4 py-2">ReservasjonID</th>
-                    <th class="border px-4 py-2">BrukerID</th>
-                    <th class="border px-4 py-2">Romnummer</th>
+    <table class="table-auto w-full border-collapse ">
+        <thead>
+            <tr class="bg-gray-200">
+                <th class="border px-4 py-2">ReservasjonID</th>
+                <th class="border px-4 py-2">BrukerID</th>
+                <th class="border px-4 py-2">Romnummer</th>
 
-                    <th class="border px-4 py-2">Innsjekk</th>
-                    <th class="border px-4 py-2">Utsjekk</th>
-                    <th class="border px-4 py-2">Handlinger</th>
+                <th class="border px-4 py-2">Innsjekk</th>
+                <th class="border px-4 py-2">Utsjekk</th>
+                <th class="border px-4 py-2">Handlinger</th>
 
-                </tr>
-            </thead>
-            <tbody>
-                <?php while ($row = $result->fetch_assoc()): ?>
-                    <tr>
-                        <td class="border px-4 py-2"><?php echo htmlspecialchars($row['ReservasjonID']); ?></td>
-                        <td class="border px-4 py-2"><?php echo htmlspecialchars($row['BrukerID']); ?></td>
-                        <td class="border px-4 py-2"><?php echo htmlspecialchars($row['RomID']); ?></td>
+            </tr>
+        </thead>
+        <tbody>
+            <?php while ($row = $result->fetch_assoc()): ?>
+            <tr>
+                <td class="border px-4 py-2"><?php echo htmlspecialchars($row['ReservasjonID']); ?></td>
+                <td class="border px-4 py-2"><?php echo htmlspecialchars($row['BrukerID']); ?></td>
+                <td class="border px-4 py-2"><?php echo htmlspecialchars($row['RomID']); ?></td>
 
-                        <td class="border px-4 py-2"><?php echo htmlspecialchars($row['Innsjekk']); ?></td>
-                        <td class="border px-4 py-2"><?php echo htmlspecialchars($row['Utsjekk']); ?></td>
-                        <td class="border px-4 py-2">
-                            <a href="ReservationDetails.php?ReservasjonID=<?php echo $row['ReservasjonID']; ?>"
-                                class="text-blue-500 hover:underline">Vis detaljer</a>
+                <td class="border px-4 py-2"><?php echo htmlspecialchars($row['Innsjekk']); ?></td>
+                <td class="border px-4 py-2"><?php echo htmlspecialchars($row['Utsjekk']); ?></td>
+                <td class="border px-4 py-2">
+                    <a href="ReservationDetails.php?ReservasjonID=<?php echo $row['ReservasjonID']; ?>"
+                        class="text-blue-500 hover:underline">Vis detaljer</a>
 
-                        </td>
-                    </tr>
-                <?php endwhile; ?>
-            </tbody>
-        </table>
+                </td>
+            </tr>
+            <?php endwhile; ?>
+        </tbody>
+    </table>
     <?php else: ?>
-        <p class="text-center">Ingen reservasjoner funnet.</p>
+    <p class="text-center">Ingen reservasjoner funnet.</p>
     <?php endif; ?>
 </div>
 

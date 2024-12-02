@@ -120,11 +120,9 @@ class Admin extends User
 
         // Return a success message if the insertion was successful, otherwise an error message
         if ($stmt->execute()) {
-
-
-            return "Bruker opprettet vellykket!"; // Return success message instead of redirecting
-
-
+            // Redirect to ManageUsers.php with success message
+            header("Location: /Rombooking-system-/Views/AdminPanel/ManageUsers.php?message=" . urlencode("Bruker opprettet vellykket!"));
+            exit;
         } else {
             return "Feil: " . $stmt->error;
         }

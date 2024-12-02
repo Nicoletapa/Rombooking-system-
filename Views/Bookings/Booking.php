@@ -34,35 +34,36 @@ $email = $_SESSION['email'];
             <p><strong>Innsjekk:</strong> <?php echo htmlspecialchars($innsjekk); ?></p>
             <p><strong>Utsjekk:</strong> <?php echo htmlspecialchars($utsjekk); ?></p>
             <p><strong>Antall Personer:</strong> <?php echo htmlspecialchars($antallPersoner); ?></p>
-           
+
 
             <!-- Hidden form to submit the booking -->
             <form id="bookingForm" method="POST" action="/Rombooking-system-/Includes/Handlers/ConfirmReservation.php">
-                
+
                 <input type="hidden" name="romID" value="<?php echo htmlspecialchars($romID); ?>">
                 <input type="hidden" name="innsjekk" value="<?php echo htmlspecialchars($innsjekk); ?>">
                 <input type="hidden" name="utsjekk" value="<?php echo htmlspecialchars($utsjekk); ?>">
                 <input type="hidden" name="antallPersoner" value="<?php echo htmlspecialchars($antallPersoner);
-                 ?>">
+                                                                    ?>">
                 <input type="hidden" name="email" value="<?php echo htmlspecialchars($email); ?>">
-<div class="flex justify-between">
-                
-                 <button type="reset" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded mt-4">
-        <a href="/Rombooking-system-/index.php">Avbryt reservasjon</a>
-    </button>
-    <button type="submit" id="openModal"
-                    class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded mt-4">
-                    Bekreft Reservasjon
-                </button>
-</div>
+                <div class="flex justify-between">
+
+                    <button type="reset"
+                        class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded mt-4">
+                        <a href="/Rombooking-system-/index.php">Avbryt reservasjon</a>
+                    </button>
+                    <button type="submit" id="openModal"
+                        class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded mt-4">
+                        Bekreft Reservasjon
+                    </button>
+                </div>
 
             </form>
-         
-    
-   
 
 
-           
+
+
+
+
         </div>
     </div>
 
@@ -89,12 +90,13 @@ $email = $_SESSION['email'];
 
     // Show the modal when clicking the "Bekreft Reservasjon" button
     openModalButton.addEventListener('click', function() {
+        event.preventDefault(); // Prevent form submission
         modal.classList.remove('hidden');
     });
 
     // When the user clicks on "Ja, Bekreft", submit the form
     confirmButton.addEventListener('click', function() {
-        
+        confirmButton.disabled = true; // Prevent further clicks
         bookingForm.submit();
     });
 
@@ -102,7 +104,7 @@ $email = $_SESSION['email'];
     cancelButton.addEventListener('click', function() {
         modal.classList.add('hidden');
     });
-</script>
+    </script>
 </body>
 
 </html>
