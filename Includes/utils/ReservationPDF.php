@@ -43,9 +43,9 @@ if (isset($_GET['reservation_id'])) {
         // Output the PDF
         $pdf->Output('D', 'Reservation_' . $reservationID . '.pdf');
     } else {
-        echo "Reservation not found.";
+        echo "Reservasjon ikke funnet.";
     }
 } else {
-    echo "No reservation ID provided.";
+    echo "Ingen reservasjon-ID oppgitt.";
 }
 ?>

@@ -9,7 +9,7 @@ $reservationHandler = new Reservation($conn);
 // Fetch the reservation ID from the query string
 $reservasjonID = isset($_GET['ReservasjonID']) ? $_GET['ReservasjonID'] : null;
 if (!$reservasjonID) {
-    die("ReservasjonID is required.");
+    die("ReservasjonID er påkrevd.");
 }
 // Fetch the reservation details
 $reservation = $reservationHandler->getReservationById($reservasjonID);

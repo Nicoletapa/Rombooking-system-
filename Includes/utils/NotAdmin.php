@@ -5,7 +5,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/config.php');
 if (isset($_SESSION['RolleID']) ) {
     $rolleID = $_SESSION['RolleID'];
     if ($rolleID != 2) {
-        echo "Unauthorized access.";
+        echo "Uautorisert tilgang.";
         exit;
     }
 }

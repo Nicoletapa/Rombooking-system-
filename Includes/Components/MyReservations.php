@@ -17,8 +17,8 @@ function isCancelable($checkInDate) {
 ?>
 <div class="container mx-auto p-4">
     <div class="flex justify-end mb-4">
-        <button id="cardViewBtn" class="bg-gray-500 text-white px-4 py-2 rounded mr-2">Card View</button>
-        <button id="tableViewBtn" class="bg-blue-500 text-white px-4 py-2 rounded">Table View</button>
+        <button id="cardViewBtn" class="bg-gray-500 text-white px-4 py-2 rounded mr-2">Kortvisning</button>
+        <button id="tableViewBtn" class="bg-blue-500 text-white px-4 py-2 rounded">Tabellvisning</button>
     </div>
 
     <div id="cardView" class="hidden">

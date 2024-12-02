@@ -17,7 +17,7 @@ function displayRoomCard($roomID, $roomType, $count, $image, $innsjekk, $utsjekk
             </button>
         </form>";
     } else {
-        $bookingForm = "<p class='text-red-500'>You must be logged in to book a room.</p>";
+        $bookingForm = "<p class='text-red-500'>Du må være logget inn for å booke et rom.</p>";
     }
 
     return "

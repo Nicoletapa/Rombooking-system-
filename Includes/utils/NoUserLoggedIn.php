@@ -4,6 +4,6 @@ include($_SERVER['DOCUMENT_ROOT'] . '/Rombooking-system-/Includes/config.php');
 if (isset($_SESSION['BrukerID']) ) {
     $brukerID = $_SESSION['BrukerID'];
 } else {
-    echo "No user is logged in.";
+    echo "Ingen bruker er logget inn.";
     exit;
 }

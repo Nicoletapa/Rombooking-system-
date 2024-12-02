@@ -61,7 +61,7 @@ class Admin extends User
         $stmtReservations->bind_param("i", $userID);
 
         if (!$stmtReservations->execute()) { // Check for errors in deleting reservations
-            return "Error deleting reservations: " . $this->conn->error;
+            return "Feil ved sletting av reservasjoner: " . $this->conn->error;
         }
 
         // Then, delete the user record
@@ -70,7 +70,7 @@ class Admin extends User
         $stmtUser->bind_param("i", $userID);
 
         // Return a success message if the user was deleted, otherwise return an error message
-        return $stmtUser->execute() ? "User and related reservations deleted successfully!" : "Error deleting user: " . $this->conn->error;
+        return $stmtUser->execute() ? "Bruker og relaterte reservasjoner slettet vellykket!" : "Feil ved sletting av bruker: " . $this->conn->error;
     }
 
     // Method to register a new user with validation
@@ -80,29 +80,29 @@ class Admin extends User
 
         // Validate phone number length
         if (strlen($this->phone) > 15) {
-            $errors[] = "Phone number must be at most 15 characters long.";
+            $errors[] = "Telefonnummer må være på maks 15 tegn.";
         }
 
         // Validate email format
         if (!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
-            $errors[] = "Invalid email format.";
+            $errors[] = "Ugyldig e-postformat.";
         }
 
         // Validate password complexity
         if (strlen($this->password) < 8) {
-            $errors[] = "Password must be at least 8 characters long.";
+            $errors[] = "Passordet må være på minst 8 tegn.";
         }
         if (!preg_match('/[A-Z]/', $this->password)) {
-            $errors[] = "Password must contain at least one uppercase letter.";
+            $errors[] = "Passordet må inneholde minst én stor bokstav.";
         }
         if (!preg_match('/[a-z]/', $this->password)) {
-            $errors[] = "Password must contain at least one lowercase letter.";
+            $errors[] = "Passordet må inneholde minst én liten bokstav.";
         }
         if (!preg_match('/[0-9]/', $this->password)) {
-            $errors[] = "Password must contain at least one digit.";
+            $errors[] = "Passordet må inneholde minst ett tall.";
         }
         if (!preg_match('/[\W]/', $this->password)) {
-            $errors[] = "Password must contain at least one special character.";
+            $errors[] = "Passordet må inneholde minst ett spesialtegn.";
         }
 
         // Check if a user with the same username already exists
@@ -112,7 +112,7 @@ class Admin extends User
         $result = $stmt->get_result();
 
         if ($result->num_rows > 0) {
-            $errors[] = "User already exists.";
+            $errors[] = "Bruker eksisterer allerede.";
         }
 
         // If there are any validation errors, return them as a single string
@@ -130,9 +130,9 @@ class Admin extends User
 
         // Return a success message if the insertion was successful, otherwise an error message
         if ($stmt->execute()) {
-            return "User created successfully!"; // Return success message instead of redirecting
+            return "Bruker opprettet vellykket!"; // Return success message instead of redirecting
         } else {
-            return "Error: " . $stmt->error;
+            return "Feil: " . $stmt->error;
         }
     }
 
@@ -189,7 +189,7 @@ class Admin extends User
 
         // Validate the number of people
         if ($antallPersoner < 0 || $antallPersoner > 4) {
-            $errors[] = "Antall personer må være minst 1.";
+            $errors[] = "Antall personer må være minst 1 eller maks 3.";
         }
 
         // If there are any validation errors, return them as a single string

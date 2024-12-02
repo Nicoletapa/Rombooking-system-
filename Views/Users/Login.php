@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="border-2 p-6 rounded-md min-h-min shadow-lg bg-white w-96">
             <h2 class="text-2xl px-2 font-semibold text-center">Login</h2>
             <p class="px-2 pb-4 py-1 text-gray-400 text-sm text-center">
-                Enter your username and password to log in to your account.
+            Skriv inn brukernavn og passord for å logge inn på kontoen din.
             </p>
 
             <!-- Display the logout or login message if present -->
@@ -49,12 +49,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <form action="Login.php" method="POST">
                 <div class="mb-4">
-                    <label for="username" class="block mb-2 font-semibold">Username</label>
+                    <label for="username" class="block mb-2 font-semibold">Brukernavn</label>
                     <input type="text" id="username" name="username" placeholder="Username" required
                         class="border-2 border-gray-300 rounded-md px-3 py-2 w-full focus:ring-blue-500 focus:border-blue-500">
                 </div>
                 <div class="mb-4">
-                    <label for="password" class="block mb-2 font-semibold">Password</label>
+                    <label for="password" class="block mb-2 font-semibold">Passord</label>
                     <input type="password" id="password" name="password" placeholder="Password" required
                         class="border-2 border-gray-300 rounded-md px-3 py-2 w-full focus:ring-blue-500 focus:border-blue-500">
                 </div>
@@ -64,10 +64,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </form>
             <div class="flex justify-between items-center mt-4">
                 <a href="Register.php" class="text-sm text-blue-600 hover:underline">
-                    Create an Account
+                Opprett en konto
                 </a>
                 <a href="ForgotPassword.php" class="text-sm text-blue-600 hover:underline">
-                    Forgot Password?
+                Glemt passord?
                 </a>
             </div>
         </div>

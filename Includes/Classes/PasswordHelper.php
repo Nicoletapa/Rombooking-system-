@@ -16,27 +16,27 @@ class PasswordHelper
 
         // Rule 1: Password must be at least 8 characters long
         if (strlen($password) < 8) {
-            $errors[] = "Password must be at least 8 characters long.";
+            $errors[] = "Passordet må være minst 8 tegn langt.";
         }
 
         // Rule 2: Password must contain at least one uppercase letter (A-Z)
         if (!preg_match('/[A-Z]/', $password)) {
-            $errors[] = "Password must contain at least one uppercase letter.";
+            $errors[] = "Passordet må inneholde minst én stor bokstav.";
         }
 
         // Rule 3: Password must contain at least one lowercase letter (a-z)
         if (!preg_match('/[a-z]/', $password)) {
-            $errors[] = "Password must contain at least one lowercase letter.";
+            $errors[] = "Passordet må inneholde minst én liten bokstav.";
         }
 
         // Rule 4: Password must contain at least one digit (0-9)
         if (!preg_match('/[0-9]/', $password)) {
-            $errors[] = "Password must contain at least one digit.";
+            $errors[] = "Passordet må inneholde minst ett tall.";
         }
 
         // Rule 5: Password must contain at least one special character (e.g., @, #, $, etc.)
         if (!preg_match('/[\W]/', $password)) {
-            $errors[] = "Password must contain at least one special character.";
+            $errors[] = "Passordet må inneholde minst ett spesialtegn.";
         }
 
         // Return the array of error messages (empty if the password is valid)
