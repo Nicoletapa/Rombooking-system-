@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: 18. Nov, 2024 19:12 PM
+-- Generation Time: 02. Des, 2024 22:04 PM
 -- Tjener-versjon: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -47,9 +47,10 @@ CREATE TABLE `Bruker` (
 --
 
 INSERT INTO `Bruker` (`BrukerID`, `Navn`, `Etternavn`, `TlfNr`, `Email`, `Password`, `UserName`, `RolleID`, `FailedLoginAttempts`, `LastFailedLogin`) VALUES
-(8, 'thevi', 'thach', '12341234', 'thevi@example.com', '$2y$10$U1cxgUYWc2D4ojbcVbu5f.SW1Tr9kazsxqnt/JWpS0YEWyrJ1vwB6', 'Admin', 2, 1, '2024-11-18 18:10:30'),
+(8, 'thevi', 'thachh', '12341234', 'thevi@example.com', '$2y$10$U1cxgUYWc2D4ojbcVbu5f.SW1Tr9kazsxqnt/JWpS0YEWyrJ1vwB6', 'Admin', 2, 0, '2024-11-18 18:10:30'),
 (9, 'nicoleta', 'nicoleta', '91121222', 'nicoleta@example.com', '$2y$10$nf7VVykU5E/nBIeqbKOPqO.9j/wCP9M9cSbzFAJZSKB4B6gSaK9Fu', 'nicoleta', 2, 0, NULL),
-(10, 'Thevithach', 'Thevithach', '1234123', 'thevithach@gmail.com', '$2y$10$kSXK3UJYXx4p4yOpywd7c.JzpynsLST37vMCLKXhqPL2TfZ1g8aee', 'Thevithach', 2, 0, '2024-11-18 18:10:24');
+(10, 'Thevithach', 'Thevithach', '1234123', 'thevithach@gmail.com', '$2y$10$lGDlAi5sv4u1fvq51gDASe/g/cWvobzz9XGzEz4qEf/tG.CCBj4A2', 'Thevithach', 2, 0, '2024-12-02 14:27:09'),
+(46, 'Thevi', 'Thach', '12312311', 'thevithach18@gmail.com', '$2y$10$KZYZuxAuVcgLhO0Jrof3Cu/wXnZDjDvV/j5vzrrF8slu88L8oNfKK', 'Customer', 1, 0, NULL);
 
 -- --------------------------------------------------------
 
@@ -85,17 +86,15 @@ CREATE TABLE `Reservasjon` (
 --
 
 INSERT INTO `Reservasjon` (`ReservasjonID`, `RomID`, `BrukerID`, `Innsjekk`, `Utsjekk`, `AntallPersoner`, `Bestillingsdato`) VALUES
-(1, 3, 8, '2024-10-15 07:30:00', '2024-10-17 12:00:00', 2, '2024-10-10 14:00:00'),
-(2, 3, 8, '2024-10-15 07:30:00', '2024-10-17 12:00:00', 3, '2024-10-10 14:05:00'),
-(3, 2, 8, '2024-10-13 17:00:00', '2024-10-16 14:00:00', 1, '2024-10-08 09:30:00'),
-(4, 1, 8, '2024-10-27 00:00:00', '2024-10-30 00:00:00', 2, '2024-10-20 12:15:00'),
-(5, 1, 8, '2024-10-23 00:00:00', '2024-10-26 00:00:00', 4, '2024-10-18 11:00:00'),
-(6, 3, 8, '2024-10-30 00:00:00', '2024-10-31 00:00:00', 2, '2024-10-25 15:30:00'),
-(7, 2, 8, '2024-10-28 00:00:00', '2024-10-31 00:00:00', 3, '2024-10-22 10:45:00'),
-(8, 1, 9, '2024-10-18 00:00:00', '2024-10-20 00:00:00', 1, '2024-10-14 08:00:00'),
+(8, 3, 9, '2024-10-18 00:00:00', '2024-10-20 00:00:00', 1, '2024-10-14 08:00:00'),
 (9, 3, 9, '2024-10-19 00:00:00', '2024-10-23 00:00:00', 2, '2024-10-15 09:15:00'),
 (10, 5, 9, '2024-10-22 00:00:00', '2024-10-25 00:00:00', 4, '2024-10-16 16:45:00'),
-(11, 3, 8, '2024-12-16 00:00:00', '2024-12-22 00:00:00', 1, '2024-11-15 00:00:00');
+(12, 2, 8, '2024-11-18 00:00:00', '2024-11-30 00:00:00', 1, '2024-11-24 00:00:00'),
+(13, 3, 8, '2024-11-18 00:00:00', '2024-11-30 00:00:00', 1, '2024-11-25 00:00:00'),
+(16, 5, 8, '2024-11-28 00:00:00', '2024-11-30 00:00:00', 1, '2024-11-25 00:00:00'),
+(19, 8, 8, '2024-11-26 00:00:00', '2024-11-30 00:00:00', 1, '2024-11-25 00:00:00'),
+(23, 11, 10, '2024-11-18 00:00:00', '2024-11-30 00:00:00', 1, '2024-11-25 00:00:00'),
+(32, 3, 8, '2024-12-18 19:00:00', '2024-12-20 19:00:00', 3, '2024-12-02 19:03:39');
 
 -- --------------------------------------------------------
 
@@ -235,19 +234,19 @@ ALTER TABLE `Romtype`
 -- AUTO_INCREMENT for table `Bruker`
 --
 ALTER TABLE `Bruker`
-  MODIFY `BrukerID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `BrukerID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
 
 --
 -- AUTO_INCREMENT for table `PasswordReset`
 --
 ALTER TABLE `PasswordReset`
-  MODIFY `ResetID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `ResetID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- AUTO_INCREMENT for table `Reservasjon`
 --
 ALTER TABLE `Reservasjon`
-  MODIFY `ReservasjonID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `ReservasjonID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT for table `Roller`
