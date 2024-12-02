@@ -102,4 +102,54 @@ class Helper
 
         return $result->num_rows === 0; // True if no matching email found
     }
+
+    /**
+     * Checks if a BrukerID exists in the database.
+     *
+     * @param mysqli $conn The database connection.
+     * @param int $brukerID The BrukerID to check.
+     * @return string|null Returns null if the user exists, otherwise an error message.
+     */
+    public static function doesBrukerIDExist($conn, $brukerID)
+    {
+        // Prepare the SQL query to check if the BrukerID exists
+        $sql = "SELECT BrukerID FROM Bruker WHERE BrukerID = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $brukerID); // Bind the BrukerID as an integer
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        // If no rows are returned, the user does not exist
+        if ($result->num_rows === 0) {
+            return "Bruker eksisterer ikke.";
+        }
+
+        // If the user exists, return null (no error)
+        return null;
+    }
+
+    /**
+     * Checks if a RomID exists in the database.
+     *
+     * @param mysqli $conn The database connection.
+     * @param int $romID The RomID to check.
+     * @return string|null Returns null if the room exists, otherwise an error message.
+     */
+    public static function doesRomIDExist($conn, $romID)
+    {
+        // Prepare the SQL query to check if the RomID exists
+        $sql = "SELECT RomID FROM RomID_RomType WHERE RomID = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $romID); // Bind the RomID as an integer
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        // If no rows are returned, the room does not exist
+        if ($result->num_rows === 0) {
+            return "Rommet eksisterer ikke.";
+        }
+
+        // If the room exists, return null (no error)
+        return null;
+    }
 }

@@ -169,6 +169,17 @@ class Admin extends User
     public function createReservationAdmin($brukerID, $romID, $innsjekk, $utsjekk, $antallPersoner)
     {
         $errors = []; // Initialize an array to collect error messages
+        // Check if BrukerID exists
+        $brukerError = Helper::doesBrukerIDExist($this->conn, $brukerID);
+        if ($brukerError) {
+            $errors[] = $brukerError;
+        }
+
+        // Check if RomID exists
+        $romError = Helper::doesRomIDExist($this->conn, $romID);
+        if ($romError) {
+            $errors[] = $romError;
+        }
 
         // Validate check-in and check-out dates
         if (empty($innsjekk)) {
