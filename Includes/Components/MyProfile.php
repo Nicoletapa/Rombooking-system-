@@ -55,9 +55,3 @@ $avatarUrl = $reservation->generateAvatarUrl();
         </div>
     </div>
 </div>
-
-<?php
-// Close the database connection
-$stmt->close();
-$conn->close();
-?>

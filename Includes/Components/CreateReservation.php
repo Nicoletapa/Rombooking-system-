@@ -32,7 +32,7 @@ if (strpos($message, 'opprettet') !== false) {
 <html>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
 <div class="create-reservation-section">
-    <h2 class="text-xl text-center font-semibold pb-2">Create New Reservation</h2>
+    <h2 class="text-xl text-center font-semibold pb-2">Opprett ny reservasjon</h2>
     <?php if (!empty($message)): ?>
         <p class="text-center <?php echo strpos($message, 'opprettet') !== false ? 'text-green-500' : 'text-red-500'; ?>">
             <?php echo $message; ?>

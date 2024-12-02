@@ -12,13 +12,13 @@ $admin = new Admin($conn);
 $userID = $_GET['BrukerID'] ?? null;
 
 if (!$userID) {
-    die("User ID is required.");
+    die("Bruker-ID er påkrevd.");
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $user = $user->getUserById($userID);
     if (!$user) {
-        die("User not found.");
+        die("Bruker ikke funnet.");
     }
 }
 
@@ -33,9 +33,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $success = $admin->editUser($userID, $data);
     if ($success) {
-        $message = "User updated successfully!";
+        $message = "Bruker oppdatert vellykket!";
     } else {
-        $message = "Error updating user.";
+        $message = "Feil ved oppdatering av bruker.";
     }
     header("Location: /Rombooking-system-/Views/AdminPanel/ManageUsers.php?message=" . urlencode($message));
     exit();

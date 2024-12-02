@@ -37,30 +37,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <?php echo $message; ?>
             </div>
             <?php endif; ?>
-            <h2 class="text-2xl font-semibold text-center mb-4">Register</h2>
+            <h2 class="text-2xl font-semibold text-center mb-4">Registrer</h2>
             <p class="text-sm text-gray-500 text-center mb-6">
-                Please fill in this form to create an account.
+            Vennligst fyll ut dette skjemaet for å opprette en konto..
             </p>
             <form action="register.php" method="POST" class="space-y-4">
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label for="username" class="block text-sm font-medium text-gray-700 mb-1">Username</label>
+                        <label for="username" class="block text-sm font-medium text-gray-700 mb-1">Brukernavn</label>
                         <input type="text" id="username" name="username" placeholder="Username" required
                             class="block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 px-3 py-2">
                     </div>
                     <div>
-                        <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                        <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Telefonnummer</label>
                         <input type="text" id="phone" name="phone" placeholder="Phone Number" required
                             class="block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 px-3 py-2">
                     </div>
                     <div>
-                        <label for="firstname" class="block text-sm font-medium text-gray-700 mb-1">First
-                            Name</label>
+                        <label for="firstname" class="block text-sm font-medium text-gray-700 mb-1">Fornavn</label>
                         <input type="text" id="firstname" name="firstname" placeholder="First Name" required
                             class="block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 px-3 py-2">
                     </div>
                     <div>
-                        <label for="lastname" class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                        <label for="lastname" class="block text-sm font-medium text-gray-700 mb-1">Etternavn</label>
                         <input type="text" id="lastname" name="lastname" placeholder="Last Name" required
                             class="block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 px-3 py-2">
                     </div>
@@ -72,18 +71,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         class="block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 px-3 py-2">
                 </div>
                 <div>
-                    <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                    <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Passord</label>
                     <input type="password" id="password" name="password" placeholder="Password" required
                         class="block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 px-3 py-2">
                 </div>
 
                 <button type="submit"
                     class="block w-full bg-black text-white text-sm font-semibold py-2 rounded-md hover:opacity-80 transition">
-                    Register
+                    Registrer
                 </button>
             </form>
             <div class="text-center mt-4">
-                <a href="Login.php" class="text-blue-600 text-sm hover:underline">Already have an account? Login</a>
+                <a href="Login.php" class="text-blue-600 text-sm hover:underline">Har du allerede en konto? Logg inn</a>
             </div>
         </div>
     </div>

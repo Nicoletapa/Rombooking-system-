@@ -47,24 +47,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && empty($message)) {
                 <div class="flex justify-center items-center">
                     <!-- Add password change form here -->
                     <form action="" method="post">
-                        <label class="px-2 mb-2 font-semibold" for="username">Username:</label>
+                        <label class="px-2 mb-2 font-semibold" for="username">Brukernavn:</label>
                         <input type="text" id="username" name="username" style="background-color: inherit;"
                             class="border-2 rounded-md px-2 py-1 w-full mb-[10px] opacity-50"
                             value="<?php echo htmlspecialchars($username); ?>" disabled><br>
 
-                        <label class="px-2 mb-2 font-semibold" for="current_password">Current Password:</label>
+                        <label class="px-2 mb-2 font-semibold" for="current_password">Nåværende passord:</label>
                         <input type="password" id="current_password" name="current_password" required
                             style="background-color: inherit;"
                             class="border-2 rounded-md px-2 py-1 w-full mb-[10px]"><br>
 
-                        <label class="px-2 mb-2 font-semibold" for="new_password">New Password:</label>
+                        <label class="px-2 mb-2 font-semibold" for="new_password">Nytt passord:</label>
                         <input type="password" id="new_password" name="new_password" required
                             style="background-color: inherit;"
                             class="border-2 rounded-md px-2 py-1 w-full mb-[10px]"><br>
 
                         <button class="p-2 w-full rounded-md text-white mt-2 bg-[#563635] hover:opacity-80"
-                            type="submit">Change
-                            Password</button>
+                            type="submit">Bytt passord</button>
                     </form>
                 </div>
             </div>

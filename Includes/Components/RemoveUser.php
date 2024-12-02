@@ -14,12 +14,12 @@ $admin = new Admin($conn);
 $userID = $_GET['BrukerID'] ?? null;
 // Ensure the user ID is provided
 if (!$userID) {
-    die("User ID is required.");
+    die("Bruker-ID er påkrevd.");
 }
 // Fetch user details
 $user = $admin->getUserById($userID);
 if (!$user) {
-    die("User not found.");
+    die("Bruker ikke funnet.");
 }
 // Process the deletion if confirmed
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm'])) {

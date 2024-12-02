@@ -23,7 +23,7 @@ class Reservation
         $stmt = $this->conn->prepare($sql);
 
         if (!$stmt) {
-            die("Prepared statement failed: " . $this->conn->error);
+            die("Forberedt uttalelse mislyktes: " . $this->conn->error);
         }
 
         $stmt->bind_param("i", $brukerID);
@@ -78,7 +78,7 @@ class Reservation
         // Prepare the statement
         $stmt = $this->conn->prepare($sql);
         if (!$stmt) {
-            die("Prepared statement failed: " . $this->conn->error);
+            die("Forberedt uttalelse mislyktes: " . $this->conn->error);
         }
 
         // Bind parameters and execute
@@ -221,7 +221,7 @@ class Reservation
 
         // Check if the prepared statement was created successfully
         if (!$stmt) {
-            die("Failed to prepare statement: " . $this->conn->error); // Stop execution if statement fails
+            die("Forberedt uttalelse mislyktes: " . $this->conn->error); // Stop execution if statement fails
         }
 
         // Bind the reservation ID to the prepared statement
@@ -263,7 +263,7 @@ class Reservation
         $stmt = $this->conn->prepare($sql);
 
         if (!$stmt) {
-            die("Failed to prepare delete statement: " . $this->conn->error);
+            die("Kunne ikke forberede slettingsuttalelse: " . $this->conn->error);
         }
 
         $stmt->bind_param("i", $reservationID);

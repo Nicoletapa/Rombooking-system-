@@ -66,12 +66,16 @@ class User
 
         // Validate phone number length
         if (strlen($this->phone) > 15) {
-            $errors[] = "Phone number must be at most 15 characters long.";
+            $errors[] = "Telefonnummer må være på maks 15 tegn.";
         }
+         // Validate phone number format (only digits allowed)
+    if (!preg_match('/^\d+$/', $this->phone)) {
+        $errors[] = "Telefonnummeret kan kun inneholde sifre.";
+    }
 
         // Validate email format
         if (!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
-            $errors[] = "Invalid email format.";
+            $errors[] = "Ugyldig e-postformat.";
         }
 
         // Check if the user already exists in the database
@@ -81,7 +85,7 @@ class User
         $result = $stmt->get_result(); // Fetch the result set
 
         if ($result->num_rows > 0) {
-            $errors[] = "User already exists."; // Add error if user exists
+            $errors[] = "Bruker eksisterer allerede."; // Add error if user exists
         }
 
         // Return errors if any are found
@@ -105,7 +109,7 @@ class User
             header('Location: Login.php'); // Redirect to login page on success
             exit;
         } else {
-            return "Error: " . $stmt->error; // Return error message on failure
+            return "Feil: " . $stmt->error; // Return error message on failure
         }
     }
 
@@ -125,12 +129,12 @@ class User
 
         // Check if user exists
         if (!$user) {
-            return "Incorrect username or password.";
+            return "Feil brukernavn eller passord.";
         }
 
         // Check if the account is locked due to too many failed attempts
         if ($user['FailedLoginAttempts'] >= 3 && (time() - strtotime($user['LastFailedLogin'])) < 3600) {
-            return "Too many failed login attempts. Please try again in one hour.";
+            return "For mange mislykkede påloggingsforsøk. Vennligst prøv igjen om en time.";
         }
 
         // Verify the provided password against the stored hashed password
@@ -163,7 +167,7 @@ class User
             $stmt->bind_param("s", $this->username);
             $stmt->execute();
 
-            return "Incorrect username or password.";
+            return "Feil brukernavn eller passord.";
         }
     }
 
@@ -191,7 +195,7 @@ class User
 
             // Verify the current password
             if (!password_verify($current_password, $user['Password'])) {
-                $errors[] = "Current password is incorrect.";
+                $errors[] = "Nåværende passord er feil.";
             }
 
             // Validate the new password using PasswordHelper
@@ -213,10 +217,10 @@ class User
             if ($update_stmt->execute()) {
                 return "Password changed successfully!";
             } else {
-                return "Error updating password: " . $this->conn->error;
+                return "Feil ved oppdatering av passord: " . $this->conn->error;
             }
         } else {
-            return "User not found.";
+            return "Bruker ikke funnet.";
         }
     }
 
